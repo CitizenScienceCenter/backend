@@ -34,7 +34,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Users]
-      operationId: api.user.register_user
+      operationId: api.user.register
       summary: Register a user
       parameters:
         - name: user
@@ -44,10 +44,20 @@ paths:
       responses:
         201:
           description: New project created
+  /users/login:
+    post:
+      tags: [Users]
+      operationId: api.user.login
+      summary: Allow a user to login
+      parameters:
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
   /users/{user_id}:
     get:
       tags: [Users]
-      operationId: api.user.get_user
+      operationId: api.user.get
       summary: Get all users (or those matching an ID)
       parameters:
         - $ref: '#/parameters/user_id' 
@@ -84,7 +94,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.post_project
+      operationId: api.project.create
       summary: Post a project
       parameters:
         - name: project
@@ -97,7 +107,7 @@ paths:
   /projects/{project_id}:
     get:
       tags: [Projects]
-      operationId: api.project.get_project
+      operationId: api.project.get
       summary: Get a single project
       parameters:
         - $ref: '#/parameters/project_id'
@@ -110,7 +120,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.put_project
+      operationId: api.project.put
       summary: Post a project
       parameters:
         - $ref: '#/parameters/project_id'
@@ -127,7 +137,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.delete_project
+      operationId: api.project.delete
       summary: Remove a project
       parameters:
         - $ref: '#/parameters/project_id'
@@ -136,7 +146,6 @@ paths:
           description: Project was deleted
         404:
           description: Project does not exist
-
 
 parameters:
   project_id:

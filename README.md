@@ -11,4 +11,6 @@ Current implementation holds a basic implementation with an API inspired by that
   * submission
   * participant
 * Generate E-R diagram
-* Android/iOS client
+* Endpoint security
+* Project deletion only by project owner
+* Android/iOS client SDK generation

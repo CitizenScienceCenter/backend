@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, String, create_engine, JSON, ForeignKey
+from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -28,10 +28,18 @@ class Project(Base):
     created_at = Column(DateTime(), default=_get_date)
     updated_at = Column(DateTime(), onupdate=_get_date)
 
+class Task(Base):
+    __tablename__ = 'tasks'
+    task_id = Column(String(100), primary_key=True)
+    project_id = Column(String(100), ForeignKey('projects.proj_id'))
+    sequence = Column(Integer)
+    content = Column(String(600))
+    
+
 class Submission(Base):
     __tablename__ = 'submissions'
     sub_id = Column(String(100), primary_key=True)
-    project_id = Column(String(20), ForeignKey('projects.proj_id'))
+    task_id = Column(String(100), ForeignKey('tasks.task_id'))
     content = Column(JSON())
     media_path = Column(String(1000))
     created_at = Column(DateTime(), default=_get_date)
@@ -58,6 +66,6 @@ def init_db(uri):
     engine = create_engine(uri, convert_unicode=True)
     db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
     Base.query = db_session.query_property()
-    # Base.metadata.drop_all(engine) 
+    Base.metadata.drop_all(engine) 
     Base.metadata.create_all(bind=engine)
     return db_session

@@ -12,12 +12,12 @@ def get_projects(limit, search_term=None):
     return [p.dump() for p in q][:limit]
 
 
-def get_project(project_id=None):
+def get(project_id=None):
     project = db_session.query(orm.Project).filter(orm.Project.proj_id == project_id).one_or_none()
     return project.dump() if project is not None else ('Not found', 404)
 
 
-def post_project(project):
+def create(project):
     logging.info('Creating project ')
     project['proj_id'] = uuid.uuid4()
     project['created_at'] = datetime.datetime.utcnow()
@@ -26,7 +26,7 @@ def post_project(project):
     db_session.commit()
     return NoContent, 201
 
-def put_project(project_id, project):
+def put(project_id, project):
     p = db_session.query(orm.Projec).filter(orm.Project.id == project_id).one_or_none()
     project['id'] = project_id
     if p is not None:
@@ -41,7 +41,7 @@ def put_project(project_id, project):
     return NoContent, (200 if p is not None else 201)
 
 
-def delete_project(project_id):
+def delete(project_id):
     project = db_session.query(orm.Project).filter(orm.Project.id == project_id).one_or_none()
     if project is not None:
         logging.info('Deleting project %s..', project_id)
