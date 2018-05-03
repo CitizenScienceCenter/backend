@@ -30,6 +30,10 @@ paths:
       responses:
         200:
           description: Return all users
+          schema:
+            type: array
+            items:  
+              $ref: '#/definitions/User'
     post:
       security:
         - apiKeyHeader: []
@@ -54,6 +58,13 @@ paths:
           in: body
           schema:
             $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Login successful
+        401:
+          description: Incorrect login details
+        404:
+          description: User not found
   /users/{user_id}:
     get:
       tags: [Users]
@@ -63,11 +74,11 @@ paths:
         - $ref: '#/parameters/user_id' 
       responses:
         200:
-          description: Return projects
+          description: Return users
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Project'
+            $ref: '#/definitions/User'
+        404:
+          description: User not found
   /projects:
     get:
       tags: [Projects]
