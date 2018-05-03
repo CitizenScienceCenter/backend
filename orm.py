@@ -19,6 +19,12 @@ class User(Base):
     created_at = Column(DateTime(), default=_get_date)
     updated_at = Column(DateTime(), onupdate=_get_date)
 
+class OToken(Base):
+    __tablename__ = 'oauth_tokens'
+    token_id = Column(String(100), primary_key=True)
+    user_id = Column(String(100), ForeignKey('users.user_id'))
+    created_at = Column(DateTime(), default=_get_date)
+
 class Project(Base):
     __tablename__ = 'projects'
     proj_id = Column(String(100), primary_key=True)
@@ -52,11 +58,11 @@ class Participant(Base):
     user_id = Column(String(100), ForeignKey('users.user_id'))
     created_at = Column(DateTime(), default=_get_date)
 
-    def update(self, id=None, name=None, tags=None, created_at=None):
-        if name is not None:
-            self.name = name
-        if created_at is not None:
-            self.created_at = created_at
+    def create(self):
+        self.created_at = _get_date
+
+    def update(self):
+        self.updated_at = updated_at
 
     def dump(self):
         return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
