@@ -1,0 +1,217 @@
+swagger: '2.0'
+info:
+  title: CCCS
+  version: "0.1"
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  apiKeyHeader:
+    type: apiKey
+    in: header
+    name: X-API-KEY
+basePath: /api/v1
+paths:
+  /users:
+    get:
+      tags: [Users]
+      operationId: api.user.get_users
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+          pattern: "^[a-zA-Z0-9]*$"
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 100
+      responses:
+        200:
+          description: Return all users
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Users]
+      operationId: api.user.register_user
+      summary: Register a user
+      parameters:
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        201:
+          description: New project created
+  /users/{user_id}:
+    get:
+      tags: [Users]
+      operationId: api.user.get_user
+      summary: Get all users (or those matching an ID)
+      parameters:
+        - $ref: '#/parameters/user_id' 
+      responses:
+        200:
+          description: Return projects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Project'
+  /projects:
+    get:
+      tags: [Projects]
+      operationId: api.project.get_projects
+      summary: Get all projects
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+          pattern: "^[a-zA-Z0-9]*$"
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 100
+      responses:
+        200:
+          description: Return projects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Project'
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Projects]
+      operationId: api.project.post_project
+      summary: Post a project
+      parameters:
+        - name: project
+          in: body
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        201:
+          description: New project created
+  /projects/{project_id}:
+    get:
+      tags: [Projects]
+      operationId: api.project.get_project
+      summary: Get a single project
+      parameters:
+        - $ref: '#/parameters/project_id'
+      responses:
+        200:
+          description: Return project
+        404:
+          description: Project does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Projects]
+      operationId: api.project.put_project
+      summary: Post a project
+      parameters:
+        - $ref: '#/parameters/project_id'
+        - name: project
+          in: body
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        200:
+          description: Project modified
+        201:
+          description: New project created
+    delete:
+      security:
+        - apiKeyHeader: []
+      tags: [Projects]
+      operationId: api.project.delete_project
+      summary: Remove a project
+      parameters:
+        - $ref: '#/parameters/project_id'
+      responses:
+        204:
+          description: Project was deleted
+        404:
+          description: Project does not exist
+
+
+parameters:
+  project_id:
+    name: project_id
+    description: Project's Unique identifier
+    in: path
+    type: string
+    required: true
+    pattern: "^[a-zA-Z0-9-]+$"
+  user_id:
+    name: user_id
+    description: User's Unique identifier
+    in: path
+    type: string
+    required: true
+    pattern: "^[a-zA-Z0-9-]+$"
+
+definitions:
+  User:
+    type: object
+    required:
+      - email
+      - pwd
+    properties:
+      user_id:
+        type: string
+        maxLength: 20
+        readOnly: true
+      username:
+        type: string
+      email:
+        type: string
+        format: email
+      pwd:
+        type: string
+      api_key:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+  Project:
+    type: object
+    required:
+      - name
+      - description
+      - owned_by
+    properties:
+      proj_id:
+        type: string
+        readOnly: true
+        description: Unique project ID
+      name:
+        type: string
+      description:
+        type: string
+      owned_by:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
