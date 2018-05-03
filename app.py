@@ -7,6 +7,8 @@ import connexion
 from connexion import NoContent
 from connexion.resolver import RestyResolver
 
+from flask import session, request
+
 import orm
 
 db_session = None

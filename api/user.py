@@ -1,6 +1,7 @@
 import connexion
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
+from flask import session 
 import orm
 
 db_session = orm.init_db('postgresql://pybossa:tester@localhost/cccs')
@@ -30,8 +31,14 @@ def login(user):
     q = db_session.query(orm.User).filter(orm.User.user_id == user.user_id).one_or_none()
     if q:
         if pbkdf2_sha256.verify(user['pwd'], q['pwd']):
+            session['user'] = q
             return q.dump(), 200
         else:
             return NoContent, 401
     else:
         return NoContent, 404
+
+def logout():
+    session['user'] = None
+    del session['user']
+    return 200

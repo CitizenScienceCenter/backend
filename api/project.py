@@ -1,7 +1,7 @@
 import connexion
 from connexion import NoContent
-
 import orm
+from decorators import access_checks
 
 db_session = orm.init_db('postgresql://pybossa:tester@localhost/cccs')
 
@@ -16,7 +16,7 @@ def get(project_id=None):
     project = db_session.query(orm.Project).filter(orm.Project.proj_id == project_id).one_or_none()
     return project.dump() if project is not None else ('Not found', 404)
 
-
+@access_checks.ensure_key
 def create(project):
     logging.info('Creating project ')
     project['proj_id'] = uuid.uuid4()

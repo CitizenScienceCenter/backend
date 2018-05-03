@@ -14,3 +14,5 @@ Current implementation holds a basic implementation with an API inspired by that
 * Endpoint security
 * Project deletion only by project owner
 * Android/iOS client SDK generation
+* Reduce NoContent responses
+* Auth decorator
