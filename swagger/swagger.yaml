@@ -11,6 +11,15 @@ securityDefinitions:
     type: apiKey
     in: header
     name: X-API-KEY
+  oauth2:
+    type: oauth2
+    flow: implicit
+    authorizationUrl: http://localhost:8080/oauth/authorize
+    # the token info URL is hardcoded for our mock_tokeninfo.py script
+    # you can also pass it as an environment variable TOKENINFO_URL
+    x-tokenInfoUrl: http://localhost:8080/api/v1/users/validate
+    scopes:
+      apiKey: Unique identifier of the user accessing the service.
 basePath: /api/v1
 paths:
   /users:
@@ -48,6 +57,28 @@ paths:
       responses:
         201:
           description: New project created
+  /users/authorize:
+    post:
+      tags: [Users]
+      operationId: api.user.auth
+      summary: Post auth for token response
+      parameters:
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Login successful
+  /users/validate:
+    get:
+      summary: OAuth2 token info
+      operationId: decorators.access_checks.ensure_key
+      responses:
+        200:
+          description: Token info object
+          schema:
+            $ref: '#/definitions/User'
   /users/login:
     post:
       tags: [Users]
@@ -103,7 +134,7 @@ paths:
               $ref: '#/definitions/Project'
     post:
       security:
-        - apiKeyHeader: []
+        - oauth2: ['apiKey']
       tags: [Projects]
       operationId: api.project.create
       summary: Post a project
@@ -129,7 +160,7 @@ paths:
           description: Project does not exist
     put:
       security:
-        - apiKeyHeader: []
+        - oauth2: ['apiKey']
       tags: [Projects]
       operationId: api.project.put
       summary: Post a project
@@ -146,7 +177,7 @@ paths:
           description: New project created
     delete:
       security:
-        - apiKeyHeader: []
+        - oauth2: ['apiKey']
       tags: [Projects]
       operationId: api.project.delete
       summary: Remove a project

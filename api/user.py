@@ -13,10 +13,20 @@ def get_users(limit, search_term=None):
         q = q.filter(orm.User.username == search_term)
     return [q.dump() for u in q][:limit]
 
-@access_checks.ensure_key
 def get(user_id):
     user = db_session.query(orm.User).filter(orm.User.user_id == user_id).one_or_none()
     return user.dump() if user is not None else ('Not found', 404)
+
+def auth():
+    q = db_session.query(orm.User).filter(orm.User.user_id == user.user_id).one_or_none()
+    if q:
+        if pbkdf2_sha256.verify(user['pwd'], q['pwd']):
+            session['user'] = q
+            return q.dump(), 200
+        else:
+            return NoContent, 401
+    else:
+        return NoContent, 404    
 
 def register(user):
     logging.info('Creating user ')

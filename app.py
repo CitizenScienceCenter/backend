@@ -21,6 +21,12 @@ app.add_api('swagger.yaml', resolver=RestyResolver('api'))
 
 application = app.app
 
+@application.route('/oauth/authorize')
+def auth():
+    # TODO implement login page example (or remove since this is extraneous to API)
+    return 'Login Page'
+
+
 @application.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
