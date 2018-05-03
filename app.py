@@ -7,16 +7,16 @@ import connexion
 from connexion import NoContent
 from connexion.resolver import RestyResolver
 
-from flask import session, request
+from flask import session, request, g
 
 import orm
 
 db_session = None
 
 logging.basicConfig(level=logging.INFO)
-db_session = orm.init_db('postgresql://pybossa:tester@localhost/cccs')
 app = connexion.FlaskApp(__name__)
 app = connexion.App(__name__, specification_dir='swagger/')
+db_session = orm.init_db('postgresql://pybossa:tester@localhost/cccs')
 app.add_api('swagger.yaml', resolver=RestyResolver('api'))
 
 application = app.app
