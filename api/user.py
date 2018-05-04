@@ -2,24 +2,24 @@ import connexion
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
 from flask import session
-import orm
+from orm import orm_handler, User
 from decorators import access_checks
 
-db_session = orm.init_db('postgresql://pybossa:tester@localhost/cccs')
+db_session = orm_handler.init_db()
 
 def get_users(limit, search_term=None):
-    q = db_session.query(orm.User)
+    q = db_session.query(User)
     if search_term:
-        q = q.filter(orm.User.username == search_term)
+        q = q.filter(User.username == search_term)
     return [q.dump() for u in q][:limit]
 
 def get(user_id):
-    user = db_session.query(orm.User).filter(orm.User.user_id == user_id).one_or_none()
+    user = db_session.query(User).filter(User.user_id == user_id).one_or_none()
     return user.dump() if user is not None else ('Not found', 404)
 
 def auth():
     # TODO create oauth token here and add to table. Just send api key for now
-    q = db_session.query(orm.User).filter(orm.User.user_id == user.user_id).one_or_none()
+    q = db_session.query(User).filter(User.user_id == user.user_id).one_or_none()
     if q:
         if pbkdf2_sha256.verify(user['pwd'], q['pwd']):
             session['user'] = q
@@ -41,7 +41,7 @@ def register(user):
     return user.dump(), 201
 
 def login(user):
-    q = db_session.query(orm.User).filter(orm.User.user_id == user.user_id).one_or_none()
+    q = db_session.query(User).filter(User.user_id == user.user_id).one_or_none()
     if q:
         if pbkdf2_sha256.verify(user['pwd'], q['pwd']):
             session['user'] = q

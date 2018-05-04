@@ -2,9 +2,9 @@ from flask import session, request, g
 from connexion import NoContent
 from functools import wraps
 
-import orm
+from orm import orm_handler, User
 
-db_session = orm.init_db('postgresql://pybossa:tester@localhost/cccs')
+db_session = orm_handler.init_db()
 
 def ensure_key(func):
     @wraps(func)
