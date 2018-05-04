@@ -4,7 +4,23 @@ Flask based OpenAPI (2) supported backend with a Postgres backend.
 
 Current implementation holds a basic implementation with an API inspired by that of Pybossa. No auth is currently included.
 
-# TODO
+## Running
+
+* `virtualenv env`
+* `source env/bin/activate`
+* `pip install -r requirements.txt`
+* Set connection settings and others in `config.py`
+* `python app.py`
+
+## Generate SDKs
+
+Requires [swagger-codegen](https://swagger.io/swagger-codegen/).
+
+### Example: Python
+
+`swagger-codegen generate -i ./swagger/swagger.yaml -l python -o ./sdk/python`
+
+## TODO
 
 * Oauth support
 * Implement endpoints for:
