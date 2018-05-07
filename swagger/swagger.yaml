@@ -72,6 +72,7 @@ paths:
           description: Login successful
   /users/validate:
     get:
+      tags: [Users]
       summary: OAuth2 token info
       operationId: decorators.access_checks.ensure_key
       responses:
