@@ -7,7 +7,8 @@ import connexion
 from connexion import NoContent
 from connexion.resolver import RestyResolver
 
-from flask import session, request, g
+from flask import session, request, g, render_template
+from flask_cors import CORS
 
 from orm import orm_handler
 
@@ -22,11 +23,12 @@ db_session = orm_handler.init_db()
 app.add_api('swagger.yaml', resolver=RestyResolver('api'))
 
 application = app.app
+CORS(application)
 
 @application.route('/oauth/authorize')
 def auth():
     # TODO implement login page example (or remove since this is extraneous to API)
-    return 'Login Page'
+    return render_template('index.html')
 
 
 @application.teardown_appcontext
