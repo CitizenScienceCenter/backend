@@ -17,9 +17,10 @@ def get(user_id):
     user = db_session.query(User).filter(User.user_id == user_id).one_or_none()
     return user.dump() if user is not None else ('Not found', 404)
 
-def auth():
+def auth(user):
     # TODO create oauth token here and add to table. Just send api key for now
-    q = db_session.query(User).filter(User.user_id == user.user_id).one_or_none()
+    q = db_session.query(User).filter(User.email == user['email']).one_or_none()
+    print(q)
     if q:
         if pbkdf2_sha256.verify(user['pwd'], q['pwd']):
             session['user'] = q
