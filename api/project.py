@@ -1,6 +1,6 @@
 import connexion
 from connexion import NoContent
-from orm import orm_handler, User
+from db import orm_handler, User
 from decorators import access_checks
 
 db_session = orm_handler.init_db()

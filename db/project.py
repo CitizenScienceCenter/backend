@@ -1,11 +1,9 @@
 from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
-import orm.orm_handler as orm
+import db.orm_handler as orm
 
-Base = declarative_base()
-
-class Project(Base):
+class Project(orm.Base):
     __tablename__ = 'projects'
     proj_id = Column(String(100), primary_key=True)
     name = Column(String(100))

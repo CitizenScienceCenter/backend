@@ -43,20 +43,6 @@ paths:
             type: array
             items:  
               $ref: '#/definitions/User'
-    post:
-      security:
-        - apiKeyHeader: []
-      tags: [Users]
-      operationId: api.user.register
-      summary: Register a user
-      parameters:
-        - name: user
-          in: body
-          schema:
-            $ref: '#/definitions/User'
-      responses:
-        201:
-          description: New project created
   /users/authorize:
     post:
       tags: [Users]
@@ -80,6 +66,19 @@ paths:
           description: Token info object
           schema:
             $ref: '#/definitions/User'
+  /users/register:
+    post:
+      tags: [Users]
+      summary: Registration end point for a user account
+      operationId: api.user.register
+      parameters:
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Created user
   /users/login:
     post:
       tags: [Users]

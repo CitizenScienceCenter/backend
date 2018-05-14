@@ -1,8 +1,11 @@
 import connexion
+import logging
+import uuid
+from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
 from flask import session
-from orm import orm_handler, User
+from db import orm_handler, User
 from decorators import access_checks
 
 db_session = orm_handler.init_db()
@@ -20,9 +23,8 @@ def get(user_id):
 def auth(user):
     # TODO create oauth token here and add to table. Just send api key for now
     q = db_session.query(User).filter(User.email == user['email']).one_or_none()
-    print(q)
     if q:
-        if pbkdf2_sha256.verify(user['pwd'], q['pwd']):
+        if pbkdf2_sha256.verify(user['pwd'], q.pwd):
             session['user'] = q
             return q.dump(), 200
         else:
@@ -35,9 +37,8 @@ def register(user):
     user['user_id'] = uuid.uuid4()
     user['api_key'] = uuid.uuid4()
     user['pwd'] = pbkdf2_sha256.encrypt(user['pwd'], rounds=200000, salt_size=16)
-    project['created_at'] = datetime.datetime.utcnow()
-    print(user)
-    db_session.add(orm.User(**user))
+    user['created_at'] = datetime.utcnow()
+    db_session.add(User(**user))
     db_session.commit()
     return user.dump(), 201
 

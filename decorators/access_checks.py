@@ -2,7 +2,7 @@ from flask import session, request, g
 from connexion import NoContent
 from functools import wraps
 
-from orm import orm_handler, User
+from db import orm_handler, User
 
 db_session = orm_handler.init_db()
 
