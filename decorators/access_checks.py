@@ -14,6 +14,7 @@ def ensure_key(func):
             _, access_token = request.headers['Authorization'].split()
         except:
             access_token = ''
+        # TODO add check for oauth tokens
         user_key = db_session.query(orm.User).filter(orm.User.api_key == access_token).one_or_none()
         if key == user_key:
             return func(*args, **kwargs)

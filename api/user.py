@@ -25,7 +25,7 @@ def auth(user):
     q = db_session.query(User).filter(User.email == user['email']).one_or_none()
     if q:
         if pbkdf2_sha256.verify(user['pwd'], q.pwd):
-            session['user'] = q
+            session['user'] = q.dump()
             return q.dump(), 200
         else:
             return NoContent, 401
@@ -43,11 +43,12 @@ def register(user):
     return user.dump(), 201
 
 def login(user):
-    q = db_session.query(User).filter(User.user_id == user.user_id).one_or_none()
+    print(user)
+    q = db_session.query(User).filter(User.email == user['email']).one_or_none()
+    logging.info(q)
     if q:
-        if pbkdf2_sha256.verify(user['pwd'], q['pwd']):
-            session['user'] = q
-            return q.dump(), 200
+        if pbkdf2_sha256.verify(user['pwd'], q.pwd):
+            return NoContent, 200
         else:
             return NoContent, 401
     else:
