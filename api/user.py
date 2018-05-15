@@ -32,6 +32,19 @@ def auth(user):
     else:
         return NoContent, 404    
 
+def login(user):
+    def auth(user):
+    # TODO create oauth token here and add to table. Just send api key for now
+    q = db_session.query(User).filter(User.email == user['email']).one_or_none()
+    if q:
+        if pbkdf2_sha256.verify(user['pwd'], q.pwd):
+            session['user'] = q.dump()
+            return q.dump(), 200
+        else:
+            return NoContent, 401
+    else:
+        return NoContent, 404    
+        
 def register(user):
     logging.info('Creating user ')
     user['user_id'] = uuid.uuid4()

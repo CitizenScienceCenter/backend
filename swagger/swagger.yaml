@@ -43,6 +43,19 @@ paths:
             type: array
             items:  
               $ref: '#/definitions/User'
+  /users/login:
+    post:
+      tags: [Users]
+      operationId: api.user.login
+      summary: Post auth for user login
+      parameters:
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: Login successful
   /users/authorize:
     post:
       tags: [Users]
@@ -55,7 +68,7 @@ paths:
             $ref: '#/definitions/User'
       responses:
         200:
-          description: Login successful
+          description: Token created
   /users/validate:
     get:
       tags: [Users]
