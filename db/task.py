@@ -6,6 +6,6 @@ import db.orm_handler as orm
 class Task(orm.Base):
     __tablename__ = 'tasks'
     task_id = Column(String(100), primary_key=True)
-    project_id = Column(String(100), ForeignKey('projects.proj_id'))
+    project_id = Column(String(100), ForeignKey('projects.project_id'))
     sequence = Column(Integer)
     content = Column(String(600))
