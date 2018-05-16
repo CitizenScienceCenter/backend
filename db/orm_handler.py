@@ -6,11 +6,8 @@ import config
 import datetime
 from db.cs_base import CSBase
 
-
 Base = declarative_base(cls=CSBase)
 
-def _get_date():
-    return datetime.datetime.now()
 
 def init_db(uri=config.DB_URI, persist=True):
     engine = create_engine(uri, convert_unicode=True)

@@ -9,5 +9,3 @@ class Project(orm.Base):
     name = Column(String(100))
     description = Column(String(1000))
     owned_by = Column(String(100), ForeignKey('users.user_id'))
-    created_at = Column(DateTime(), default=orm._get_date)
-    updated_at = Column(DateTime(), onupdate=orm._get_date)

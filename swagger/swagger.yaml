@@ -59,13 +59,18 @@ paths:
   /users/authorize:
     post:
       tags: [Users]
-      operationId: api.user.auth
+      operationId: api.otoken.generate
       summary: Post auth for token response
       parameters:
-        - name: user
+        - name: requestToken
           in: body
           schema:
-            $ref: '#/definitions/User'
+            type: object
+            properties:
+              user_id:
+                type: string
+              project_id:
+                type: string
       responses:
         200:
           description: Token created

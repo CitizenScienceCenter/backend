@@ -10,8 +10,6 @@ class Submission(orm.Base):
     user_id = Column(String(100), ForeignKey('users.user_id'))
     content = Column(JSON())
     media_path = Column(String(1000))
-    created_at = Column(DateTime(), default=orm._get_date)
-    updated_at = Column(DateTime(), onupdate=orm._get_date)
 
     def create(self):
         self.created_at = _get_date

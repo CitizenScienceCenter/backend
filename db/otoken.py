@@ -7,4 +7,4 @@ class OToken(orm.Base):
     __tablename__ = 'oauth_tokens'
     token_id = Column(String(100), primary_key=True)
     user_id = Column(String(100), ForeignKey('users.user_id'))
-    created_at = Column(DateTime(), default=orm._get_date)
+    user_id = Column(String(100), ForeignKey('projects.project_id'))

@@ -12,6 +12,4 @@ class User(orm.Base):
     pwd = Column(String(100))
     api_key = Column(String(100))
     confirmed = Column(Boolean)
-    created_at = Column(DateTime(), default=orm._get_date)
-    updated_at = Column(DateTime(), onupdate=orm._get_date)
 
