@@ -49,9 +49,10 @@ def register(user):
     user['api_key'] = uuid.uuid4()
     user['pwd'] = pbkdf2_sha256.encrypt(user['pwd'], rounds=200000, salt_size=16)
     user['created_at'] = datetime.utcnow()
-    db_session.add(User(**user))
+    u = User(**user)
+    db_session.add(u)
     db_session.commit()
-    return user.dump(), 201
+    return u.dump(), 201
 
 def login(user):
     print(user)
