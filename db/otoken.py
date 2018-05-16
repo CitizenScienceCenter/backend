@@ -5,6 +5,5 @@ import db.orm_handler as orm
 
 class OToken(orm.Base):
     __tablename__ = 'oauth_tokens'
-    token_id = Column(String(100), primary_key=True)
-    user_id = Column(String(100), ForeignKey('users.user_id'))
-    project_id = Column(String(100), ForeignKey('projects.project_id'))
+    user_id = Column(String(100), ForeignKey('users.id'))
+    project_id = Column(String(100), ForeignKey('projects.id'))

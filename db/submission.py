@@ -5,9 +5,8 @@ import db.orm_handler as orm
 
 class Submission(orm.Base):
     __tablename__ = 'submissions'
-    sub_id = Column(String(100), primary_key=True)
-    task_id = Column(String(100), ForeignKey('tasks.task_id'))
-    user_id = Column(String(100), ForeignKey('users.user_id'))
+    task_id = Column(String(100), ForeignKey('tasks.id'))
+    user_id = Column(String(100), ForeignKey('users.id'))
     content = Column(JSON())
     media_path = Column(String(1000))
 

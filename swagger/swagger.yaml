@@ -62,15 +62,10 @@ paths:
       operationId: api.otoken.generate
       summary: Post auth for token response
       parameters:
-        - name: requestToken
+        - name: token
           in: body
           schema:
-            type: object
-            properties:
-              user_id:
-                type: string
-              project_id:
-                type: string
+            $ref: '#/definitions/Otoken'
       responses:
         200:
           description: Token created
@@ -230,7 +225,7 @@ definitions:
       - email
       - pwd
     properties:
-      user_id:
+      id:
         type: string
         maxLength: 20
         readOnly: true
@@ -255,6 +250,31 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
+  Otoken:
+    type: object
+    required:
+      - user_id
+      - project_id
+    properties:
+      id:
+        type: string
+        readOnly: true
+      user_id:
+        type: string
+      project_id:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
   Project:
     type: object
     required:
@@ -262,7 +282,7 @@ definitions:
       - description
       - owned_by
     properties:
-      proj_id:
+      id:
         type: string
         readOnly: true
         description: Unique project ID

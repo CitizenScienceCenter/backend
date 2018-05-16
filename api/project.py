@@ -19,8 +19,6 @@ def get(project_id=None):
 @access_checks.ensure_key
 def create(project):
     logging.info('Creating project ')
-    project['proj_id'] = uuid.uuid4()
-    project['created_at'] = datetime.datetime.utcnow()
     print(project)
     db_session.add(Project(**project))
     db_session.commit()

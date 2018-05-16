@@ -1,10 +1,13 @@
 from sqlalchemy import event
 from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, ForeignKey, Boolean
+import uuid
+import datetime
 
 def _get_date():
     return datetime.datetime.now()
 
 class CSBase():
+    id = Column(String(100), default=uuid.uuid4(), primary_key=True)
     created_at = Column(DateTime(), default=_get_date)
     updated_at = Column(DateTime(), onupdate=_get_date)
 
