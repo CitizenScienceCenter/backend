@@ -3,5 +3,6 @@ from db.project import Project
 from db.submission import Submission
 from db.task import Task
 from db.user import User
+from db.media import Media
 from db.cs_base import CSBase
 import db.orm_handler as orm

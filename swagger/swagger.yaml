@@ -147,7 +147,7 @@ paths:
               $ref: '#/definitions/Project'
     post:
       security:
-        - oauth2: ['apiKey']
+        - apiKeyHeader: []
       tags: [Projects]
       operationId: api.project.create
       summary: Post a project
@@ -173,7 +173,7 @@ paths:
           description: Project does not exist
     put:
       security:
-        - oauth2: ['apiKey']
+        - apiKeyHeader: []
       tags: [Projects]
       operationId: api.project.put
       summary: Post a project
@@ -190,7 +190,7 @@ paths:
           description: New project created
     delete:
       security:
-        - oauth2: ['apiKey']
+        - apiKeyHeader: []
       tags: [Projects]
       operationId: api.project.delete
       summary: Remove a project
@@ -291,6 +291,49 @@ definitions:
       description:
         type: string
       owned_by:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+  Media:
+    type: object
+    required:
+      - id
+      - path
+    properties:
+      id:
+        type: string
+        description: linking to a task or a submission
+      path:
+        type: string
+  Task:
+    type: object
+    required:
+      - project_id
+      - sequence
+      - title
+      - content
+    properties:
+      id:
+        type: string
+        readOnly: true
+        description: Unique task ID
+      project_id:
+        type: string
+      sequence:
+        type: string
+      content:
+        type: string
+      title:
         type: string
       created_at:
         type: string

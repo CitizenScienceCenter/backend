@@ -8,7 +8,6 @@ class Submission(orm.Base):
     task_id = Column(String(100), ForeignKey('tasks.id'))
     user_id = Column(String(100), ForeignKey('users.id'))
     content = Column(JSON())
-    media_path = Column(String(1000))
 
     def create(self):
         self.created_at = _get_date
