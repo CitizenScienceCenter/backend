@@ -26,7 +26,7 @@ def create(project):
 
 @access_checks.ensure_key
 def put(project_id, project):
-    p = db_session.query(Projec).filter(Project.id == project_id).one_or_none()
+    p = db_session.query(Project).filter(Project.id == project_id).one_or_none()
     project['id'] = project_id
     if p is not None:
         logging.info('Updating project %s..', project_id)

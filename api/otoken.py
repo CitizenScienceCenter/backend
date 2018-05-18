@@ -13,6 +13,10 @@ db_session = orm_handler.init_db()
 def generate(token):
     # TODO handle if a token already exists and return if it does
     o_token = OToken(**token)
-    db_session.add(o_token)
-    db_session.commit()
-    return o_token.dump(), 201
+    p = db_session.query(OToken).filter(OToken.user_id == o_token.user_id and OToken.project_id == o_token.project_id).one_or_none()
+    if p is None:
+        db_session.add(o_token)
+        db_session.commit()
+        return o_token.dump(), 201
+    else:
+        return p.dump(), 200
