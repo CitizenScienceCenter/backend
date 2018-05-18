@@ -1,19 +1,19 @@
 import connexion
 from connexion import NoContent
-from db import orm_handler, User
+from db import orm_handler, Project
 from decorators import access_checks
 
 db_session = orm_handler.init_db()
 
-def get_projects(limit, search_term=None):
+def get(limit, search_term=None):
     q = db_session.query(Project)
     if search_term:
         q = q.filter(Project.name == search_term)
     return [p.dump() for p in q][:limit]
 
 
-def get(project_id=None):
-    project = db_session.query(Project).filter(Project.proj_id == project_id).one_or_none()
+def get_one(project_id=None):
+    project = db_session.query(Project).filter(Project.id == project_id).one_or_none()
     return project.dump() if project is not None else ('Not found', 404)
 
 @access_checks.ensure_key
@@ -30,11 +30,9 @@ def put(project_id, project):
     project['id'] = project_id
     if p is not None:
         logging.info('Updating project %s..', project_id)
-        project['updated_at'] = datetime.datetime.utcnow()
         p.update(**project)
     else:
         logging.info('Creating project %s..', project_id)
-        project['created_at'] = datetime.datetime.utcnow()
         db_session.add(Project(**project))
     db_session.commit()
     return NoContent, (200 if p is not None else 201)
@@ -46,6 +44,6 @@ def delete(project_id):
         logging.info('Deleting project %s..', project_id)
         db_session.query(Project).filter(Project.id == project_id).delete()
         db_session.commit()
-        return NoContent, 204
+        return {msg: 'Deleted'}, 200
     else:
         return NoContent, 404

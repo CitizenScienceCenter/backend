@@ -109,13 +109,13 @@ paths:
           description: Incorrect login details
         404:
           description: User not found
-  /users/{user_id}:
+  /users/{id}:
     get:
       tags: [Users]
       operationId: api.user.get
       summary: Get all users (or those matching an ID)
       parameters:
-        - $ref: '#/parameters/user_id' 
+        - $ref: '#/parameters/id' 
       responses:
         200:
           description: Return users
@@ -126,7 +126,7 @@ paths:
   /projects:
     get:
       tags: [Projects]
-      operationId: api.project.get_projects
+      operationId: api.project.get
       summary: Get all projects
       parameters:
         - name: search_term
@@ -159,13 +159,13 @@ paths:
       responses:
         201:
           description: New project created
-  /projects/{project_id}:
+  /projects/{id}:
     get:
       tags: [Projects]
-      operationId: api.project.get
+      operationId: api.project.get_one
       summary: Get a single project
       parameters:
-        - $ref: '#/parameters/project_id'
+        - $ref: '#/parameters/id'
       responses:
         200:
           description: Return project
@@ -178,7 +178,7 @@ paths:
       operationId: api.project.put
       summary: Post a project
       parameters:
-        - $ref: '#/parameters/project_id'
+        - $ref: '#/parameters/id'
         - name: project
           in: body
           schema:
@@ -195,29 +195,46 @@ paths:
       operationId: api.project.delete
       summary: Remove a project
       parameters:
-        - $ref: '#/parameters/project_id'
+        - $ref: '#/parameters/id'
       responses:
         204:
           description: Project was deleted
         404:
           description: Project does not exist
-
+  /tasks:
+    get:
+      tags: [Tasks]
+      operationId: api.task.get
+      summary: Get a single task
+      responses:
+        200:
+          description: List of tasks
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Task'
+  /tasks/{id}:
+    get:
+      tags: [Tasks]
+      operationId: api.task.get_one
+      summary: Get a single task
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return task
+          schema:
+            $ref: '#/definitions/Task'
+        404:
+          description: Task does not exist
 parameters:
-  project_id:
-    name: project_id
-    description: Project's Unique identifier
+  id:
+    name: id
+    description: The unique identifer for an Object (i.e. User, Task, Project, Submission etc)
     in: path
     type: string
     required: true
     pattern: "^[a-zA-Z0-9-]+$"
-  user_id:
-    name: user_id
-    description: User's Unique identifier
-    in: path
-    type: string
-    required: true
-    pattern: "^[a-zA-Z0-9-]+$"
-
 definitions:
   User:
     type: object
