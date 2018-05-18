@@ -14,10 +14,10 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: implicit
-    authorizationUrl: http://localhost:8080/oauth/authorize
+    authorizationUrl: http://localhost:8081/oauth/authorize
     # the token info URL is hardcoded for our mock_tokeninfo.py script
     # you can also pass it as an environment variable TOKENINFO_URL
-    x-tokenInfoUrl: http://localhost:8080/api/v1/users/validate
+    x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
 basePath: /api/v1
@@ -43,19 +43,6 @@ paths:
             type: array
             items:  
               $ref: '#/definitions/User'
-  /users/login:
-    post:
-      tags: [Users]
-      operationId: api.user.login
-      summary: Post auth for user login
-      parameters:
-        - name: user
-          in: body
-          schema:
-            $ref: '#/definitions/User'
-      responses:
-        200:
-          description: Login successful
   /users/authorize:
     post:
       tags: [Users]
@@ -111,6 +98,8 @@ paths:
           description: User not found
   /users/{id}:
     get:
+      security:
+         - apiKeyHeader: []
       tags: [Users]
       operationId: api.user.get
       summary: Get all users (or those matching an ID)
@@ -161,6 +150,8 @@ paths:
           description: New project created
   /projects/{id}:
     get:
+      security:
+        - apiKeyHeader: []
       tags: [Projects]
       operationId: api.project.get_one
       summary: Get a single project
@@ -176,7 +167,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       operationId: api.project.put
-      summary: Post a project
+      summary: Modify/Create a project
       parameters:
         - $ref: '#/parameters/id'
         - name: project
@@ -203,6 +194,8 @@ paths:
           description: Project does not exist
   /tasks:
     get:
+      security:
+        - apiKeyHeader: []
       tags: [Tasks]
       operationId: api.task.get
       summary: Get a single task
@@ -213,6 +206,18 @@ paths:
             type: array
             items: 
               $ref: '#/definitions/Task'
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      operationId: api.project.put
+      summary: Post a project
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: project
+          in: body
+          schema:
+            $ref: '#/definitions/Project'
   /tasks/{id}:
     get:
       tags: [Tasks]
