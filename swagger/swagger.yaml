@@ -25,7 +25,8 @@ paths:
   /users:
     get:
       tags: [Users]
-      operationId: api.user.get_users
+      x-swagger-router-controller: api.user
+      operationId: get_users
       parameters:
         - name: search_term
           in: query
@@ -46,7 +47,8 @@ paths:
   /users/authorize:
     post:
       tags: [Users]
-      operationId: api.otoken.generate
+      x-swagger-router-controller: api.otoken
+      operationId: generate
       summary: Post auth for token response
       parameters:
         - name: token
@@ -60,7 +62,8 @@ paths:
     get:
       tags: [Users]
       summary: OAuth2 token info
-      operationId: decorators.access_checks.ensure_key
+      x-swagger-router-controller: decorators.access_checks
+      operationId: ensure_key
       responses:
         200:
           description: Token info object
@@ -70,7 +73,8 @@ paths:
     post:
       tags: [Users]
       summary: Registration end point for a user account
-      operationId: api.user.register
+      x-swagger-router-controller: api.user
+      operationId: register
       parameters:
         - name: user
           in: body
@@ -82,7 +86,8 @@ paths:
   /users/login:
     post:
       tags: [Users]
-      operationId: api.user.login
+      x-swagger-router-controller: api.user
+      operationId: login
       summary: Allow a user to login
       parameters:
         - name: user
@@ -101,7 +106,8 @@ paths:
       security:
          - apiKeyHeader: []
       tags: [Users]
-      operationId: api.user.get
+      x-swagger-router-controller: api.user
+      operationId: get
       summary: Get all users (or those matching an ID)
       parameters:
         - $ref: '#/parameters/id' 
@@ -115,7 +121,8 @@ paths:
   /projects:
     get:
       tags: [Projects]
-      operationId: api.project.get
+      x-swagger-router-controller: api.project
+      operationId: get
       summary: Get all projects
       parameters:
         - name: search_term
@@ -138,7 +145,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.create
+      x-swagger-router-controller: api.project
+      operationId: create
       summary: Post a project
       parameters:
         - name: project
@@ -153,7 +161,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.get_one
+      x-swagger-router-controller: api.project
+      operationId: get_one
       summary: Get a single project
       parameters:
         - $ref: '#/parameters/id'
@@ -166,7 +175,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.put
+      x-swagger-router-controller: api.project
+      operationId: put
       summary: Modify/Create a project
       parameters:
         - $ref: '#/parameters/id'
@@ -183,7 +193,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.delete
+      x-swagger-router-controller: api.project
+      operationId: delete
       summary: Remove a project
       parameters:
         - $ref: '#/parameters/id'
@@ -197,8 +208,9 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      operationId: api.task.get
-      summary: Get a single task
+      x-swagger-router-controller: api.task
+      operationId: get
+      summary: Get a list of tasks
       responses:
         200:
           description: List of tasks
@@ -210,7 +222,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      operationId: api.task.create
+      x-swagger-router-controller: api.task
+      operationId: create
       summary: Post a task
       parameters:
         - $ref: '#/parameters/id'
@@ -227,7 +240,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      operationId: api.task.put
+      x-swagger-router-controller: api.task
+      operationId: put
       summary: Modify/Create a task
       parameters:
         - $ref: '#/parameters/id'
@@ -244,7 +258,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      operationId: api.task.delete
+      x-swagger-router-controller: api.task
+      operationId: delete
       summary: Remove a task
       parameters:
         - $ref: '#/parameters/id'
@@ -258,7 +273,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      operationId: api.task.get_one
+      x-swagger-router-controller: api.task
+      operationId: get_one
       summary: Get a single task
       parameters:
         - $ref: '#/parameters/id'
@@ -274,7 +290,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      operationId: api.submission.get
+      x-swagger-router-controller: api.submission
+      operationId: get
       summary: Get a single submission
       responses:
         200:
@@ -287,7 +304,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      operationId: api.submission.create
+      x-swagger-router-controller: api.submission
+      operationId: create
       summary: Post a submission
       parameters:
         - $ref: '#/parameters/id'
@@ -304,7 +322,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      operationId: api.submission.put
+      x-swagger-router-controller: api.submission
+      operationId: put
       summary: Modify/Create a submission
       parameters:
         - $ref: '#/parameters/id'
@@ -321,7 +340,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      operationId: api.submission.delete
+      x-swagger-router-controller: api.submission
+      operationId: delete
       summary: Remove a submission
       parameters:
         - $ref: '#/parameters/id'
@@ -335,7 +355,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      operationId: api.submission.get_one
+      x-swagger-router-controller: api.submission
+      operationId: get_one
       summary: Get a single submission
       parameters:
         - $ref: '#/parameters/id'
@@ -352,7 +373,8 @@ paths:
         - apiKeyHeader: []
       tags: [Media]
       description: "Add a new media attachment"
-      operationId: "api.media.create"
+      x-swagger-router-controller: api.media
+      operationId: create
       consumes:
       - multipart/form-data
       parameters:
