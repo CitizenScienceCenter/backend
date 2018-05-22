@@ -11,12 +11,14 @@ def ensure_key(func):
     def decorated_function(*args, **kwargs):
         print('access check')
         try:
-            _, access_token = request.headers['Authorization'].split()
+            # _, access_token = request.headers['Authorization'].split()
+            key = request.headers['X-API-KEY']
         except:
-            access_token = ''
+            key = ''
         # TODO add check for oauth tokens
-        user_key = db_session.query(orm.User).filter(orm.User.api_key == access_token).one_or_none()
-        if key == user_key:
+        print(key)
+        user_key = db_session.query(User).filter(User.api_key == key).one_or_none()
+        if user_key is not None:
             return func(*args, **kwargs)
         else:
             return NoContent, 401

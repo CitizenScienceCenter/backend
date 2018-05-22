@@ -1,11 +1,14 @@
 import connexion
+import logging
 from connexion import NoContent
-from db import orm_handler, Project
+from db import orm_handler, Project, User, utils
 from decorators import access_checks
+from flask import request
+
 
 db_session = orm_handler.init_db()
 
-def get(limit, search_term=None):
+def get(limit=20, search_term=None):
     q = db_session.query(Project)
     if search_term:
         q = q.filter(Project.name == search_term)
@@ -19,10 +22,12 @@ def get_one(project_id=None):
 @access_checks.ensure_key
 def create(project):
     logging.info('Creating project ')
-    print(project)
-    db_session.add(Project(**project))
+    user = utils.get_user(request, db_session)
+    project['owned_by'] = user.id
+    p = Project(**project)
+    db_session.add(p)
     db_session.commit()
-    return NoContent, 201
+    return p.dump(), 201
 
 @access_checks.ensure_key
 def put(project_id, project):

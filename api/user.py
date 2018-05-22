@@ -11,7 +11,7 @@ import json
 
 db_session = orm_handler.init_db()
 
-def get_users(limit, search_term=None):
+def get_users(limit=20, search_term=None):
     q = db_session.query(User)
     if search_term:
         q = q.filter(User.username == search_term)

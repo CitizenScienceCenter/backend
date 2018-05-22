@@ -5,7 +5,7 @@ from decorators import access_checks
 
 db_session = orm_handler.init_db()
 
-def get(limit, search_term=None):
+def get(limit=20, search_term=None):
     q = db_session.query(Task)
     if search_term:
         q = q.filter(Task.name == search_term)
@@ -20,9 +20,9 @@ def get_one(project_id=None):
 def create(task):
     logging.info('Creating task ')
     print(task)
-    db_session.add(Task(**task))
+    db_session.add(t)
     db_session.commit()
-    return NoContent, 201
+    return t.dump(), 201
 
 @access_checks.ensure_key
 def put(task_id, task):

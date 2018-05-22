@@ -1,11 +1,12 @@
 import connexion
 from connexion import NoContent
-from db import orm_handler, Submission
+from db import orm_handler, Submission, utils
 from decorators import access_checks
+from flask import request
 
 db_session = orm_handler.init_db()
 
-def get(limit, search_term=None):
+def get(limit=20, search_term=None):
     q = db_session.query(Submission)
     if search_term:
         q = q.filter(Submission.name == search_term)
@@ -20,9 +21,12 @@ def get_one(project_id=None):
 def create(submission):
     logging.info('Creating Submission ')
     print(submission)
-    db_session.add(Submission(**submission))
+    s = Submission(**submission)
+    user = utils.get_user(request, db_session)
+    s.user_id = user.id
+    db_session.add(s)
     db_session.commit()
-    return NoContent, 201
+    return s.dump(), 201
 
 @access_checks.ensure_key
 def put(submission_id, submission):

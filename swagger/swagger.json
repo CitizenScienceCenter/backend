@@ -1,0 +1,899 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "CCCS",
+    "version": "0.1"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "apiKeyHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "X-API-KEY"
+    },
+    "oauth2": {
+      "type": "oauth2",
+      "flow": "implicit",
+      "authorizationUrl": "http://localhost:8081/oauth/authorize",
+      "x-tokenInfoUrl": "http://localhost:8081/api/v1/users/validate",
+      "scopes": {
+        "apiKey": "Unique identifier of the user accessing the service."
+      }
+    }
+  },
+  "basePath": "/api/v1",
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "api.user.get_users",
+        "parameters": [
+          {
+            "name": "search_term",
+            "in": "query",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]*$"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "minimum": 0,
+            "default": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all users",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/authorize": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "api.otoken.generate",
+        "summary": "Post auth for token response",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Otoken"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token created"
+          }
+        }
+      }
+    },
+    "/users/validate": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "OAuth2 token info",
+        "operationId": "decorators.access_checks.ensure_key",
+        "responses": {
+          "200": {
+            "description": "Token info object",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Registration end point for a user account",
+        "operationId": "api.user.register",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created user"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "api.user.login",
+        "summary": "Allow a user to login",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Incorrect login details"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "operationId": "api.user.get",
+        "summary": "Get all users (or those matching an ID)",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return users",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "api.project.get",
+        "summary": "Get all projects",
+        "parameters": [
+          {
+            "name": "search_term",
+            "in": "query",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]*$"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "minimum": 0,
+            "default": 100
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return projects",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Project"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "api.project.create",
+        "summary": "Post a project",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "New project created"
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "api.project.get_one",
+        "summary": "Get a single project",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return project"
+          },
+          "404": {
+            "description": "Project does not exist"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "api.project.put",
+        "summary": "Modify/Create a project",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          },
+          {
+            "name": "project",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project modified"
+          },
+          "201": {
+            "description": "New project created"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "api.project.delete",
+        "summary": "Remove a project",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Project was deleted"
+          },
+          "404": {
+            "description": "Project does not exist"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "api.task.get",
+        "summary": "Get a single task",
+        "responses": {
+          "200": {
+            "description": "List of tasks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Task"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "api.task.create",
+        "summary": "Post a task",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          },
+          {
+            "name": "project",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task created",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "api.task.put",
+        "summary": "Modify/Create a task",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          },
+          {
+            "name": "project",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task modified"
+          },
+          "201": {
+            "description": "New task created"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "api.task.delete",
+        "summary": "Remove a task",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Task was deleted"
+          },
+          "404": {
+            "description": "Task does not exist"
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "api.task.get_one",
+        "summary": "Get a single task",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return task",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "404": {
+            "description": "Task does not exist"
+          }
+        }
+      }
+    },
+    "/submissions": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Submissions"
+        ],
+        "operationId": "api.submission.get",
+        "summary": "Get a single submission",
+        "responses": {
+          "200": {
+            "description": "List of tasks",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Submission"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Submissions"
+        ],
+        "operationId": "api.submission.create",
+        "summary": "Post a submission",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          },
+          {
+            "name": "project",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Submission"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Submission created",
+            "schema": {
+              "$ref": "#/definitions/Submission"
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Submissions"
+        ],
+        "operationId": "api.submission.put",
+        "summary": "Modify/Create a submission",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          },
+          {
+            "name": "project",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Submission"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Submission modified"
+          },
+          "201": {
+            "description": "New submission created"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Submissions"
+        ],
+        "operationId": "api.submission.delete",
+        "summary": "Remove a submission",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Submission was deleted"
+          },
+          "404": {
+            "description": "Submission does not exist"
+          }
+        }
+      }
+    },
+    "/submission/{id}": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Submissions"
+        ],
+        "operationId": "api.submission.get_one",
+        "summary": "Get a single submission",
+        "parameters": [
+          {
+            "$ref": "#/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return submission",
+            "schema": {
+              "$ref": "#/definitions/Submission"
+            }
+          },
+          "404": {
+            "description": "Submission does not exist"
+          }
+        }
+      }
+    },
+    "/media": {
+      "post": {
+        "security": [
+          {
+            "apiKeyHeader": [
+
+            ]
+          }
+        ],
+        "tags": [
+          "Media"
+        ],
+        "description": "Add a new media attachment",
+        "operationId": "api.media.create",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "attachment",
+            "in": "formData",
+            "description": "The file to be uploaded",
+            "type": "file",
+            "required": true
+          },
+          {
+            "name": "media",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Media"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Media attached"
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "id": {
+      "name": "id",
+      "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+      "in": "path",
+      "type": "string",
+      "required": true,
+      "pattern": "^[a-zA-Z0-9-]+$"
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "required": [
+        "email",
+        "pwd"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 20,
+          "readOnly": true
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "pwd": {
+          "type": "string"
+        },
+        "api_key": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        }
+      }
+    },
+    "Otoken": {
+      "type": "object",
+      "required": [
+        "user_id",
+        "project_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "owned_by"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Unique project ID"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "owned_by": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        }
+      }
+    },
+    "Media": {
+      "type": "object",
+      "required": [
+        "id",
+        "path"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Uniqe media ID"
+        },
+        "source_id": {
+          "type": "string",
+          "description": "linking to a task or a submission"
+        },
+        "path": {
+          "type": "string",
+          "description": "location on filesystem"
+        }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "required": [
+        "project_id",
+        "sequence",
+        "title",
+        "content"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Unique task ID"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "sequence": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time",
+          "example": "2015-07-07T15:49:51.230+02:00",
+          "readOnly": true
+        }
+      }
+    },
+    "Submission": {
+      "type": "object",
+      "required": [
+        "task_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "content": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

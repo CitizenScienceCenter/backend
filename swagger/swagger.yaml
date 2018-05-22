@@ -350,6 +350,7 @@ paths:
     post:
       security:
         - apiKeyHeader: []
+      tags: [Media]
       description: "Add a new media attachment"
       operationId: "api.media.create"
       consumes:

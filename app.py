@@ -19,7 +19,7 @@ db_session = None
 logging.basicConfig(level=logging.INFO)
 app = connexion.FlaskApp(__name__)
 app = connexion.App(__name__, specification_dir=config.SWAGGER_DIR)
-db_session = orm_handler.init_db(persist=False)
+db_session = orm_handler.init_db(persist=True)
 app.add_api('swagger.yaml', resolver=RestyResolver('api'))
 
 application = app.app
