@@ -210,16 +210,53 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      operationId: api.project.put
-      summary: Post a project
+      operationId: api.task.create
+      summary: Post a task
       parameters:
         - $ref: '#/parameters/id'
         - name: project
           in: body
           schema:
-            $ref: '#/definitions/Project'
+            $ref: '#/definitions/Task'
+      responses:
+        200:
+          description: Task created
+          schema:
+            $ref: '#/definitions/Task'
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      operationId: api.task.put
+      summary: Modify/Create a task
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: project
+          in: body
+          schema:
+            $ref: '#/definitions/Task'
+      responses:
+        200:
+          description: Task modified
+        201:
+          description: New task created
+    delete:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      operationId: api.task.delete
+      summary: Remove a task
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        204:
+          description: Task was deleted
+        404:
+          description: Task does not exist
   /tasks/{id}:
     get:
+      security:
+        - apiKeyHeader: []
       tags: [Tasks]
       operationId: api.task.get_one
       summary: Get a single task
@@ -232,6 +269,104 @@ paths:
             $ref: '#/definitions/Task'
         404:
           description: Task does not exist
+  /submissions:
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Submissions]
+      operationId: api.submission.get
+      summary: Get a single submission
+      responses:
+        200:
+          description: List of tasks
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Submission'
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Submissions]
+      operationId: api.submission.create
+      summary: Post a submission
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: project
+          in: body
+          schema:
+            $ref: '#/definitions/Submission'
+      responses:
+        200:
+          description: Submission created
+          schema:
+            $ref: '#/definitions/Submission'
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Submissions]
+      operationId: api.submission.put
+      summary: Modify/Create a submission
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: project
+          in: body
+          schema:
+            $ref: '#/definitions/Submission'
+      responses:
+        200:
+          description: Submission modified
+        201:
+          description: New submission created
+    delete:
+      security:
+        - apiKeyHeader: []
+      tags: [Submissions]
+      operationId: api.submission.delete
+      summary: Remove a submission
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        204:
+          description: Submission was deleted
+        404:
+          description: Submission does not exist
+  /submission/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Submissions]
+      operationId: api.submission.get_one
+      summary: Get a single submission
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return submission
+          schema:
+            $ref: '#/definitions/Submission'
+        404:
+          description: Submission does not exist
+  /media:
+    post:
+      security:
+        - apiKeyHeader: []
+      description: "Add a new media attachment"
+      operationId: "api.media.create"
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: attachment
+        in: formData
+        description: The file to be uploaded
+        type: file
+        required: true
+      - name: media
+        in: body
+        schema:
+          $ref: '#/definitions/Media'
+      responses:
+        200:
+          description: Media attached
 parameters:
   id:
     name: id
@@ -334,9 +469,13 @@ definitions:
     properties:
       id:
         type: string
+        description: Uniqe media ID
+      source_id:
+        type: string
         description: linking to a task or a submission
       path:
         type: string
+        description: location on filesystem
   Task:
     type: object
     required:
@@ -369,3 +508,17 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
+  Submission:
+    type: object
+    required:
+      - task_id
+    properties:
+      id:
+        type: string
+        readOnly: true
+      task_id:
+        type: string
+      user_id:
+        type: string
+      content:
+        type: object

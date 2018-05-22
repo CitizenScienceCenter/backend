@@ -25,9 +25,21 @@ def create(task):
     return NoContent, 201
 
 @access_checks.ensure_key
+def put(task_id, task):
+    t = db_session.query(Task).filter(Task.id == task_id).one_or_none()
+    if t is not None:
+        logging.info('Updating task %s..', task_id)
+        p.update(**project)
+    else:
+        logging.info('Creating task %s..', task_id)
+        db_session.add(Task(**task))
+    db_session.commit()
+    return NoContent, (200 if p is not None else 201)
+
+@access_checks.ensure_key
 def delete(task_id):
-    project = db_session.query(Task).filter(Task.id == task_id).one_or_none()
-    if project is not None:
+    task = db_session.query(Task).filter(Task.id == task_id).one_or_none()
+    if task is not None:
         logging.info('Deleting task %s..', project_id)
         db_session.query(Task).filter(Task.id == task_id).delete()
         db_session.commit()

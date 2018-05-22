@@ -5,5 +5,6 @@ import db.orm_handler as orm
 
 class Media(orm.Base):
     __tablename__ = 'media'
+    source_id = Column(String(200), nullable=False)
     path = Column(String(400))
     
