@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
-from flask import session
+from flask import session, request
 from db import orm_handler, User
 from decorators import access_checks
 import json
@@ -43,6 +43,7 @@ def register(user):
     return u.dump(), 201
 
 def login(user):
+    logging.info(request)
     q = db_session.query(User).filter(User.email == user['email']).one_or_none()
     logging.info(q)
     if q:

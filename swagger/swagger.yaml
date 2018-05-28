@@ -20,7 +20,10 @@ securityDefinitions:
     x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
+host: 0.0.0.0:8080
 basePath: /api/v1
+schemes:
+  - http
 paths:
   /users:
     get:
@@ -92,6 +95,7 @@ paths:
       parameters:
         - name: user
           in: body
+          required: true
           schema:
             $ref: '#/definitions/User'
       responses:
@@ -460,7 +464,7 @@ definitions:
     required:
       - name
       - description
-      - owned_by
+      - platform
     properties:
       id:
         type: string
@@ -470,6 +474,12 @@ definitions:
         type: string
       description:
         type: string
+      platform:
+        type: string
+        enum:
+          - Desktop
+          - Mobile
+          - Both
       owned_by:
         type: string
       created_at:
