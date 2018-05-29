@@ -29,12 +29,11 @@ paths:
     get:
       tags: [Users]
       x-swagger-router-controller: api.user
-      operationId: get_users
+      operationId: get
       parameters:
         - name: search_term
           in: query
           type: string
-          pattern: "^[a-zA-Z0-9]*$"
         - name: limit
           in: query
           type: integer
@@ -111,7 +110,7 @@ paths:
          - apiKeyHeader: []
       tags: [Users]
       x-swagger-router-controller: api.user
-      operationId: get
+      operationId: get_one
       summary: Get all users (or those matching an ID)
       parameters:
         - $ref: '#/parameters/id' 

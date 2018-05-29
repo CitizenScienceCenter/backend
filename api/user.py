@@ -11,13 +11,14 @@ import json
 
 db_session = orm_handler.init_db()
 
-def get_users(limit=20, search_term=None):
+def get(limit=20, search_term=None):
     q = db_session.query(User)
+    print(search_term)
     if search_term:
-        q = q.filter(User.username == search_term)
-    return [q.dump() for u in q][:limit]
+        q = q.filter(User.api_key.like(search_term) | User.username.like(search_term) | User.email.like(search_term))
+    return [u.dump() for u in q][:limit]
 
-def get(user_id):
+def get_one(user_id):
     user = db_session.query(User).filter(User.user_id == user_id).one_or_none()
     return user.dump() if user is not None else ('Not found', 404)
 
