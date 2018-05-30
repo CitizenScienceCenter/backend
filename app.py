@@ -3,7 +3,6 @@ import datetime
 import logging
 import uuid
 import configparser
-from envparse import env
 import connexion
 from connexion import NoContent
 from connexion.resolver import RestyResolver
