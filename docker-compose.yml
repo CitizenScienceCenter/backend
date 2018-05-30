@@ -1,0 +1,19 @@
+version: '2.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: tester
+      POSTGRES_USER: pybossa
+      POSTGRES_DB: cs
+  cccs-connexion:
+    build: .
+    command: python3 app.py
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db

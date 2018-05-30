@@ -4,7 +4,7 @@ from functools import wraps
 
 from db import orm_handler, User
 
-db_session = orm_handler.init_db()
+db_session = orm_handler.db_session
 
 def ensure_key(func):
     @wraps(func)

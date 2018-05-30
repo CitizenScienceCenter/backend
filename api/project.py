@@ -6,7 +6,7 @@ from decorators import access_checks
 from flask import request
 
 
-db_session = orm_handler.init_db()
+db_session = orm_handler.db_session
 
 def get(limit=20, search_term=None):
     q = db_session.query(Project)
@@ -15,8 +15,8 @@ def get(limit=20, search_term=None):
     return [p.dump() for p in q][:limit]
 
 
-def get_one(project_id=None):
-    project = db_session.query(Project).filter(Project.id == project_id).one_or_none()
+def get_one(id=None):
+    project = db_session.query(Project).filter(Project.id == id).one_or_none()
     return project.dump() if project is not None else ('Not found', 404)
 
 @access_checks.ensure_key

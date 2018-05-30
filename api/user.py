@@ -9,7 +9,7 @@ from db import orm_handler, User
 from decorators import access_checks
 import json
 
-db_session = orm_handler.init_db()
+db_session = orm_handler.db_session
 
 def get(limit=20, search_term=None):
     q = db_session.query(User)
@@ -18,8 +18,8 @@ def get(limit=20, search_term=None):
         q = q.filter(User.api_key.like(search_term) | User.username.like(search_term) | User.email.like(search_term))
     return [u.dump() for u in q][:limit]
 
-def get_one(user_id):
-    user = db_session.query(User).filter(User.user_id == user_id).one_or_none()
+def get_one(id):
+    user = db_session.query(User).filter(User.user_id == id).one_or_none()
     return user.dump() if user is not None else ('Not found', 404)
 
 def auth(user):

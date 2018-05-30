@@ -8,10 +8,9 @@ from flask import session, request
 from db import orm_handler, OToken
 from decorators import access_checks
 
-db_session = orm_handler.init_db()
+db_session = orm_handler.db_session
 
 def generate(token):
-    # TODO handle if a token already exists and return if it does
     o_token = OToken(**token)
     p = db_session.query(OToken).filter(OToken.user_id == o_token.user_id and OToken.project_id == o_token.project_id).one_or_none()
     if p is None:

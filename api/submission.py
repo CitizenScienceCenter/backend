@@ -4,7 +4,7 @@ from db import orm_handler, Submission, utils
 from decorators import access_checks
 from flask import request
 
-db_session = orm_handler.init_db()
+db_session = orm_handler.db_session
 
 def get(limit=20, search_term=None):
     q = db_session.query(Submission)
@@ -13,8 +13,8 @@ def get(limit=20, search_term=None):
     return [p.dump() for p in q][:limit]
 
 
-def get_one(project_id=None):
-    submission = db_session.query(Submission).filter(Submission.id == submission_id).one_or_none()
+def get_one(id=None):
+    submission = db_session.query(Submission).filter(Submission.id == id).one_or_none()
     return submission.dump() if submission is not None else ('Not found', 404)
 
 @access_checks.ensure_key

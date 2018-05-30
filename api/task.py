@@ -3,7 +3,7 @@ from connexion import NoContent
 from db import orm_handler, Task
 from decorators import access_checks
 
-db_session = orm_handler.init_db()
+db_session = orm_handler.db_session
 
 def get(limit=20, search_term=None):
     q = db_session.query(Task)
@@ -12,8 +12,8 @@ def get(limit=20, search_term=None):
     return [p.dump() for p in q][:limit]
 
 
-def get_one(project_id=None):
-    task = db_session.query(Task).filter(Task.id == task_id).one_or_none()
+def get_one(id=None):
+    task = db_session.query(Task).filter(Task.id == id).one_or_none()
     return task.dump() if project is not None else ('Not found', 404)
 
 @access_checks.ensure_key

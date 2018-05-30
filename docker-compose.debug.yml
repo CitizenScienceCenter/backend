@@ -1,0 +1,10 @@
+version: '2.1'
+
+services:
+  cccs-connexion:
+    image: cccs-connexion
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+        - 8080:8080
