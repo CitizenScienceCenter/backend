@@ -7,13 +7,18 @@ def _get_date():
     return datetime.datetime.now()
 
 class CSBase():
-    id = Column(String(100), default=uuid.uuid4(), primary_key=True)
+    id = Column(String(100), default=uuid.uuid4, primary_key=True)
     created_at = Column(DateTime(), default=_get_date)
     updated_at = Column(DateTime(), onupdate=_get_date)
+
+    def __init__(self):
+        self.id = uuid.uuid4()
 
     def dump(self):
         return dict([(k, v) for k, v in vars(self).items() if not k.startswith('_')])
     
+
+
     @staticmethod
     def insert(mapper, connection, target):
         target.created_at = _get_date

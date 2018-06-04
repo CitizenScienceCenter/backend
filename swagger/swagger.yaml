@@ -206,6 +206,25 @@ paths:
           description: Project was deleted
         404:
           description: Project does not exist
+  /projects/{id}/tasks:
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Projects]
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 100
+      x-swagger-router-controller: api.task
+      operationId: project_tasks
+      responses:
+        200:
+          description: Project tasks
+        404:
+          description: Project does not exist
   /tasks:
     get:
       security:
@@ -227,18 +246,53 @@ paths:
       tags: [Tasks]
       x-swagger-router-controller: api.task
       operationId: create
-      summary: Post a task
+      summary: Post an array of tasks
       parameters:
-        - $ref: '#/parameters/id'
-        - name: project
+        - name: tasks
           in: body
           schema:
-            $ref: '#/definitions/Task'
+            type: array
+            items:
+              $ref: '#/definitions/Task'
       responses:
         200:
           description: Task created
           schema:
             $ref: '#/definitions/Task'
+    delete:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: delete
+      summary: Delete an array of tasks
+      parameters:
+        - name: tasks
+          in: body
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+      responses:
+        204:
+          description: Tasks were deleted
+  /tasks/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: get_one
+      summary: Get a single task
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return task
+          schema:
+            $ref: '#/definitions/Task'
+        404:
+          description: Task does not exist
     put:
       security:
         - apiKeyHeader: []
@@ -262,32 +316,13 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: delete
-      summary: Remove a task
+      operationId: delete_one
+      summary: Delete a single tasks
       parameters:
         - $ref: '#/parameters/id'
       responses:
         204:
           description: Task was deleted
-        404:
-          description: Task does not exist
-  /tasks/{id}:
-    get:
-      security:
-        - apiKeyHeader: []
-      tags: [Tasks]
-      x-swagger-router-controller: api.task
-      operationId: get_one
-      summary: Get a single task
-      parameters:
-        - $ref: '#/parameters/id'
-      responses:
-        200:
-          description: Return task
-          schema:
-            $ref: '#/definitions/Task'
-        404:
-          description: Task does not exist
   /submissions:
     get:
       security:
@@ -515,6 +550,7 @@ definitions:
       - sequence
       - title
       - content
+      - required
     properties:
       id:
         type: string
@@ -523,11 +559,13 @@ definitions:
       project_id:
         type: string
       sequence:
-        type: string
+        type: integer
       content:
-        type: string
+        type: object
       title:
         type: string
+      required:
+        type: boolean
       created_at:
         type: string
         format: date-time
