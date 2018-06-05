@@ -272,7 +272,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Task'
+              type: string
       responses:
         204:
           description: Tasks were deleted

@@ -46,15 +46,10 @@ def put(task_id, task):
 
 @access_checks.ensure_key
 def delete(tasks):
-    for task in tasks:
-        task = db_session.query(Task).filter(Task.id == task_id).one_or_none()
-        if task is not None:
-            logging.info('Deleting task %s..', project_id)
-            db_session.query(Task).filter(Task.id == task_id).delete()
-            db_session.commit()
-            return {msg: 'Deleted'}, 200
-        else:
-            return NoContent, 404
+    print('deleting {} tasks'.format(len(tasks)))
+    print(tasks)
+    db_session.query(Task).filter(Task.id.in_(tasks)).delete(synchronize_session='fetch')
+    return NoContent, 200
 
 @access_checks.ensure_key
 def delete_one(task_id):
