@@ -6,11 +6,17 @@ Current implementation holds a basic implementation with an API inspired by that
 
 ## Running
 
+### Locally
+
 * `virtualenv env`
 * `source env/bin/activate`
 * `pip install -r requirements.txt`
 * Set connection settings and others in `config.py`
 * `python app.py`
+
+### Docker (with Docker Compose)
+
+* `docker compose up`
 
 ## Generate SDKs
 

@@ -49,6 +49,7 @@ def delete(tasks):
     print('deleting {} tasks'.format(len(tasks)))
     print(tasks)
     db_session.query(Task).filter(Task.id.in_(tasks)).delete(synchronize_session='fetch')
+    db_session.commit()
     return NoContent, 200
 
 @access_checks.ensure_key
