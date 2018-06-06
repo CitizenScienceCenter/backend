@@ -12,7 +12,7 @@ services:
     build: .
     environment:
       - CC_ENV=./config/docker.py
-    command: python3 app.py
+    command: python3 -m app
     volumes:
       - .:/code
     ports:

@@ -1,7 +1,10 @@
 import connexion
+import logging
+import os
 from connexion import NoContent
 from db import orm_handler, Media
 from decorators import access_checks
+from werkzeug.utils import secure_filename
 
 db_session = orm_handler.db_session
 
@@ -17,11 +20,14 @@ def get_one(id=None):
     return submission.dump() if submission is not None else ('Not found', 404)
 
 @access_checks.ensure_key
-def create(media):
+def upload(id, attachment):
     logging.info('Creating Media ')
-    attachment = connexion.request.files['attachment']
-    # TODO save file here
-    db_session.add(Media(**media))
+    f = connexion.request.files['attachment']
+    filename = secure_filename(f.filename)
+    path = os.path.join('./static/uploads/', '{}_{}'.format(id, filename))
+    f.save(path)
+    m = Media(id, path)
+    db_session.add(m)
     db_session.commit()
     return NoContent, 201
 
