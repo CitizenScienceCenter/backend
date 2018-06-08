@@ -35,7 +35,13 @@ def client():
     with app.app.test_client() as c:
         yield c
 
-def test_swagger_ui(client):
+def test_register(client):
+    lg = client.post('/api/v1/users/login', json={
+        'email': app.app.config['TEST_USER'], 'pwd': app.app.config['TEST_PWD']
+    })
+    assert lg.status_code == 200
+
+def test_login(client):
     lg = client.post('/api/v1/users/login', json={
         'email': app.app.config['TEST_USER'], 'pwd': app.app.config['TEST_PWD']
     })
