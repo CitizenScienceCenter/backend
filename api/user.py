@@ -39,9 +39,13 @@ def register(user):
     user['api_key'] = uuid.uuid4()
     user['pwd'] = pbkdf2_sha256.encrypt(user['pwd'], rounds=200000, salt_size=16)
     u = User(**user)
-    db_session.add(u)
-    db_session.commit()
-    return u.dump(), 201
+    try:
+        db_session.add(u)
+        db_session.commit()
+        return u.dump(), 201
+    except:
+        logging.error('User already registered or unrecoverable error occurred')
+        return NoContent, 201
 
 def login(user):
     logging.info(request)

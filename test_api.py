@@ -36,10 +36,10 @@ def client():
         yield c
 
 def test_register(client):
-    lg = client.post('/api/v1/users/login', json={
+    lg = client.post('/api/v1/users/register', json={
         'email': app.app.config['TEST_USER'], 'pwd': app.app.config['TEST_PWD']
     })
-    assert lg.status_code == 200
+    assert lg.status_code == 201
 
 def test_login(client):
     lg = client.post('/api/v1/users/login', json={
