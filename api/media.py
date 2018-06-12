@@ -9,7 +9,7 @@ from flask import send_file
 
 db_session = orm_handler.db_session
 
-def get(limit, search_term=None):
+def get(limit=20, search_term=None):
     q = db_session.query(Media)
     if search_term:
         q = q.filter(Media.id.match(search_term, postgresql_regconfig='english') | Media.path.match(search_term, postgresql_regconfig='english'))
@@ -18,7 +18,8 @@ def get(limit, search_term=None):
 
 def get_one(id=None):
     m = db_session.query(Media).filter(Media.id == id).one_or_none()
-    return send_file(m['path']) if m is not None else ('Not found', 404)
+    print(m)
+    return send_file(m.path) if m is not None else ('Not found', 404)
 
 @access_checks.ensure_key
 def upload(id, attachment):
