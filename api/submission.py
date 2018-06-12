@@ -9,7 +9,7 @@ db_session = orm_handler.db_session
 def get(limit=20, search_term=None):
     q = db_session.query(Submission)
     if search_term:
-        q = q.filter(Submission.name == search_term)
+        q = q.filter(Submission.name.match(search_term, postgresql_regconfig='english'))
     return [p.dump() for p in q][:limit]
 
 

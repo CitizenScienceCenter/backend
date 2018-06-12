@@ -15,7 +15,7 @@ def get(limit=20, search_term=None):
     q = db_session.query(User)
     print(search_term)
     if search_term:
-        q = q.query(User).filter(User.email.match(search_term, postgresql_regconfig='english') | User.api_key.match(search_term, postgresql_regconfig='english') | User.id.match(search_term, postgresql_regconfig='english') | User.username.match(search_term, postgresql_regconfig='english'))
+        q = q.filter(User.email.match(search_term, postgresql_regconfig='english') | User.api_key.match(search_term, postgresql_regconfig='english') | User.id.match(search_term, postgresql_regconfig='english') | User.username.match(search_term, postgresql_regconfig='english'))
     return [u.dump() for u in q][:limit]
 
 def get_one(id):

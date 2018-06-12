@@ -11,7 +11,7 @@ db_session = orm_handler.db_session
 def get(limit=20, search_term=None):
     q = db_session.query(Project)
     if search_term:
-        q = q.filter(Project.name == search_term)
+        q = q.filter(Project.name.match(search_term, postgresql_regconfig='english') | Project.description.match(search_term, postgresql_regconfig='english'))
     return [p.dump() for p in q][:limit]
 
 
