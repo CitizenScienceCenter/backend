@@ -15,11 +15,12 @@ def get(limit=20, search_term=None):
     q = db_session.query(User)
     print(search_term)
     if search_term:
-        q = q.filter(User.api_key.like(search_term) | User.username.like(search_term) | User.email.like(search_term))
+        q = q.query(User).filter(User.email.match(search_term, postgresql_regconfig='english') | User.api_key.match(search_term, postgresql_regconfig='english') | User.id.match(search_term, postgresql_regconfig='english') | User.username.match(search_term, postgresql_regconfig='english'))
     return [u.dump() for u in q][:limit]
 
 def get_one(id):
-    user = db_session.query(User).filter(User.user_id == id).one_or_none()
+    # user = db_session.query(User).filter(User.email.match(id, postgresql_regconfig='english') | User.api_key.match(id, postgresql_regconfig='english') | User.id.match(id, postgresql_regconfig='english') | User.username.match(id, postgresql_regconfig='english')).one_or_none()
+    user = db_session.query(User).filter(User.id == id).one_or_none()
     return user.dump() if user is not None else ('Not found', 404)
 
 def auth(user):
