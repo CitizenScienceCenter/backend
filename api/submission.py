@@ -42,10 +42,10 @@ def put(submission_id, submission):
 
 @access_checks.ensure_key
 def delete(submission_id):
-    project = db_session.query(submission).filter(submission.id == submission_id).one_or_none()
+    project = db_session.query(Submission).filter(submission.id == submission_id).one_or_none()
     if project is not None:
         logging.info('Deleting Submission %s..', project_id)
-        db_session.query(Submission).filter(submission.id == submission_id).delete()
+        db_session.query(Submission).filter(Submission.id == submission_id).delete()
         db_session.commit()
         return {msg: 'Deleted'}, 200
     else:

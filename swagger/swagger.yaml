@@ -427,6 +427,37 @@ paths:
       responses:
         200:
           description: Media attached
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      description: "Get a list of media"
+      x-swagger-router-controller: api.media
+      operationId: get
+      responses:
+        200:
+          description: List of media
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Media'
+  /media/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      x-swagger-router-controller: api.media
+      operationId: get_one
+      summary: Get a single file
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return Media
+          schema:
+            type: file
+        404:
+          description: Media does not exist
 parameters:
   id:
     name: id
