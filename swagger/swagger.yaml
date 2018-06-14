@@ -458,6 +458,20 @@ paths:
             type: file
         404:
           description: Media does not exist
+    delete:
+      security:
+         - apiKeyHeader: []
+      tags: [Media]  
+      x-swagger-router-controller: api.media
+      operationId: delete
+      summary: Delete a single Media file
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Media deleted
+        404:
+          description: Media does not exist
 parameters:
   id:
     name: id

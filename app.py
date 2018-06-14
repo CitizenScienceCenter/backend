@@ -13,7 +13,7 @@ from flask_cors import CORS
 from db import orm_handler
 
 logging.basicConfig(level=logging.INFO)
-app = connexion.FlaskApp(__name__)
+app = connexion.FlaskApp(__name__, static_url_path='static/')
 app = connexion.App(__name__, specification_dir='swagger/')
 application = app.app
 application.config.from_envvar('CC_ENV')

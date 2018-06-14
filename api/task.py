@@ -15,7 +15,7 @@ def get(limit=20, search_term=None):
 
 def get_one(id=None):
     task = db_session.query(Task).filter(Task.id == id).one_or_none()
-    return task.dump() if project is not None else ('Not found', 404)
+    return task.dump() if task is not None else ('Not found', 404)
 
 @access_checks.ensure_key
 def create(tasks):

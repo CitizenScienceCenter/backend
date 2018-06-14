@@ -6,6 +6,7 @@ from db import orm_handler, Media
 from decorators import access_checks
 from werkzeug.utils import secure_filename
 from flask import send_file
+import fleep
 
 db_session = orm_handler.db_session
 
@@ -28,7 +29,11 @@ def upload(id, attachment):
     filename = secure_filename(f.filename)
     path = os.path.join('./static/uploads/', '{}_{}'.format(id, filename))
     f.save(path)
-    m = Media(id, path)
+    with open(path, "rb") as f:
+        info = fleep.get(f.read(128))
+    print(info.type)
+    name = os.path.basename(path)
+    m = Media(id, path, info.type[0], name)
     db_session.add(m)
     db_session.commit()
     return NoContent, 201
@@ -37,21 +42,22 @@ def upload(id, attachment):
 def put(id, media):
     s = db_session.query(Media).filter(Media.id == id).one_or_none()
     if s is not None:
-        logging.info('Updating Submission %s..', id)
+        logging.info('Updating Media %s..', id)
         s.update(**submission)
     else:
-        logging.info('Creating Submission %s..', id)
+        logging.info('Creating Media %s..', id)
         db_session.add(Media(**media))
     db_session.commit()
     return NoContent, (200 if p is not None else 201)
 
 @access_checks.ensure_key
 def delete(id):
-    project = db_session.query(Media).filter(Media.id == id).one_or_none()
-    if project is not None:
-        logging.info('Deleting Submission %s..', id)
+    media = db_session.query(Media).filter(Media.id == id).one_or_none()
+    if media is not None:
+        logging.info('Deleting Media %s..', id)
+        os.remove(media.path)
         db_session.query(Media).filter(Media.id == id).delete()
         db_session.commit()
-        return {msg: 'Deleted'}, 200
+        return media.dump(), 200
     else:
         return NoContent, 404

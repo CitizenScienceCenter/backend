@@ -8,7 +8,9 @@ class Media(orm.Base):
     source_id = Column(String(200), nullable=False)
     path = Column(String(400))
 
-    def __init__(self, source_id, path):
+    def __init__(self, source_id, path, name, f_type):
         self.source_id = source_id
         self.path = path
+        self.name = name
+        self.type = f_type
     
