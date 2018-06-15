@@ -27,7 +27,8 @@ def create(project):
     p = Project(**project)
     db_session.add(p)
     db_session.commit()
-    return p.dump(), 201
+    print(p.dump())
+    return NoContent, 201
 
 @access_checks.ensure_key
 def put(project_id, project):

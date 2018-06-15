@@ -458,6 +458,25 @@ paths:
             type: file
         404:
           description: Media does not exist
+    /media/source/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      x-swagger-router-controller: api.media
+      operationId: get_for_source
+      summary: Query media for a specific task or project
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return Media
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Media'
+        404:
+          description: Media does not exist
     delete:
       security:
          - apiKeyHeader: []
@@ -587,6 +606,10 @@ definitions:
       path:
         type: string
         description: location on filesystem
+      name: 
+        type: string
+      filetype:
+        type: string
   Task:
     type: object
     required:

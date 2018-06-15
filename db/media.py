@@ -6,11 +6,13 @@ import db.orm_handler as orm
 class Media(orm.Base):
     __tablename__ = 'media'
     source_id = Column(String(200), nullable=False)
-    path = Column(String(400))
+    path = Column(String(800))
+    name = Column(String(400))
+    filetype = Column(String(400))
 
     def __init__(self, source_id, path, name, f_type):
         self.source_id = source_id
         self.path = path
         self.name = name
-        self.type = f_type
+        self.filetype = f_type
     
