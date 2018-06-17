@@ -11,14 +11,14 @@ import json
 
 db_session = orm_handler.db_session
 
-def get(limit=20, search_term=None):
+def get_users(limit=20, search_term=None):
     q = db_session.query(User)
     print(search_term)
     if search_term:
         q = q.filter(User.email.match(search_term, postgresql_regconfig='english') | User.api_key.match(search_term, postgresql_regconfig='english') | User.id.match(search_term, postgresql_regconfig='english') | User.username.match(search_term, postgresql_regconfig='english'))
     return [u.dump() for u in q][:limit]
 
-def get_one(id):
+def get_user(id):
     # user = db_session.query(User).filter(User.email.match(id, postgresql_regconfig='english') | User.api_key.match(id, postgresql_regconfig='english') | User.id.match(id, postgresql_regconfig='english') | User.username.match(id, postgresql_regconfig='english')).one_or_none()
     user = db_session.query(User).filter(User.id == id).one_or_none()
     return user.dump() if user is not None else ('Not found', 404)
@@ -35,7 +35,7 @@ def auth(user):
     else:
         return NoContent, 404    
 
-def register(user):
+def register_user(user):
     logging.info('Creating user ')
     user['api_key'] = uuid.uuid4()
     user['pwd'] = pbkdf2_sha256.encrypt(user['pwd'], rounds=200000, salt_size=16)

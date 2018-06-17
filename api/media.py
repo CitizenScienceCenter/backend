@@ -11,7 +11,7 @@ import fleep
 
 db_session = orm_handler.db_session
 
-def get(limit=20, search_term=None):
+def get_media(limit=20, search_term=None):
     q = db_session.query(Media)
     if search_term:
         q = q.filter(Media.source_id == search_term)
@@ -19,13 +19,14 @@ def get(limit=20, search_term=None):
     return [p.dump() for p in q][:limit]
 
 
-def get_one(id=None):
+def get_medium(id=None):
     m = db_session.query(Media).filter(Media.id == id).one_or_none()
     print(m)
     return send_file(m.path) if m is not None else ('Not found', 404)
 
 def get_for_source(source_id=None, limit=20):
     m = db_session.query(Media).filter(Media.source_id == source_id)
+    print(m.dump())
     return [p.dump() for p in m][:limit]
 
 @access_checks.ensure_key
@@ -46,7 +47,7 @@ def upload(id, attachment):
     return m.dump(), 201
 
 @access_checks.ensure_key
-def put(id, media):
+def put_medium(id, media):
     s = db_session.query(Media).filter(Media.id == id).one_or_none()
     if s is not None:
         logging.info('Updating Media %s..', id)
@@ -58,7 +59,7 @@ def put(id, media):
     return NoContent, (200 if p is not None else 201)
 
 @access_checks.ensure_key
-def delete(id):
+def delete_medium(id):
     media = db_session.query(Media).filter(Media.id == id).one_or_none()
     if media is not None:
         logging.info('Deleting Media %s..', id)

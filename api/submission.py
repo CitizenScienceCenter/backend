@@ -6,19 +6,19 @@ from flask import request
 
 db_session = orm_handler.db_session
 
-def get(limit=20, search_term=None):
+def get_submissions(limit=20, search_term=None):
     q = db_session.query(Submission)
     if search_term:
         q = q.filter(Submission.name.match(search_term, postgresql_regconfig='english'))
     return [p.dump() for p in q][:limit]
 
 
-def get_one(id=None):
+def get_submission(id=None):
     submission = db_session.query(Submission).filter(Submission.id == id).one_or_none()
     return submission.dump() if submission is not None else ('Not found', 404)
 
 @access_checks.ensure_key
-def create(submission):
+def create_submission(submission):
     logging.info('Creating Submission ')
     print(submission)
     s = Submission(**submission)
@@ -29,7 +29,7 @@ def create(submission):
     return s.dump(), 201
 
 @access_checks.ensure_key
-def put(submission_id, submission):
+def put_submission(submission_id, submission):
     s = db_session.query(Submission).filter(Submission.id == submission_id).one_or_none()
     if s is not None:
         logging.info('Updating Submission %s..', submission_id)
@@ -41,7 +41,7 @@ def put(submission_id, submission):
     return NoContent, (200 if p is not None else 201)
 
 @access_checks.ensure_key
-def delete(submission_id):
+def delete_submission(submission_id):
     project = db_session.query(Submission).filter(submission.id == submission_id).one_or_none()
     if project is not None:
         logging.info('Deleting Submission %s..', project_id)

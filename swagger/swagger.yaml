@@ -29,7 +29,7 @@ paths:
     get:
       tags: [Users]
       x-swagger-router-controller: api.user
-      operationId: get
+      operationId: get_users
       parameters:
         - name: search_term
           in: query
@@ -76,7 +76,7 @@ paths:
       tags: [Users]
       summary: Registration end point for a user account
       x-swagger-router-controller: api.user
-      operationId: register
+      operationId: register_user
       parameters:
         - name: user
           in: body
@@ -110,7 +110,7 @@ paths:
          - apiKeyHeader: []
       tags: [Users]
       x-swagger-router-controller: api.user
-      operationId: get_one
+      operationId: get_user
       summary: Get all users (or those matching an ID)
       parameters:
         - $ref: '#/parameters/id' 
@@ -125,7 +125,7 @@ paths:
     get:
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: get
+      operationId: get_projects
       summary: Get all projects
       parameters:
         - name: search_term
@@ -149,7 +149,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: create
+      operationId: create_project
       summary: Post a project
       parameters:
         - name: project
@@ -165,7 +165,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: get_one
+      operationId: get_project
       summary: Get a single project
       parameters:
         - $ref: '#/parameters/id'
@@ -179,7 +179,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: put
+      operationId: put_project
       summary: Modify/Create a project
       parameters:
         - $ref: '#/parameters/id'
@@ -197,7 +197,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: delete
+      operationId: delete_project
       summary: Remove a project
       parameters:
         - $ref: '#/parameters/id'
@@ -231,7 +231,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: get
+      operationId: get_tasks
       summary: Get a list of tasks
       responses:
         200:
@@ -245,7 +245,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: create
+      operationId: create_task
       summary: Post an array of tasks
       parameters:
         - name: tasks
@@ -264,7 +264,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: delete
+      operationId: delete_tasks
       summary: Delete an array of tasks
       parameters:
         - name: tasks
@@ -282,7 +282,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: get_one
+      operationId: get_task
       summary: Get a single task
       parameters:
         - $ref: '#/parameters/id'
@@ -298,7 +298,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: put
+      operationId: put_task
       summary: Modify/Create a task
       parameters:
         - $ref: '#/parameters/id'
@@ -316,7 +316,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: delete_one
+      operationId: delete_task
       summary: Delete a single tasks
       parameters:
         - $ref: '#/parameters/id'
@@ -329,7 +329,7 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: get
+      operationId: get_submissions
       summary: Get a single submission
       responses:
         200:
@@ -343,7 +343,7 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: create
+      operationId: create_submission
       summary: Post a submission
       parameters:
         - $ref: '#/parameters/id'
@@ -361,7 +361,7 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: put
+      operationId: put_submission
       summary: Modify/Create a submission
       parameters:
         - $ref: '#/parameters/id'
@@ -379,7 +379,7 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: delete
+      operationId: delete_submission
       summary: Remove a submission
       parameters:
         - $ref: '#/parameters/id'
@@ -394,7 +394,7 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: get_one
+      operationId: get_submission
       summary: Get a single submission
       parameters:
         - $ref: '#/parameters/id'
@@ -433,7 +433,7 @@ paths:
       tags: [Media]
       description: "Get a list of media"
       x-swagger-router-controller: api.media
-      operationId: get
+      operationId: get_media
       responses:
         200:
           description: List of media
@@ -447,7 +447,7 @@ paths:
         - apiKeyHeader: []
       tags: [Media]
       x-swagger-router-controller: api.media
-      operationId: get_one
+      operationId: get_medium
       summary: Get a single file
       parameters:
         - $ref: '#/parameters/id'
@@ -458,7 +458,7 @@ paths:
             type: file
         404:
           description: Media does not exist
-    /media/source/{id}:
+  /media/source/{id}:
     get:
       security:
         - apiKeyHeader: []
@@ -482,7 +482,7 @@ paths:
          - apiKeyHeader: []
       tags: [Media]  
       x-swagger-router-controller: api.media
-      operationId: delete
+      operationId: delete_medium
       summary: Delete a single Media file
       parameters:
         - $ref: '#/parameters/id'
