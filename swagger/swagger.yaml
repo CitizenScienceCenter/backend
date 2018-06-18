@@ -38,7 +38,7 @@ paths:
           in: query
           type: integer
           minimum: 0
-          default: 100
+          default: 20
       responses:
         200:
           description: Return all users
@@ -131,12 +131,11 @@ paths:
         - name: search_term
           in: query
           type: string
-          pattern: "^[a-zA-Z0-9]*$"
         - name: limit
           in: query
           type: integer
           minimum: 0
-          default: 100
+          default: 20
       responses:
         200:
           description: Return projects
@@ -217,7 +216,7 @@ paths:
           in: query
           type: integer
           minimum: 0
-          default: 100
+          default: 20
       x-swagger-router-controller: api.task
       operationId: project_tasks
       responses:
@@ -233,6 +232,15 @@ paths:
       x-swagger-router-controller: api.task
       operationId: get_tasks
       summary: Get a list of tasks
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
       responses:
         200:
           description: List of tasks
@@ -245,7 +253,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: create_task
+      operationId: create_tasks
       summary: Post an array of tasks
       parameters:
         - name: tasks
@@ -331,6 +339,15 @@ paths:
       x-swagger-router-controller: api.submission
       operationId: get_submissions
       summary: Get a single submission
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
       responses:
         200:
           description: List of tasks
@@ -434,6 +451,15 @@ paths:
       description: "Get a list of media"
       x-swagger-router-controller: api.media
       operationId: get_media
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
       responses:
         200:
           description: List of media

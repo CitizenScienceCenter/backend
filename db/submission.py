@@ -2,11 +2,12 @@ from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, F
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 import db.orm_handler as orm
+from sqlalchemy.dialects.postgresql import UUID
 
 class Submission(orm.Base):
     __tablename__ = 'submissions'
-    task_id = Column(String(100), ForeignKey('tasks.id'))
-    user_id = Column(String(100), ForeignKey('users.id'))
+    task_id = Column(UUID, ForeignKey('tasks.id'))
+    user_id = Column(UUID, ForeignKey('users.id'))
     content = Column(JSON())
 
     def create(self):

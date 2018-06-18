@@ -44,9 +44,10 @@ def register_user(user):
         db_session.add(u)
         db_session.commit()
         return u.dump(), 201
-    except:
+    except Exception as e:
+        print(e)
         logging.error('User already registered or unrecoverable error occurred')
-        return NoContent, 201
+        return NoContent, 400
 
 def login(user):
     logging.info(request)

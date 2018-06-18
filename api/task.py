@@ -18,12 +18,13 @@ def get_task(id=None):
     return task.dump() if task is not None else ('Not found', 404)
 
 @access_checks.ensure_key
-def create_task(tasks):
+def create_tasks(tasks):
     logging.info('Creating tasks for project ')
     for t in tasks:
         task = Task(**t)
         print(task)
         db_session.add(task)
+        print(task.id)
         db_session.commit()
     return NoContent, 201
 

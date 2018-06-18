@@ -27,8 +27,8 @@ def create_project(project):
     p = Project(**project)
     db_session.add(p)
     db_session.commit()
-    print(p.dump())
-    return NoContent, 201
+    print(p.id)
+    return p.dump(), 201
 
 @access_checks.ensure_key
 def put_project(project_id, project):
@@ -44,11 +44,11 @@ def put_project(project_id, project):
     return NoContent, (200 if p is not None else 201)
 
 @access_checks.ensure_key
-def delete_project(project_id):
-    project = db_session.query(Project).filter(Project.id == project_id).one_or_none()
+def delete_project(id):
+    project = db_session.query(Project).filter(Project.id == id).one_or_none()
     if project is not None:
-        logging.info('Deleting project %s..', project_id)
-        db_session.query(Project).filter(Project.id == project_id).delete()
+        logging.info('Deleting project %s..', id)
+        db_session.query(Project).filter(Project.id == id).delete()
         db_session.commit()
         return {msg: 'Deleted'}, 200
     else:

@@ -24,9 +24,8 @@ def get_medium(id=None):
     print(m)
     return send_file(m.path) if m is not None else ('Not found', 404)
 
-def get_for_source(source_id=None, limit=20):
-    m = db_session.query(Media).filter(Media.source_id == source_id)
-    print(m.dump())
+def get_for_source(id=None, limit=20):
+    m = db_session.query(Media).filter(Media.source_id == id)
     return [p.dump() for p in m][:limit]
 
 @access_checks.ensure_key
