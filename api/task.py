@@ -9,7 +9,7 @@ db_session = orm_handler.db_session
 def get_tasks(limit=20, search_term=None):
     q = db_session.query(Task)
     if search_term:
-        q = q.filter(Task.name.match(search_term, postgresql_regconfig='english') | Task.content.match(search_term, postgresql_regconfig='english'))
+        q = q.filter(Task.title.match(search_term, postgresql_regconfig='english') | Task.content.match(search_term, postgresql_regconfig='english'))
     return [t.dump() for t in q][:limit]
 
 
