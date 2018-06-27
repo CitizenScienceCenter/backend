@@ -363,8 +363,7 @@ paths:
       operationId: create_submission
       summary: Post a submission
       parameters:
-        - $ref: '#/parameters/id'
-        - name: project
+        - name: submission
           in: body
           schema:
             $ref: '#/definitions/Submission'
@@ -382,7 +381,7 @@ paths:
       summary: Modify/Create a submission
       parameters:
         - $ref: '#/parameters/id'
-        - name: project
+        - name: submission
           in: body
           schema:
             $ref: '#/definitions/Submission'
@@ -675,6 +674,8 @@ definitions:
     type: object
     required:
       - task_id
+      - user_id
+      - content
     properties:
       id:
         type: string

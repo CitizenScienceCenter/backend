@@ -20,10 +20,10 @@ def get_submission(id=None):
 @access_checks.ensure_key
 def create_submission(submission):
     logging.info('Creating Submission ')
-    print(submission)
     s = Submission(**submission)
-    user = utils.get_user(request, db_session)
-    s.user_id = user.id
+    # user = utils.get_user(request, db_session)
+    # s.user_id = user.id
+    print(s)
     db_session.add(s)
     db_session.commit()
     return s.dump(), 201
@@ -36,9 +36,10 @@ def put_submission(submission_id, submission):
         s.update(**submission)
     else:
         logging.info('Creating Submission %s..', submission_id)
-        db_session.add(Submission(**submission))
+        s = Submission(**submission)
+        db_session.add(s)
     db_session.commit()
-    return NoContent, (200 if p is not None else 201)
+    return s.dump(), (200 if s is not None else 201)
 
 @access_checks.ensure_key
 def delete_submission(submission_id):
