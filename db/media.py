@@ -6,7 +6,7 @@ import db.orm_handler as orm
 
 class Media(orm.Base):
     __tablename__ = 'media'
-    source_id = Column(UUID, nullable=False)
+    source_id = Column(UUID, nullable=True)
     path = Column(String(800))
     name = Column(String(400))
     filetype = Column(String(400))

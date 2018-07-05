@@ -29,7 +29,7 @@ def get_for_source(id=None, limit=20):
     return [p.dump() for p in m][:limit]
 
 @access_checks.ensure_key
-def upload(id, attachment):
+def upload(attachment, id=None):
     logging.info('Creating Media ')
     f = connexion.request.files['attachment']
     filename = secure_filename(f.filename)
@@ -43,6 +43,7 @@ def upload(id, attachment):
     # name = os.path.basename(path)
     db_session.add(m)
     db_session.commit()
+    print(m.id)
     return m.dump(), 201
 
 @access_checks.ensure_key
@@ -50,12 +51,13 @@ def put_medium(id, media):
     s = db_session.query(Media).filter(Media.id == id).one_or_none()
     if s is not None:
         logging.info('Updating Media %s..', id)
-        s.update(**submission)
+        s.update(**media)
     else:
         logging.info('Creating Media %s..', id)
-        db_session.add(Media(**media))
+        s = Media(**media)
+        db_session.add(s)
     db_session.commit()
-    return NoContent, (200 if p is not None else 201)
+    return s.dump(), (200 if s is not None else 201)
 
 @access_checks.ensure_key
 def delete_medium(id):

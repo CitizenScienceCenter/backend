@@ -3,6 +3,7 @@ from connexion import NoContent
 from db import orm_handler, Submission, utils
 from decorators import access_checks
 from flask import request
+import logging
 
 db_session = orm_handler.db_session
 
@@ -23,9 +24,9 @@ def create_submission(submission):
     s = Submission(**submission)
     # user = utils.get_user(request, db_session)
     # s.user_id = user.id
-    print(s)
     db_session.add(s)
     db_session.commit()
+    print(s.id)
     return s.dump(), 201
 
 @access_checks.ensure_key
