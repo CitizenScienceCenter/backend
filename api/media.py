@@ -49,9 +49,12 @@ def upload(attachment, id=None):
 @access_checks.ensure_key
 def put_medium(id, media):
     s = db_session.query(Media).filter(Media.id == id).one_or_none()
+    print(s)
+    del media['id']
     if s is not None:
         logging.info('Updating Media %s..', id)
-        s.update(**media)
+        for k in media.keys():
+            setattr(s, k, media[k])
     else:
         logging.info('Creating Media %s..', id)
         s = Media(**media)

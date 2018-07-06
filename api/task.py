@@ -20,13 +20,16 @@ def get_task(id=None):
 @access_checks.ensure_key
 def create_tasks(tasks):
     logging.info('Creating tasks for project ')
+    saved_tasks = []
     for t in tasks:
         task = Task(**t)
+        task.sequence = int(task.sequence)
         print(task)
         db_session.add(task)
-        print(task.id)
-        db_session.commit()
-    return NoContent, 201
+        saved_tasks.append(task)
+    db_session.commit()
+    print(saved_tasks[0].id)
+    return [t.dump() for t in saved_tasks][:len(saved_tasks)], 201
 
 @access_checks.ensure_key
 def project_tasks(id, limit=20):
