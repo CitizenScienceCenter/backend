@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 import uuid
 from flask import send_file
 import fleep
+from pathlib import Path
 
 db_session = orm_handler.db_session
 
@@ -34,7 +35,8 @@ def upload(attachment, id=None):
     f = connexion.request.files['attachment']
     filename = secure_filename(f.filename)
     uid = uuid.uuid4().hex
-    path = os.path.join('./static/uploads/', uid)
+    ext = Path(f.filename).suffix
+    path = './static/uploads/{}.{}'.format(uid, ext)
     f.save(path)
     with open(path, "rb") as f:
         info = fleep.get(f.read(128))
