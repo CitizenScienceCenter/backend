@@ -36,7 +36,7 @@ def upload(attachment, id=None):
     filename = secure_filename(f.filename)
     uid = uuid.uuid4().hex
     ext = Path(f.filename).suffix
-    path = './static/uploads/{}.{}'.format(uid, ext)
+    path = './static/uploads/{}{}'.format(uid, ext)
     f.save(path)
     with open(path, "rb") as f:
         info = fleep.get(f.read(128))
