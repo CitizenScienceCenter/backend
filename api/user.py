@@ -49,6 +49,13 @@ def register_user(user):
         logging.error('User already registered or unrecoverable error occurred')
         return NoContent, 400
 
+def validate(key):
+    q = db_session.query(User).filter(User.api_key == key).one_or_none()
+    if q:
+        return q.dump(), 201
+    else:
+        return NoContent, 401
+
 def login(user):
     logging.info(request)
     q = db_session.query(User).filter(User.email == user['email']).one_or_none()

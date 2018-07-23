@@ -64,8 +64,12 @@ paths:
     get:
       tags: [Users]
       summary: OAuth2 token info
-      x-swagger-router-controller: decorators.access_checks
-      operationId: ensure_key
+      x-swagger-router-controller: api.user
+      operationId: validate
+      parameters:
+        - name: key
+          in: query
+          type: string
       responses:
         200:
           description: Token info object

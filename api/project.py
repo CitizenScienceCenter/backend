@@ -1,7 +1,8 @@
 import connexion
 import logging
 from connexion import NoContent
-from db import orm_handler, Project, User, utils
+from sqlalchemy.orm import lazyload, joinedload
+from db import orm_handler, Project, User, Submission, Task, utils
 from decorators import access_checks
 from flask import request
 
@@ -48,7 +49,11 @@ def delete_project(id):
     project = db_session.query(Project).filter(Project.id == id).one_or_none()
     if project is not None:
         logging.info('Deleting project %s..', id)
-        db_session.query(Project).filter(Project.id == id).delete()
+        res = db_session.query(Project.tasks.submissions).all()
+        # res = db_session.query(Submission).options(joinedload(Submission.task_id).subqueryload(Task.project_id)).all()
+        for r in res:
+            print(r)
+        # db_session.query(Project).filter(Project.id == id).delete()
         db_session.commit()
         return {msg: 'Deleted'}, 200
     else:

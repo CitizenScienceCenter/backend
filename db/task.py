@@ -11,3 +11,4 @@ class Task(orm.Base):
     title = Column(String(300))
     required = Column(Boolean, default=True)
     content = Column(JSON())
+    submissions = relationship("Submission")
