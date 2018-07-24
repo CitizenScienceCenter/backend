@@ -49,12 +49,10 @@ def delete_project(id):
     project = db_session.query(Project).filter(Project.id == id).one_or_none()
     if project is not None:
         logging.info('Deleting project %s..', id)
-        res = db_session.query(Project.tasks.submissions).all()
-        # res = db_session.query(Submission).options(joinedload(Submission.task_id).subqueryload(Task.project_id)).all()
-        for r in res:
-            print(r)
-        # db_session.query(Project).filter(Project.id == id).delete()
+        db_session.query(Task).filter(Task.project_id == id).delete()
+        db_session.query(Project).filter(Project.id == id).delete()
+        # TODO combine and handle deletion of submissions (export first?)
         db_session.commit()
-        return {msg: 'Deleted'}, 200
+        return {'msg': 'Deleted'}, 200
     else:
-        return NoContent, 404
+        return NoContent, 404   
