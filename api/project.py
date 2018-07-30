@@ -20,6 +20,12 @@ def get_project(id=None):
     project = db_session.query(Project).filter(Project.id == id).one_or_none()
     return project.dump() if project is not None else ('Not found', 404)
 
+def get_stats(id=None):
+    # TODO get no of tasks
+    # TODO get no of submissions
+    # TODO get no of unique contributors
+    return 200, NoContent
+
 @access_checks.ensure_key
 def create_project(project):
     logging.info('Creating project ')
