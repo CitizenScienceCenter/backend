@@ -21,10 +21,18 @@ def get_project(id=None):
     return project.dump() if project is not None else ('Not found', 404)
 
 def get_stats(id=None):
-    # TODO get no of tasks
-    # TODO get no of submissions
-    # TODO get no of unique contributors
-    return 200, NoContent
+    tasks = db_session.query(Task).filter(Task.project_id == id).all()
+    no_tasks = len(tasks)
+    subs = 0
+    cons = []
+    for t in tasks:
+        submissions = db_session.query(Submission).filter(Submission.task_id == t.id).all()
+        subs += len(submissions)
+        for s in submissions:
+            uid = s.user_id
+            if uid not in cons:
+                cons.append(uid)
+    return {'project_id': id, 'task_count': no_tasks, 'submission_count': subs, 'contributor_count': len(cons)}, 200
 
 @access_checks.ensure_key
 def create_project(project):
