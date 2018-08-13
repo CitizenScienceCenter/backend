@@ -1,6 +1,7 @@
 env/
 sdk/*
 static/uploads/*
+pgdata/*
 
 #### joe made this: http://goel.io/joe
 

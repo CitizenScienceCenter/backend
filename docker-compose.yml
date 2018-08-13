@@ -4,6 +4,8 @@ services:
   db:
     image: postgres
     restart: always
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: tester
       POSTGRES_USER: pybossa
