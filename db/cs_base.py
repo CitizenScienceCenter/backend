@@ -14,6 +14,7 @@ class CSBase():
     id = Column(UUID, default=_gen_id, primary_key=True)
     created_at = Column(DateTime(), default=_get_date)
     updated_at = Column(DateTime(), onupdate=_get_date)
+    info = Column(JSON())
 
     def __init__(self):
         self.id = str(uuid.uuid4())

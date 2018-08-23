@@ -10,6 +10,6 @@ class Project(orm.Base):
     description = Column(String(1000))
     platform = Column(String(50), nullable=False, default='Desktop')
     active = Column(Boolean, default=False)
+    comments = Column(Boolean, default=False)
     owned_by = Column(UUID, ForeignKey('users.id'))
     tasks = relationship("Task")
-    # TODO maybe add JSON metadata column
