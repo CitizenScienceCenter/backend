@@ -586,6 +586,87 @@ paths:
           description: Media deleted
         404:
           description: Media does not exist
+  /orgs:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Orgs]
+      description: "Add a new organisation"
+      x-swagger-router-controller: api.orgs
+      operationId: create
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: organisation
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Organisation'
+      responses:
+        200:
+          description: Organisation Created
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Orgs]
+      description: "Get a list of organisations"
+      x-swagger-router-controller: api.orgs
+      operationId: get_orgs
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
+      responses:
+        200:
+          description: List of organisations
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Organisation'
+  /orgs/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Orgs]
+      x-swagger-router-controller: api.orgs
+      operationId: get_org
+      summary: Get a single organisation
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return Organisation
+          schema:
+            $ref: '#/definitions/Organisation'
+        404:
+          description: Organisation does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Orgs]
+      x-swagger-router-controller: api.orgs
+      operationId: put_org
+      summary: Modify an organisation
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: organisation
+          in: body
+          schema:
+            $ref: '#/definitions/Organisation'
+      responses:
+        201:
+          description: Return Organisation
+          schema:
+            $ref: '#/definitions/Organisation' 
+        404:
+          description: Organisation does not exist
 parameters:
   id:
     name: id
@@ -741,6 +822,25 @@ definitions:
         readOnly: true
   Organisation:
     type: object
+    required:
+      - name
+      - description
+      - created_by
+    properties:
+      id: 
+        type: string
+        readOnly: true
+      name:
+        type: string
+      description:
+        type: string
+      url:
+        type: string
+      created_by:
+        type: string
+      api_key:
+        type: string
+        readOnly: true
   Submission:
     type: object
     required:
