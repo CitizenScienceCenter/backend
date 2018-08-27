@@ -1,3 +1,4 @@
+from db.organisation import Organistaion
 from db.otoken import OToken
 from db.project import Project
 from db.submission import Submission

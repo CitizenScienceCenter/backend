@@ -11,6 +11,10 @@ securityDefinitions:
     type: apiKey
     in: header
     name: X-API-KEY
+  anonUser:
+    type: apiKey
+    in: header
+    name: X-ANON
   oauth2:
     type: oauth2
     flow: implicit
@@ -112,6 +116,7 @@ paths:
     get:
       security:
          - apiKeyHeader: []
+         - anonUser: []
       tags: [Users]
       x-swagger-router-controller: api.user
       operationId: get_user
@@ -121,6 +126,23 @@ paths:
       responses:
         200:
           description: Return users
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: User not found
+    put:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Users]
+      x-swagger-router-controller: api.user
+      operationId: update_user
+      summary: Update user details (change password, add details etc)
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        201:
+          description: User updated
           schema:
             $ref: '#/definitions/User'
         404:
@@ -166,6 +188,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       x-swagger-router-controller: api.project
       operationId: get_project
@@ -213,6 +236,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       parameters:
         - $ref: '#/parameters/id'
@@ -227,6 +251,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       parameters:
         - $ref: '#/parameters/id'
@@ -246,6 +271,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
       operationId: get_tasks
@@ -306,6 +332,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
       operationId: get_task
@@ -376,6 +403,7 @@ paths:
     post:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
       operationId: create_submission
@@ -465,6 +493,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Media]
       description: "Get a list of media"
       x-swagger-router-controller: api.media
@@ -489,6 +518,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Media]
       x-swagger-router-controller: api.media
       operationId: get_medium
@@ -526,6 +556,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Media]
       x-swagger-router-controller: api.media
       operationId: get_for_source
@@ -708,6 +739,8 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
+  Organisation:
+    type: object
   Submission:
     type: object
     required:

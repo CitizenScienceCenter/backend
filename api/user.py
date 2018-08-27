@@ -48,6 +48,14 @@ def register_user(user):
         print(e)
         logging.error('User already registered or unrecoverable error occurred')
         return NoContent, 400
+    
+def update_user(id, user):
+    q = db.session.query(User).filter(User.id == id).one_or_none()
+    if q:
+        q.update(User(**user))
+        db_session.commit()
+    else:
+        return NoContent, 404
 
 def validate(key):
     q = db_session.query(User).filter(User.api_key == key).one_or_none()

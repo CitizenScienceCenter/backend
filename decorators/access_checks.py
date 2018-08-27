@@ -10,16 +10,17 @@ def ensure_key(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         print('access check')
-        try:
-            # _, access_token = request.headers['Authorization'].split()
+        if 'X-API-KEY' in request.headers:
             key = request.headers['X-API-KEY']
-        except:
-            key = ''
-        # TODO add check for oauth tokens
-        print(key)
-        user_key = db_session.query(User).filter(User.api_key == key).one_or_none()
-        if user_key is not None:
-            return func(*args, **kwargs)
+            user_key = db_session.query(User).filter(User.api_key == key).one_or_none()
+            if user_key is not None:
+                return func(*args, **kwargs)
+            else:
+                return NoContent, 401
+        elif 'X-ANON' in request.headers:
+            # TODO handle anonymous users (separate table?) and provide limited restrictions
+            key = request.headers['X-ANON']
+            return NoContent, 401
         else:
             return NoContent, 401
     return decorated_function

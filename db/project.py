@@ -11,5 +11,5 @@ class Project(orm.Base):
     platform = Column(String(50), nullable=False, default='Desktop')
     active = Column(Boolean, default=False)
     comments = Column(Boolean, default=False)
-    owned_by = Column(UUID, ForeignKey('users.id'))
+    owned_by = Column(UUID, ForeignKey('orgs.id'))
     tasks = relationship("Task")
