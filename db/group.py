@@ -4,8 +4,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import db.orm_handler as orm
 from sqlalchemy.dialects.postgresql import UUID
 
-class Organistaion(orm.Base):
-    __tablename__ = 'orgs'
+class Group(orm.Base):
+    __tablename__ = 'groups'
     name = Column(String(100), unique=True)
     description = Column(String(1000), unique=True)
     url =Column(String(200))

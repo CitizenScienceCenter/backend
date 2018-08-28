@@ -586,33 +586,33 @@ paths:
           description: Media deleted
         404:
           description: Media does not exist
-  /orgs:
+  /groups:
     post:
       security:
         - apiKeyHeader: []
-      tags: [Orgs]
-      description: "Add a new organisation"
-      x-swagger-router-controller: api.orgs
+      tags: [Groups]
+      description: "Add a new group"
+      x-swagger-router-controller: api.group
       operationId: create
       consumes:
       - multipart/form-data
       parameters:
-      - name: organisation
+      - name: group
         in: body
         required: true
         schema:
-          $ref: '#/definitions/Organisation'
+          $ref: '#/definitions/Group'
       responses:
         200:
-          description: Organisation Created
+          description: Group Created
     get:
       security:
         - apiKeyHeader: []
         - anonUser: []
-      tags: [Orgs]
-      description: "Get a list of organisations"
-      x-swagger-router-controller: api.orgs
-      operationId: get_orgs
+      tags: [Groups]
+      description: "Get a list of group"
+      x-swagger-router-controller: api.group
+      operationId: get_groups
       parameters:
         - name: search_term
           in: query
@@ -624,49 +624,49 @@ paths:
           default: 20
       responses:
         200:
-          description: List of organisations
+          description: List of group
           schema:
             type: array
             items: 
-              $ref: '#/definitions/Organisation'
-  /orgs/{id}:
+              $ref: '#/definitions/Group'
+  /groups/{id}:
     get:
       security:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Orgs]
-      x-swagger-router-controller: api.orgs
-      operationId: get_org
-      summary: Get a single organisation
+      x-swagger-router-controller: api.group
+      operationId: get_group
+      summary: Get a single group
       parameters:
         - $ref: '#/parameters/id'
       responses:
         200:
           description: Return Organisation
           schema:
-            $ref: '#/definitions/Organisation'
+            $ref: '#/definitions/Group'
         404:
-          description: Organisation does not exist
+          description: Group does not exist
     put:
       security:
         - apiKeyHeader: []
       tags: [Orgs]
-      x-swagger-router-controller: api.orgs
-      operationId: put_org
-      summary: Modify an organisation
+      x-swagger-router-controller: api.group
+      operationId: put_group
+      summary: Modify a group
       parameters:
         - $ref: '#/parameters/id'
-        - name: organisation
+        - name: group
           in: body
           schema:
-            $ref: '#/definitions/Organisation'
+            $ref: '#/definitions/Group'
       responses:
         201:
-          description: Return Organisation
+          description: Return Group
           schema:
-            $ref: '#/definitions/Organisation' 
+            $ref: '#/definitions/Group' 
         404:
-          description: Organisation does not exist
+          description: Group does not exist
 parameters:
   id:
     name: id
@@ -820,7 +820,7 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
-  Organisation:
+  Group:
     type: object
     required:
       - name
