@@ -14,10 +14,10 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: implicit
-    authorizationUrl: http://172.23.52.127:8081/oauth/authorize
+    authorizationUrl: http://172.23.52.127:8080/oauth/authorize
     # the token info URL is hardcoded for our mock_tokeninfo.py script
     # you can also pass it as an environment variable TOKENINFO_URL
-    x-tokenInfoUrl: http://172.23.52.127:8081/api/v1/users/validate
+    x-tokenInfoUrl: http://172.23.52.127:8080/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
 host: 172.23.52.127:8080
@@ -112,6 +112,7 @@ paths:
     get:
       security:
          - apiKeyHeader: []
+         - anonUser: []
       tags: [Users]
       x-swagger-router-controller: api.user
       operationId: get_user
@@ -121,6 +122,23 @@ paths:
       responses:
         200:
           description: Return users
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: User not found
+    put:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Users]
+      x-swagger-router-controller: api.user
+      operationId: update_user
+      summary: Update user details (change password, add details etc)
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        201:
+          description: User updated
           schema:
             $ref: '#/definitions/User'
         404:
@@ -166,6 +184,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       x-swagger-router-controller: api.project
       operationId: get_project
@@ -213,6 +232,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       parameters:
         - $ref: '#/parameters/id'
@@ -227,6 +247,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       parameters:
         - $ref: '#/parameters/id'
@@ -246,6 +267,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
       operationId: get_tasks
@@ -306,6 +328,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
       operationId: get_task
@@ -376,6 +399,7 @@ paths:
     post:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
       operationId: create_submission
@@ -465,6 +489,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Media]
       description: "Get a list of media"
       x-swagger-router-controller: api.media
@@ -489,6 +514,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Media]
       x-swagger-router-controller: api.media
       operationId: get_medium
@@ -526,6 +552,7 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Media]
       x-swagger-router-controller: api.media
       operationId: get_for_source
@@ -555,6 +582,87 @@ paths:
           description: Media deleted
         404:
           description: Media does not exist
+  /groups:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Groups]
+      description: "Add a new group"
+      x-swagger-router-controller: api.group
+      operationId: create
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: group
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Group'
+      responses:
+        200:
+          description: Group Created
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Groups]
+      description: "Get a list of group"
+      x-swagger-router-controller: api.group
+      operationId: get_groups
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
+      responses:
+        200:
+          description: List of group
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Group'
+  /groups/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Orgs]
+      x-swagger-router-controller: api.group
+      operationId: get_group
+      summary: Get a single group
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return Organisation
+          schema:
+            $ref: '#/definitions/Group'
+        404:
+          description: Group does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Orgs]
+      x-swagger-router-controller: api.group
+      operationId: put_group
+      summary: Modify a group
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: group
+          in: body
+          schema:
+            $ref: '#/definitions/Group'
+      responses:
+        201:
+          description: Return Group
+          schema:
+            $ref: '#/definitions/Group' 
+        404:
+          description: Group does not exist
 parameters:
   id:
     name: id
@@ -707,6 +815,27 @@ definitions:
         format: date-time
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+  Group:
+    type: object
+    required:
+      - name
+      - description
+      - created_by
+    properties:
+      id: 
+        type: string
+        readOnly: true
+      name:
+        type: string
+      description:
+        type: string
+      url:
+        type: string
+      created_by:
+        type: string
+      api_key:
+        type: string
         readOnly: true
   Submission:
     type: object
