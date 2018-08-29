@@ -675,7 +675,6 @@ definitions:
   User:
     type: object
     required:
-      - email
       - pwd
     properties:
       id:

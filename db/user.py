@@ -16,5 +16,5 @@ class User(orm.Base):
     pwd = Column(String(100))
     api_key = Column(String(100))
     confirmed = Column(Boolean)
-    member_of = relationship('org_user', secondary=groups_users)
+    member_of = relationship('Group', secondary=groups_users)
 

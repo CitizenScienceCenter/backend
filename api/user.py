@@ -43,6 +43,7 @@ def register_user(user):
     try:
         db_session.add(u)
         db_session.commit()
+        print(u.id)
         return u.dump(), 201
     except Exception as e:
         print(e)
