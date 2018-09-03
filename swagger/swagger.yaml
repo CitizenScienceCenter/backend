@@ -140,6 +140,10 @@ paths:
       summary: Update user details (change password, add details etc)
       parameters:
         - $ref: '#/parameters/id'
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
       responses:
         201:
           description: User updated
@@ -678,9 +682,6 @@ parameters:
 definitions:
   User:
     type: object
-    required:
-      - email
-      - pwd
     properties:
       id:
         type: string

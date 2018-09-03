@@ -51,9 +51,11 @@ def register_user(user):
         return NoContent, 400
     
 def update_user(id, user):
-    q = db.session.query(User).filter(User.id == id).one_or_none()
+    q = db_session.query(User).filter(User.id == id).one_or_none()
     if q:
-        q.update(User(**user))
+        for k in user:
+            print(user[k])
+            setattr(q, k, user[k])
         db_session.commit()
     else:
         return NoContent, 404
