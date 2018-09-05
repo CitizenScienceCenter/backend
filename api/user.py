@@ -39,7 +39,8 @@ def register_user(user):
     logging.info('Creating user ')
     user['api_key'] = uuid.uuid4()
     user['pwd'] = pbkdf2_sha256.encrypt(user['pwd'], rounds=200000, salt_size=16)
-    if 'username' in user and len(user['username']):
+    print(user)
+    if ('username' in user and len(user['username']) == 0) or not 'username' in user:
         user['username'] = user['email']
     u = User(**user)
     try:
