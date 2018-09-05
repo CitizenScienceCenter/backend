@@ -39,6 +39,8 @@ def register_user(user):
     logging.info('Creating user ')
     user['api_key'] = uuid.uuid4()
     user['pwd'] = pbkdf2_sha256.encrypt(user['pwd'], rounds=200000, salt_size=16)
+    if 'username' in user and len(user['username']):
+        user['username'] = user['email']
     u = User(**user)
     try:
         db_session.add(u)
@@ -57,6 +59,8 @@ def update_user(id, user):
             print(user[k])
             setattr(q, k, user[k])
         db_session.commit()
+        print(q.id)
+        return q.dump(), 201
     else:
         return NoContent, 404
 
