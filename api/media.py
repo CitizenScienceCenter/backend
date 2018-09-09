@@ -30,7 +30,7 @@ def get_for_source(id=None, limit=20):
     return [p.dump() for p in m][:limit]
 
 @access_checks.ensure_key
-def create_media(media, id=None):
+def create_media(media):
     m = Media(**media)
     # name = os.path.basename(path)
     db_session.add(m)
