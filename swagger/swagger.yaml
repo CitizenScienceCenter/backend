@@ -476,21 +476,14 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Media]
-      description: "Add a new media attachment"
+      description: "The media details (for files already on the server or remotely hosted)"
       x-swagger-router-controller: api.media
-      operationId: upload
-      consumes:
-      - multipart/form-data
+      operationId: create_media
       parameters:
-      - name: attachment
-        in: formData
-        description: The file to be uploaded
-        type: file
-        required: true
-      - name: id
-        in: formData
-        type: string
-        required: false
+      - name: media
+        in: body
+        schema:
+          $ref: '#/definitions/Media'
       responses:
         200:
           description: Media attached
@@ -518,6 +511,29 @@ paths:
             type: array
             items: 
               $ref: '#/definitions/Media'
+  /media/upload:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      description: "Add a new media attachment"
+      x-swagger-router-controller: api.media
+      operationId: upload
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: attachment
+        in: formData
+        description: The file to be uploaded
+        type: file
+        required: true
+      - name: id
+        in: formData
+        type: string
+        required: false
+      responses:
+        200:
+          description: Media attached
   /media/{id}:
     get:
       security:
@@ -696,6 +712,35 @@ definitions:
         type: string
       api_key:
         type: string
+      created_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+  Media:
+    type: object
+    required:
+      - source_id
+      - path
+      - name
+    properties:
+      id:
+        type: string
+        maxLength: 20
+        readOnly: true
+      path:
+        type: string
+        description: Local or remote path
+      name:
+        type: string
+        description: Name of file
       created_at:
         type: string
         format: date-time

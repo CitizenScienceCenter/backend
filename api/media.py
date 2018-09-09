@@ -30,6 +30,15 @@ def get_for_source(id=None, limit=20):
     return [p.dump() for p in m][:limit]
 
 @access_checks.ensure_key
+def create_media(media, id=None):
+    m = Media(**media)
+    # name = os.path.basename(path)
+    db_session.add(m)
+    db_session.commit()
+    print(m.id)
+    return m.dump(), 201
+
+@access_checks.ensure_key
 def upload(attachment, id=None):
     logging.info('Creating Media ')
     f = connexion.request.files['attachment']
