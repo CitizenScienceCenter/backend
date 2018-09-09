@@ -735,12 +735,17 @@ definitions:
         type: string
         maxLength: 20
         readOnly: true
+      source_id:
+        type: string
+        description: The task or project or user it is related to
       path:
         type: string
         description: Local or remote path
       name:
         type: string
         description: Name of file
+      filetype:
+        type: string
       created_at:
         type: string
         format: date-time
@@ -813,24 +818,6 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
-  Media:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-        description: Uniqe media ID
-      source_id:
-        type: string
-        description: linking to a task or a submission
-      path:
-        type: string
-        description: location on filesystem
-      name: 
-        type: string
-      filetype:
-        type: string
   Task:
     type: object
     required:
