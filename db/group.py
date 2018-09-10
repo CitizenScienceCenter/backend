@@ -2,7 +2,7 @@ from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, F
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 import db.orm_handler as orm
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 class Group(orm.Base):
     __tablename__ = 'groups'

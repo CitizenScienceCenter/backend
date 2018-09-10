@@ -1,7 +1,11 @@
 import connexion
 from connexion import NoContent
-from db import orm_handler, Task
+from db import orm_handler, Task, Submission, Media, utils
 from decorators import access_checks
+from sqlalchemy.sql.expression import func
+from sqlalchemy.orm import joinedload
+from flask import request
+import sqlalchemy
 import logging
 
 db_session = orm_handler.db_session
@@ -13,9 +17,21 @@ def get_tasks(limit=20, search_term=None):
     return [t.dump() for t in q][:limit]
 
 
-def get_task(id=None):
+def get_task(id, detail):
     task = db_session.query(Task).filter(Task.id == id).one_or_none()
     return task.dump() if task is not None else ('Not found', 404)
+
+def get_random(id, search):
+    user = utils.get_user(request, db_session)
+    task = db_session.query(Task, Media).outerjoin(Submission, Task.id == Submission.task_id).join(Media, Media.source_id == Task.id).filter((Task.info['SchoolState'].astext == search) | (Task.info['SchoolState'].astext == '')).filter((Submission.id == None) | (Submission.user_id != user.id)).order_by(func.random()).first()
+    if task is None:
+        return NoContent, 404
+    else:
+        ret = {
+            'task': task[0].dump(),
+            'media': task[1].dump()
+        }
+        return ret, 200
 
 @access_checks.ensure_key
 def create_tasks(tasks):

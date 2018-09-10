@@ -271,6 +271,24 @@ paths:
           description: Project tasks
         404:
           description: Project does not exist
+  /projects/{id}/tasks/random:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Projects]
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: search
+          in: query
+          type: string
+      x-swagger-router-controller: api.task
+      operationId: get_random
+      responses:
+        200:
+          description: A single random project task
+        404:
+          description: Project does not exist or task not found
   /tasks:
     get:
       security:

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 import db.orm_handler as orm
 
 class Task(orm.Base):
@@ -11,5 +11,5 @@ class Task(orm.Base):
     title = Column(String(300))
     required = Column(Boolean, default=True)
     allow_multiple = Column(Boolean, default=True)
-    content = Column(JSON())
+    content = Column(JSONB)
     submissions = relationship("Submission")

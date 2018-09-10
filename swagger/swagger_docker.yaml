@@ -20,7 +20,7 @@ securityDefinitions:
     x-tokenInfoUrl: http://172.23.52.127:8080/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
-host: 172.23.52.127:8080
+host: localhost:8080
 basePath: /api/v1
 schemes:
   - http
@@ -267,6 +267,24 @@ paths:
           description: Project tasks
         404:
           description: Project does not exist
+  /projects/{id}/tasks/random:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Projects]
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: search
+          in: query
+          type: string
+      x-swagger-router-controller: api.task
+      operationId: get_random
+      responses:
+        200:
+          description: A single random project task
+        404:
+          description: Project does not exist or task not found
   /tasks:
     get:
       security:
