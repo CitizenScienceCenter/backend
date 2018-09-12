@@ -17,7 +17,7 @@ def get_tasks(limit=20, search_term=None):
     return [t.dump() for t in q][:limit]
 
 
-def get_task(id, detail):
+def get_task(id):
     task = db_session.query(Task).filter(Task.id == id).one_or_none()
     return task.dump() if task is not None else ('Not found', 404)
 
