@@ -17,7 +17,6 @@ def get_tasks(offset=0, search_term=None, limit=20):
     if search_term:
         q = q.filter(Task.title.match(search_term, postgresql_regconfig='english') | Task.content.match(search_term, postgresql_regconfig='english'))
     q = q.limit(limit)
-    print(q.statement.compile(dialect=postgresql.dialect()))
     return [t.dump() for t in q]
 
 
@@ -53,7 +52,8 @@ def create_tasks(tasks):
 
 @access_checks.ensure_key
 def project_tasks(id, limit=20, offset=0):
-    task = db_session.query(Task).filter(Task.project_id == id).offset(offset).limit(limit)
+    print(id, limit, offset)
+    task = db_session.query(Task).filter(Task.project_id == id).offset(offset).limit(limit).all()
     return [p.dump() for p in task]
 
 @access_checks.ensure_key
