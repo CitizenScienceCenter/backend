@@ -20,7 +20,7 @@ securityDefinitions:
     x-tokenInfoUrl: http://172.23.52.127:8080/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
-host: localhost:8080
+host: 172.23.52.127:8080
 basePath: /api/v1
 schemes:
   - http
