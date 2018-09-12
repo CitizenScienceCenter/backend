@@ -7,14 +7,18 @@ from sqlalchemy.orm import joinedload
 from flask import request
 import sqlalchemy
 import logging
+from sqlalchemy.dialects import postgresql
 
 db_session = orm_handler.db_session
 
-def get_tasks(limit=20, search_term=None):
+def get_tasks(offset=0, search_term=None, limit=20):
     q = db_session.query(Task)
+    q = q.offset(offset)
     if search_term:
         q = q.filter(Task.title.match(search_term, postgresql_regconfig='english') | Task.content.match(search_term, postgresql_regconfig='english'))
-    return [t.dump() for t in q][:limit]
+    q = q.limit(limit)
+    print(q.statement.compile(dialect=postgresql.dialect()))
+    return [t.dump() for t in q]
 
 
 def get_task(id):
@@ -48,9 +52,9 @@ def create_tasks(tasks):
     return [t.dump() for t in saved_tasks][:len(saved_tasks)], 201
 
 @access_checks.ensure_key
-def project_tasks(id, limit=20):
-    task = db_session.query(Task).filter(Task.project_id == id)
-    return [p.dump() for p in task][:limit]
+def project_tasks(id, limit=20, offset=0):
+    task = db_session.query(Task).filter(Task.project_id == id).offset(offset).limit(limit)
+    return [p.dump() for p in task]
 
 @access_checks.ensure_key
 def put_task(task_id, task):

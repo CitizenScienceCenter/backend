@@ -259,6 +259,10 @@ paths:
       tags: [Projects]
       parameters:
         - $ref: '#/parameters/id'
+        - name: offset
+          in: query
+          type: string
+          default: 0
         - name: limit
           in: query
           type: integer
@@ -299,6 +303,10 @@ paths:
       operationId: get_tasks
       summary: Get a list of tasks
       parameters:
+        - name: offset
+          in: query
+          type: string
+          default: 0
         - name: search_term
           in: query
           type: string
