@@ -14,13 +14,13 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: implicit
-    authorizationUrl: http://172.23.52.127:8080/oauth/authorize
+    authorizationUrl: http://wenker.citizenscience.ch:8080/oauth/authorize
     # the token info URL is hardcoded for our mock_tokeninfo.py script
     # you can also pass it as an environment variable TOKENINFO_URL
-    x-tokenInfoUrl: http://172.23.52.127:8080/api/v1/users/validate
+    x-tokenInfoUrl: http://wenker.citizenscience.ch:8080/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
-host: 172.23.52.127:8080
+host: wenker.citizenscience.ch:8080
 basePath: /api/v1
 schemes:
   - http

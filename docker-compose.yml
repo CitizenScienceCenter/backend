@@ -19,6 +19,7 @@ services:
     command: python3 -m app
     volumes:
       - .:/code
+      - ~/dev/wenkerbogen-switzerland:/code/static/upload
     ports:
       - "8080:8080"
     depends_on:
