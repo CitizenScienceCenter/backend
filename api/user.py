@@ -4,12 +4,14 @@ import uuid
 from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
-from flask import session, request
-from db import orm_handler, User
+from flask import session, request, current_app
+from db import orm_handler, User, utils
 from decorators import access_checks
-import json
+import json, smtplib, email 
+from itsdangerous import TimestampSigner
 
 db_session = orm_handler.db_session
+ts = TimestampSigner('SUPES_SECRET87')
 
 def get_users(limit=20, search_term=None):
     q = db_session.query(User)
@@ -33,7 +35,33 @@ def auth(user):
         else:
             return NoContent, 401
     else:
-        return NoContent, 404    
+        return NoContent, 404   
+
+def reset(id):
+    tk = ts.sign(id)
+    conf = current_app.config
+    user = utils.get_user(request, db_session)
+    reset = "wenker.citizenscience.ch/reset?token={}".format(tk)
+    message = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format("reset")
+    msg = email.message.EmailMessage()
+    msg.set_content(message)
+    msg['Subject'] = 'Password Reset for Citizen Science Wenker Project'
+    msg['From'] = conf['SMTP_USER']
+    msg['To'] = user.email or None
+    s = smtplib.SMTP(conf['SMTP_ADDR'], conf['SMTP_PORT']]
+    s.login(conf['SMTP_USER'], conf['SMTP_PASS'])
+    s.sendmail(me, [you], msg)
+    s.quit()
+    # TODO send email here
+    return {'token': tk}, 200
+
+
+def verify(token):
+    try:
+        token = ts.unsign(token, 120)
+        return True, 200
+    except Exception:
+        return False, 301
 
 def register_user(user):
     logging.info('Creating user ')

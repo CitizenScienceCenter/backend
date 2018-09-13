@@ -93,6 +93,37 @@ paths:
       responses:
         200:
           description: Created user
+  /users/verify:
+    get:
+      tags: [Users]
+      security:
+        - apiKeyHeader: []
+      x-swagger-router-controller: api.user
+      operationId: verify
+      summary: Verify password reset token
+      parameters:
+        - name: token
+          in: query
+          type: string
+          required: true
+      responses:
+        200:
+          description: Verified
+        401:
+          description: Unauthorised user
+  /users/{id}/reset:
+    get:
+      tags: [Users]
+      security:
+        - apiKeyHeader: []
+      x-swagger-router-controller: api.user
+      operationId: reset
+      summary: Reset user password
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Password reset
   /users/login:
     post:
       tags: [Users]
