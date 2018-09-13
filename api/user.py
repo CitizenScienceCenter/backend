@@ -48,7 +48,7 @@ def reset(id):
     msg['Subject'] = 'Password Reset for Citizen Science Wenker Project'
     msg['From'] = conf['SMTP_USER']
     msg['To'] = user.email or None
-    s = smtplib.SMTP(conf['SMTP_ADDR'], conf['SMTP_PORT']]
+    s = smtplib.SMTP(conf['SMTP_ADDR'], conf['SMTP_PORT'])
     s.login(conf['SMTP_USER'], conf['SMTP_PASS'])
     s.sendmail(me, [you], msg)
     s.quit()
