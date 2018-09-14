@@ -3,6 +3,8 @@ version: '2.1'
 services:
   db:
     image: postgres
+    environment:
+      D_ENV=uzh
     restart: always
     ports:
       - "5432:5432"
@@ -15,8 +17,8 @@ services:
   cccs-connexion:
     build: .
     environment:
-      - CC_ENV=./config/docker.py
-    command: python3 -m app
+      - CC_ENV=./config/${D_ENV}.py
+    command: uwsgi --http :8080 -w app --plugin python -H $PWD/env/
     volumes:
       - .:/code
       - ~/dev/wenkerbogen-switzerland:/code/static/upload

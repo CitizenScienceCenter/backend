@@ -31,4 +31,4 @@ port = application.config['PORT'] or 8080
 debug = application.config['DEBUG'] or False
 
 if __name__ == '__main__':
-    app.run(port=port, debug=debug)
+    app.run(port=port, debug=debug, server='gevent')
