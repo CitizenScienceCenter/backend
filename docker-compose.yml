@@ -18,7 +18,7 @@ services:
     build: .
     environment:
       - CC_ENV=./config/${D_ENV}.py
-    command: uwsgi --http :8080 -w app --plugin python -H $PWD/env/
+    command: gunicorn -b 0.0.0.0:8080 app -w 8 
     volumes:
       - .:/code
       - ~/dev/wenkerbogen-switzerland:/code/static/upload

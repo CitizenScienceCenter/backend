@@ -44,7 +44,7 @@ def reset(email):
     if user:
         tk = ts.sign(user.id)
         print(user)
-        reset = "{}/reset/{}/{}".format(conf['HOST'], tk.decode("utf-8"), user.id)
+        reset = "{}/reset/{}".format(conf['HOST'], tk.decode("utf-8"))
         message = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(reset)
         msg = emaillib.message.EmailMessage()
         msg.set_content(message)

@@ -9,6 +9,7 @@ envparse==0.2.0
 Flask==1.0.2
 Flask-Cors==3.0.4
 fleep==1.0.1
+gunicorn==19.9.0
 idna==2.6
 inflection==0.3.1
 itsdangerous==0.24
@@ -29,4 +30,5 @@ swagger-parser==1.0.1
 swagger-spec-validator==2.1.0
 swagger-tester==0.2.12
 urllib3==1.22
+uWSGI==2.0.17.1
 Werkzeug==0.14.1
