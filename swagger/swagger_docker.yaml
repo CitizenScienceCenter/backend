@@ -99,10 +99,9 @@ paths:
       summary: Reset user password
       parameters:
         - name: email
-          in: body
+          in: query
           required: true
-          schema:
-            type: string
+          type: string
       responses:
         200:
           description: Password reset
@@ -112,7 +111,6 @@ paths:
       operationId: verify_reset
       summary: Verify password reset token
       parameters:
-        - $ref: '#/parameters/id'
         - name: reset
           in: body
           schema:
@@ -120,7 +118,10 @@ paths:
             required:
               - token
               - pwd
+              - id
             properties:
+              id:
+                type: string
               token:
                 type: string
               pwd:
