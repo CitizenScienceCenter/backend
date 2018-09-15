@@ -1,7 +1,8 @@
 from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 import db.orm_handler as orm
+from sqlalchemy.dialects.postgresql import UUID
 
 class Project(orm.Base):
     __tablename__ = 'projects'
@@ -9,5 +10,6 @@ class Project(orm.Base):
     description = Column(String(1000))
     platform = Column(String(50), nullable=False, default='Desktop')
     active = Column(Boolean, default=False)
-    owned_by = Column(String(100), ForeignKey('users.id'))
-    # TODO maybe add JSON metadata column
+    comments = Column(Boolean, default=False)
+    owned_by = Column(UUID, ForeignKey('groups.id'))
+    tasks = relationship("Task")

@@ -5,51 +5,82 @@ from connexion import NoContent
 from db import orm_handler, Media
 from decorators import access_checks
 from werkzeug.utils import secure_filename
+import uuid
+from flask import send_file
+import fleep
+from pathlib import Path
 
 db_session = orm_handler.db_session
 
-def get(limit, search_term=None):
-    q = db_session.query(Submission)
+def get_media(limit=20, search_term=None):
+    q = db_session.query(Media)
     if search_term:
-        q = q.filter(Submission.name == search_term)
+        q = q.filter(Media.source_id == search_term)
+        # | Media.name.match(search_term, postgresql_regconfig='english') | Media.filetype.match(search_term, postgresql_regconfig='english') | Media.path.match(search_term, postgresql_regconfig='english'))
     return [p.dump() for p in q][:limit]
 
 
-def get_one(id=None):
-    submission = db_session.query(Media).filter(Submission.id == id).one_or_none()
-    return submission.dump() if submission is not None else ('Not found', 404)
+def get_medium(id=None):
+    m = db_session.query(Media).filter(Media.id == id).one_or_none()
+    print(m)
+    return send_file(m.path) if m is not None else ('Not found', 404)
+
+def get_for_source(id=None, limit=20):
+    m = db_session.query(Media).filter(Media.source_id == id)
+    return [p.dump() for p in m][:limit]
 
 @access_checks.ensure_key
-def upload(id, attachment):
+def create_media(media):
+    m = Media(**media)
+    # name = os.path.basename(path)
+    db_session.add(m)
+    db_session.commit()
+    print(m.id)
+    return m.dump(), 201
+
+@access_checks.ensure_key
+def upload(attachment, id=None):
     logging.info('Creating Media ')
     f = connexion.request.files['attachment']
     filename = secure_filename(f.filename)
-    path = os.path.join('./static/uploads/', '{}_{}'.format(id, filename))
+    uid = uuid.uuid4().hex
+    ext = Path(f.filename).suffix
+    path = './static/uploads/{}{}'.format(uid, ext)
     f.save(path)
-    m = Media(id, path)
+    with open(path, "rb") as f:
+        info = fleep.get(f.read(128))
+    print(info.type)
+    m = Media(id, path, filename, info.type[0])
+    # name = os.path.basename(path)
     db_session.add(m)
     db_session.commit()
-    return NoContent, 201
+    print(m.id)
+    return m.dump(), 201
 
 @access_checks.ensure_key
-def put(submission_id, submission):
-    s = db_session.query(Submission).filter(Submission.id == submission_id).one_or_none()
+def put_medium(id, media):
+    s = db_session.query(Media).filter(Media.id == id).one_or_none()
+    print(s)
+    del media['id']
     if s is not None:
-        logging.info('Updating Submission %s..', submission_id)
-        s.update(**submission)
+        logging.info('Updating Media %s..', id)
+        for k in media.keys():
+            setattr(s, k, media[k])
     else:
-        logging.info('Creating Submission %s..', submission_id)
-        db_session.add(Submission(**submission))
+        logging.info('Creating Media %s..', id)
+        s = Media(**media)
+        db_session.add(s)
     db_session.commit()
-    return NoContent, (200 if p is not None else 201)
+    return s.dump(), (200 if s is not None else 201)
 
 @access_checks.ensure_key
-def delete(submission_id):
-    project = db_session.query(submission).filter(submission.id == submission_id).one_or_none()
-    if project is not None:
-        logging.info('Deleting Submission %s..', project_id)
-        db_session.query(Submission).filter(submission.id == submission_id).delete()
+def delete_medium(id):
+    media = db_session.query(Media).filter(Media.id == id).one_or_none()
+    if media is not None:
+        logging.info('Deleting Media %s..', id)
+        os.remove(media.path)
+        db_session.query(Media).filter(Media.id == id).delete()
         db_session.commit()
-        return {msg: 'Deleted'}, 200
+        return media.dump(), 200
     else:
         return NoContent, 404

@@ -14,13 +14,13 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: implicit
-    authorizationUrl: http://localhost:8081/oauth/authorize
+    authorizationUrl: http://wenker.citizenscience.ch:8080/oauth/authorize
     # the token info URL is hardcoded for our mock_tokeninfo.py script
     # you can also pass it as an environment variable TOKENINFO_URL
-    x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
+    x-tokenInfoUrl: http://wenker.citizenscience.ch:8080/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
-host: 0.0.0.0:8080
+host: wenker.citizenscience.ch:8080
 basePath: /api/v1
 schemes:
   - http
@@ -28,8 +28,10 @@ paths:
   /users:
     get:
       tags: [Users]
+      security:
+        - oauth2: []
       x-swagger-router-controller: api.user
-      operationId: get
+      operationId: get_users
       parameters:
         - name: search_term
           in: query
@@ -38,7 +40,7 @@ paths:
           in: query
           type: integer
           minimum: 0
-          default: 100
+          default: 20
       responses:
         200:
           description: Return all users
@@ -64,8 +66,12 @@ paths:
     get:
       tags: [Users]
       summary: OAuth2 token info
-      x-swagger-router-controller: decorators.access_checks
-      operationId: ensure_key
+      x-swagger-router-controller: api.user
+      operationId: validate
+      parameters:
+        - name: key
+          in: query
+          type: string
       responses:
         200:
           description: Token info object
@@ -76,7 +82,7 @@ paths:
       tags: [Users]
       summary: Registration end point for a user account
       x-swagger-router-controller: api.user
-      operationId: register
+      operationId: register_user
       parameters:
         - name: user
           in: body
@@ -85,6 +91,46 @@ paths:
       responses:
         200:
           description: Created user
+  /users/reset:
+    get:
+      tags: [Users]
+      x-swagger-router-controller: api.user
+      operationId: reset
+      summary: Reset user password
+      parameters:
+        - name: email
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: Password reset
+    post:
+      tags: [Users]
+      x-swagger-router-controller: api.user
+      operationId: verify_reset
+      summary: Verify password reset token
+      parameters:
+        - name: reset
+          in: body
+          schema:
+            type: object
+            required:
+              - token
+              - pwd
+              - id
+            properties:
+              id:
+                type: string
+              token:
+                type: string
+              pwd:
+                type: string
+      responses:
+        200:
+          description: Verified and reset
+        401:
+          description: Unauthorised user
   /users/login:
     post:
       tags: [Users]
@@ -108,9 +154,10 @@ paths:
     get:
       security:
          - apiKeyHeader: []
+         - anonUser: []
       tags: [Users]
       x-swagger-router-controller: api.user
-      operationId: get_one
+      operationId: get_user
       summary: Get all users (or those matching an ID)
       parameters:
         - $ref: '#/parameters/id' 
@@ -121,22 +168,42 @@ paths:
             $ref: '#/definitions/User'
         404:
           description: User not found
+    put:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Users]
+      x-swagger-router-controller: api.user
+      operationId: update_user
+      summary: Update user details (change password, add details etc)
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: user
+          in: body
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        201:
+          description: User updated
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: User not found
   /projects:
     get:
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: get
+      operationId: get_projects
       summary: Get all projects
       parameters:
         - name: search_term
           in: query
           type: string
-          pattern: "^[a-zA-Z0-9]*$"
         - name: limit
           in: query
           type: integer
           minimum: 0
-          default: 100
+          default: 20
       responses:
         200:
           description: Return projects
@@ -149,7 +216,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: create
+      operationId: create_project
       summary: Post a project
       parameters:
         - name: project
@@ -163,9 +230,10 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: get_one
+      operationId: get_project
       summary: Get a single project
       parameters:
         - $ref: '#/parameters/id'
@@ -179,7 +247,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: put
+      operationId: put_project
       summary: Modify/Create a project
       parameters:
         - $ref: '#/parameters/id'
@@ -197,7 +265,7 @@ paths:
         - apiKeyHeader: []
       tags: [Projects]
       x-swagger-router-controller: api.project
-      operationId: delete
+      operationId: delete_project
       summary: Remove a project
       parameters:
         - $ref: '#/parameters/id'
@@ -206,18 +274,38 @@ paths:
           description: Project was deleted
         404:
           description: Project does not exist
+  /projects/{id}/stats:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Projects]
+      parameters:
+        - $ref: '#/parameters/id'
+      x-swagger-router-controller: api.project
+      operationId: get_stats
+      responses:
+        200: 
+          description: Project stats
+        404:
+          description: Project does not exist
   /projects/{id}/tasks:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Projects]
       parameters:
         - $ref: '#/parameters/id'
+        - name: offset
+          in: query
+          type: string
+          default: 0
         - name: limit
           in: query
           type: integer
           minimum: 0
-          default: 100
+          default: 20
       x-swagger-router-controller: api.task
       operationId: project_tasks
       responses:
@@ -225,14 +313,46 @@ paths:
           description: Project tasks
         404:
           description: Project does not exist
+  /projects/{id}/tasks/random:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Projects]
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: search
+          in: query
+          type: string
+      x-swagger-router-controller: api.task
+      operationId: get_random
+      responses:
+        200:
+          description: A single random project task
+        404:
+          description: Project does not exist or task not found
   /tasks:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: get
+      operationId: get_tasks
       summary: Get a list of tasks
+      parameters:
+        - name: offset
+          in: query
+          type: string
+          default: 0
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
       responses:
         200:
           description: List of tasks
@@ -245,7 +365,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: create
+      operationId: create_tasks
       summary: Post an array of tasks
       parameters:
         - name: tasks
@@ -264,7 +384,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: delete
+      operationId: delete_tasks
       summary: Delete an array of tasks
       parameters:
         - name: tasks
@@ -280,9 +400,10 @@ paths:
     get:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: get_one
+      operationId: get_task
       summary: Get a single task
       parameters:
         - $ref: '#/parameters/id'
@@ -298,11 +419,11 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: put
+      operationId: put_task
       summary: Modify/Create a task
       parameters:
         - $ref: '#/parameters/id'
-        - name: project
+        - name: task
           in: body
           schema:
             $ref: '#/definitions/Task'
@@ -316,7 +437,7 @@ paths:
         - apiKeyHeader: []
       tags: [Tasks]
       x-swagger-router-controller: api.task
-      operationId: delete_one
+      operationId: delete_task
       summary: Delete a single tasks
       parameters:
         - $ref: '#/parameters/id'
@@ -329,8 +450,17 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: get
+      operationId: get_submissions
       summary: Get a single submission
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
       responses:
         200:
           description: List of tasks
@@ -341,13 +471,13 @@ paths:
     post:
       security:
         - apiKeyHeader: []
+        - anonUser: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: create
+      operationId: create_submission
       summary: Post a submission
       parameters:
-        - $ref: '#/parameters/id'
-        - name: project
+        - name: submission
           in: body
           schema:
             $ref: '#/definitions/Submission'
@@ -361,11 +491,11 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: put
+      operationId: put_submission
       summary: Modify/Create a submission
       parameters:
         - $ref: '#/parameters/id'
-        - name: project
+        - name: submission
           in: body
           schema:
             $ref: '#/definitions/Submission'
@@ -379,7 +509,7 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: delete
+      operationId: delete_submission
       summary: Remove a submission
       parameters:
         - $ref: '#/parameters/id'
@@ -394,7 +524,7 @@ paths:
         - apiKeyHeader: []
       tags: [Submissions]
       x-swagger-router-controller: api.submission
-      operationId: get_one
+      operationId: get_submission
       summary: Get a single submission
       parameters:
         - $ref: '#/parameters/id'
@@ -410,23 +540,217 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Media]
+      description: "The media details (for files already on the server or remotely hosted)"
+      x-swagger-router-controller: api.media
+      operationId: create_media
+      parameters:
+      - name: media
+        in: body
+        schema:
+          $ref: '#/definitions/Media'
+      responses:
+        200:
+          description: Media attached
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Media]
+      description: "Get a list of media"
+      x-swagger-router-controller: api.media
+      operationId: get_media
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
+      responses:
+        200:
+          description: List of media
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Media'
+  /media/upload:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
       description: "Add a new media attachment"
       x-swagger-router-controller: api.media
       operationId: upload
       consumes:
       - multipart/form-data
       parameters:
-      - name: id
-        in: formData
-        type: string
       - name: attachment
         in: formData
         description: The file to be uploaded
         type: file
         required: true
+      - name: id
+        in: formData
+        type: string
+        required: false
       responses:
         200:
           description: Media attached
+  /media/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Media]
+      x-swagger-router-controller: api.media
+      operationId: get_medium
+      summary: Get a single file
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return Media
+          schema:
+            type: file
+        404:
+          description: Media does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      x-swagger-router-controller: api.media
+      operationId: put_medium
+      summary: Put a single file
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: media
+          in: body
+          schema:
+            $ref: '#/definitions/Media'
+      responses:
+        201:
+          description: Return Media
+          schema:
+            $ref: '#/definitions/Media' 
+        404:
+          description: Media does not exist
+  /media/source/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Media]
+      x-swagger-router-controller: api.media
+      operationId: get_for_source
+      summary: Query media for a specific task or project
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return Media
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Media'
+        404:
+          description: Media does not exist
+    delete:
+      security:
+         - apiKeyHeader: []
+      tags: [Media]  
+      x-swagger-router-controller: api.media
+      operationId: delete_medium
+      summary: Delete a single Media file
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Media deleted
+        404:
+          description: Media does not exist
+  /groups:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Groups]
+      description: "Add a new group"
+      x-swagger-router-controller: api.group
+      operationId: create
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: group
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Group'
+      responses:
+        200:
+          description: Group Created
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Groups]
+      description: "Get a list of group"
+      x-swagger-router-controller: api.group
+      operationId: get_groups
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
+      responses:
+        200:
+          description: List of group
+          schema:
+            type: array
+            items: 
+              $ref: '#/definitions/Group'
+  /groups/{id}:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Orgs]
+      x-swagger-router-controller: api.group
+      operationId: get_group
+      summary: Get a single group
+      parameters:
+        - $ref: '#/parameters/id'
+      responses:
+        200:
+          description: Return Organisation
+          schema:
+            $ref: '#/definitions/Group'
+        404:
+          description: Group does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Orgs]
+      x-swagger-router-controller: api.group
+      operationId: put_group
+      summary: Modify a group
+      parameters:
+        - $ref: '#/parameters/id'
+        - name: group
+          in: body
+          schema:
+            $ref: '#/definitions/Group'
+      responses:
+        201:
+          description: Return Group
+          schema:
+            $ref: '#/definitions/Group' 
+        404:
+          description: Group does not exist
 parameters:
   id:
     name: id
@@ -438,9 +762,6 @@ parameters:
 definitions:
   User:
     type: object
-    required:
-      - email
-      - pwd
     properties:
       id:
         type: string
@@ -454,6 +775,40 @@ definitions:
       pwd:
         type: string
       api_key:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        description: Creation time
+        example: "2015-07-07T15:49:51.230+02:00"
+        readOnly: true
+  Media:
+    type: object
+    required:
+      - source_id
+      - path
+      - name
+    properties:
+      id:
+        type: string
+        maxLength: 20
+        readOnly: true
+      source_id:
+        type: string
+        description: The task or project or user it is related to
+      path:
+        type: string
+        description: Local or remote path
+      name:
+        type: string
+        description: Name of file
+      filetype:
         type: string
       created_at:
         type: string
@@ -527,21 +882,6 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
-  Media:
-    type: object
-    required:
-      - id
-      - path
-    properties:
-      id:
-        type: string
-        description: Uniqe media ID
-      source_id:
-        type: string
-        description: linking to a task or a submission
-      path:
-        type: string
-        description: location on filesystem
   Task:
     type: object
     required:
@@ -577,10 +917,32 @@ definitions:
         description: Creation time
         example: "2015-07-07T15:49:51.230+02:00"
         readOnly: true
+  Group:
+    type: object
+    required:
+      - name
+      - description
+      - created_by
+    properties:
+      id: 
+        type: string
+        readOnly: true
+      name:
+        type: string
+      description:
+        type: string
+      url:
+        type: string
+      created_by:
+        type: string
+      api_key:
+        type: string
+        readOnly: true
   Submission:
     type: object
     required:
       - task_id
+      - user_id
     properties:
       id:
         type: string
