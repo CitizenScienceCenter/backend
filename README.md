@@ -1,8 +1,8 @@
-# CCCS Connexions App
+# CCCS Backend
 
 Flask based OpenAPI (2) supported backend with a Postgres backend.
 
-Current implementation holds a basic implementation with an API inspired by that of Pybossa. No auth is currently included.
+Current implementation holds a basic implementation with an API inspired by that of Pybossa. Basic auth is currently included.
 
 ## Running
 
@@ -16,7 +16,12 @@ Current implementation holds a basic implementation with an API inspired by that
 
 ### Docker (with Docker Compose)
 
+* Set connexion settings in config/<env>.py
 * `docker compose up`
+
+## Using
+
+When it is running, port 8080 is exposed. You can use Nginx (or similar) to proxy through to this or access it through this port. You can access a hosted version [here](https://api.citizenscience.ch)
 
 ## Generate SDKs
 
@@ -29,12 +34,8 @@ Requires [swagger-codegen](https://swagger.io/swagger-codegen/).
 ## TODO
 
 * Oauth support
-* Implement endpoints for:
-  * submission
-  * participant
 * Generate E-R diagram
-* Endpoint security
-* Project deletion only by project owner
+* Ownserhip handling
 * Android/iOS client SDK generation
 * Reduce NoContent responses
 * Auth decorator
