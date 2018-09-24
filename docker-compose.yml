@@ -15,7 +15,7 @@ services:
   cccs-connexion:
     build: .
     environment:
-      CC_ENV: ./config/prod.py
+      CC_ENV: ${CC_ENV} # Path of your config file. i.e. config/dev.py Recommended to set this in a `.env` file
     command: gunicorn -b 0.0.0.0:8080 app -w 8 
     volumes:
       - .:/code
