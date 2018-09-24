@@ -3,8 +3,6 @@ version: '2.1'
 services:
   db:
     image: postgres
-    environment:
-      D_ENV=uzh
     restart: always
     ports:
       - "5432:5432"
@@ -17,7 +15,7 @@ services:
   cccs-connexion:
     build: .
     environment:
-      - CC_ENV=./config/${D_ENV}.py
+      CC_ENV: ./config/prod.py
     command: gunicorn -b 0.0.0.0:8080 app -w 8 
     volumes:
       - .:/code

@@ -14,16 +14,16 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: implicit
-    authorizationUrl: http://wenker.citizenscience.ch:8080/oauth/authorize
+    authorizationUrl: https://api.citizenscience.ch/oauth/authorize
     # the token info URL is hardcoded for our mock_tokeninfo.py script
     # you can also pass it as an environment variable TOKENINFO_URL
-    x-tokenInfoUrl: http://wenker.citizenscience.ch:8080/api/v1/users/validate
+    x-tokenInfoUrl: https://api.citizenscience.ch/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
-host: wenker.citizenscience.ch:8080
+host: api.citizenscience.ch
 basePath: /api/v1
 schemes:
-  - http
+  - https
 paths:
   /users:
     get:
@@ -738,7 +738,7 @@ paths:
       security:
         - apiKeyHeader: []
         - anonUser: []
-      tags: [Orgs]
+      tags: [Groups]
       x-swagger-router-controller: api.group
       operationId: get_group
       summary: Get a single group
@@ -754,7 +754,7 @@ paths:
     put:
       security:
         - apiKeyHeader: []
-      tags: [Orgs]
+      tags: [Groups]
       x-swagger-router-controller: api.group
       operationId: put_group
       summary: Modify a group
