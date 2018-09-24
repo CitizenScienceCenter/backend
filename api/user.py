@@ -5,7 +5,7 @@ from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
 from flask import session, request, current_app
-from db import orm_handler, User, utils
+from db import orm_handler, User, utils, Submission
 from decorators import access_checks
 import json, smtplib
 import email as emaillib
@@ -59,6 +59,15 @@ def reset(email):
         except Exception as e:
             return e, 503
         return NoContent, 200
+    else:
+        return NoContent, 401
+
+def get_subs(id=None):
+    user = db_session.query(User).filter(User.id == id).one_or_none()
+    if user:
+        submissions = db_session.query(Submission).distinct(Submission.id).filter(Submission.user_id == id).all()
+        # TODO paging
+        return [s.dump() for s in submissions]
     else:
         return NoContent, 401
     

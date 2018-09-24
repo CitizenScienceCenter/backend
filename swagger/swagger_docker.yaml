@@ -189,6 +189,26 @@ paths:
             $ref: '#/definitions/User'
         404:
           description: User not found
+  /users/{id}/submissions:
+    get:
+      security:
+         - apiKeyHeader: []
+         - anonUser: []
+      tags: [Users]
+      x-swagger-router-controller: api.user
+      operationId: get_subs
+      summary: Get all submissions for a user (or those matching an ID)
+      parameters:
+        - $ref: '#/parameters/id' 
+      responses:
+        200:
+          description: Return submissions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Submission'
+        404:
+          description: User not found
   /projects:
     get:
       tags: [Projects]
