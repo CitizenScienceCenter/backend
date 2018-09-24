@@ -1,5 +1,7 @@
 # CCCS Backend
 
+[![Join the chat at https://gitter.im/CitizenScienceCenter/backend](https://badges.gitter.im/CitizenScienceCenter/backend.svg)](https://gitter.im/CitizenScienceCenter/backend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Flask based OpenAPI (2) supported backend with a Postgres backend.
 
 Current implementation holds a basic implementation with an API inspired by that of Pybossa. Basic auth is currently included.
