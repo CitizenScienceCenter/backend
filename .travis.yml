@@ -3,10 +3,12 @@ python:
   - "3.6"
 install:
   - pip install -r requirements.txt
+addons:
+  postgresql: "9.4"  
 before_script:
   - psql -c "CREATE USER pybossa WITH PASSWORD 'tester';" -U postgres
   - psql -c "CREATE DATABASE cs WITH OWNER pybossa;" -U postgres 
 services:
-  - postgresql: "10.5"
+  - postgresql
 script:
   - CC_ENV=config/test.py pytest
