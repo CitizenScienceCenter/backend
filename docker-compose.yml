@@ -16,11 +16,11 @@ services:
     build: .
     environment:
       CC_ENV: ${CC_ENV} # Path of your config file. i.e. config/dev.py Recommended to set this in a `.env` file
-    command: gunicorn -b 0.0.0.0:8080 app -w 8 
+    command:  uwsgi --http :${CC_PORT} --wsgi-file app.py --master --processes 4 --threads 2 --stats :9191 
     volumes:
       - .:/code
       - ~/dev/wenkerbogen-switzerland:/code/static/upload
     ports:
-      - "8080:8080"
+      - "${CC_PORT}:${CC_PORT}"
     depends_on:
       - db
