@@ -2,7 +2,9 @@ env/
 sdk/*
 static/uploads/*
 pgdata/
-config/
+config/*
+!config/test.py
+!config/sample.py
 
 #### joe made this: http://goel.io/joe
 
