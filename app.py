@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import datetime
+import os
 import logging
 import uuid
 import configparser
@@ -31,4 +32,7 @@ port = application.config['PORT'] or 8080
 debug = application.config['DEBUG'] or False
 
 if __name__ == '__main__':
-    app.run(port=port, debug=debug, server='gevent')
+    if ('dev' or 'local') in os.environ['CC_ENV']:
+        app.run(port=port, debug=debug)
+    else:
+        app.run(port=port, debug=debug, server='gevent')

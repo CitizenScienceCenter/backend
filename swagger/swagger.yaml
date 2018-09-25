@@ -193,7 +193,7 @@ paths:
             $ref: '#/definitions/User'
         404:
           description: User not found
-   /users/{id}/submissions:
+  /users/{id}/submissions:
     get:
       security:
          - apiKeyHeader: []
@@ -742,7 +742,7 @@ paths:
       security:
         - apiKeyHeader: []
         - anonUser: []
-      tags: [Orgs]
+      tags: [Groups]
       x-swagger-router-controller: api.group
       operationId: get_group
       summary: Get a single group
@@ -758,7 +758,7 @@ paths:
     put:
       security:
         - apiKeyHeader: []
-      tags: [Orgs]
+      tags: [Groups]
       x-swagger-router-controller: api.group
       operationId: put_group
       summary: Modify a group
