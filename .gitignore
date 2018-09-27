@@ -3,8 +3,11 @@ sdk/*
 static/uploads/*
 pgdata/
 config/*
+!config/*.secret
 !config/test.py
 !config/sample.py
+
+.*.secret
 
 #### joe made this: http://goel.io/joe
 
