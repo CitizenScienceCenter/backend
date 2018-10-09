@@ -24,6 +24,13 @@ def get_task(id):
     task = db_session.query(Task).filter(Task.id == id).one_or_none()
     return task.dump() if task is not None else ('Not found', 404)
 
+def get_task_for_user_region():
+    user = utils.get_user(request, db_session)
+    task = db_session.query(Task, Media).outerjoin(Submission, Task.id == Submission.task_id).join(Media, Media.source_id == Task.id).filter(Task.info['SchoolState'].astext == user.info['region']).filter(Submission.user_id != user.id)
+    return
+
+
+# Specific method for Wenker project
 def get_random(id, search):
     user = utils.get_user(request, db_session)
     task = db_session.query(Task, Media).outerjoin(Submission, Task.id == Submission.task_id).join(Media, Media.source_id == Task.id).filter((Task.info['SchoolState'].astext == search) | (Task.info['SchoolState'].astext == '')).filter((Submission.id == None) | (Submission.user_id != user.id)).order_by(func.random()).first()
