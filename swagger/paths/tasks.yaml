@@ -1,0 +1,114 @@
+paths:
+  task_id:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: get_task
+      summary: Get a single task
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+      responses:
+        200:
+          description: Return task
+          schema:
+            $ref: './types.yaml#/definitions/Task'
+        404:
+          description: Task does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: put_task
+      summary: Modify/Create a task
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+        - name: task
+          in: body
+          schema:
+            $ref: './types.yaml#/definitions/Task'
+      responses:
+        200:
+          description: Task modified
+        201:
+          description: New task created
+    delete:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: delete_task
+      summary: Delete a single tasks
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+      responses:
+        204:
+          description: Task was deleted
+  tasks:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: get_tasks
+      summary: Get a list of tasks
+      parameters:
+        - name: offset
+          in: query
+          type: number
+          default: 0
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
+      responses:
+        200:
+          description: List of tasks
+          schema:
+            type: array
+            items: 
+              $ref: './types.yaml#/definitions/Task'
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: create_tasks
+      summary: Post an array of tasks
+      parameters:
+        - name: tasks
+          in: body
+          schema:
+            type: array
+            items:
+              $ref: './types.yaml#/definitions/Task'
+      responses:
+        200:
+          description: Task created
+          schema:
+            $ref: './types.yaml#/definitions/Task'
+    delete:
+      security:
+        - apiKeyHeader: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task
+      operationId: delete_tasks
+      summary: Delete an array of tasks
+      parameters:
+        - name: tasks
+          in: body
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        204:
+          description: Tasks were deleted

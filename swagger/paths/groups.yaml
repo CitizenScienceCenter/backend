@@ -1,0 +1,82 @@
+paths:
+  group_id:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Groups]
+      x-swagger-router-controller: api.group
+      operationId: get_group
+      summary: Get a single group
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+      responses:
+        200:
+          description: Return Organisation
+          schema:
+            $ref: './types.yaml#/definitions/Group'
+        404:
+          description: Group does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Groups]
+      x-swagger-router-controller: api.group
+      operationId: put_group
+      summary: Modify a group
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+        - name: group
+          in: body
+          schema:
+            $ref: './types.yaml#/definitions/Group'
+      responses:
+        201:
+          description: Return Group
+          schema:
+            $ref: './types.yaml#/definitions/Group' 
+        404:
+          description: Group does not exist
+  groups:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Groups]
+      description: "Add a new group"
+      x-swagger-router-controller: api.group
+      operationId: create
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: group
+        in: body
+        required: true
+        schema:
+          $ref: './types.yaml#/definitions/Group'
+      responses:
+        200:
+          description: Group Created
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Groups]
+      description: "Get a list of group"
+      x-swagger-router-controller: api.group
+      operationId: get_groups
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
+      responses:
+        200:
+          description: List of group
+          schema:
+            type: array
+            items: 
+              $ref: './types.yaml#/definitions/Group'
