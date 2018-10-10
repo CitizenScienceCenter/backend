@@ -60,6 +60,7 @@ definitions:
     required:
       - source_id
       - content
+      - user_id
     allOf:
     - $ref: '#/definitions/Base'
     properties:
@@ -68,6 +69,8 @@ definitions:
         description: The task or project or user it is related to
       content:
         type: object
+      user_id:
+        type: string
   Otoken:
     type: object
     allOf:

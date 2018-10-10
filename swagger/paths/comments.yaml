@@ -80,8 +80,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Comments]
-      x-swagger-router-controller: api.submission
-      operationId: delete_submission
+      x-swagger-router-controller: api.comment
+      operationId: delete_comment
       summary: Remove a Comment
       parameters:
         - $ref: './params.yaml#/parameters/id'

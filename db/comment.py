@@ -5,7 +5,7 @@ import db.orm_handler as orm
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 class Comment(orm.Base):
-    __tablename__ = 'submissions'
+    __tablename__ = 'comments'
     source_id = Column(UUID)
     user_id = Column(UUID, ForeignKey('users.id'))
     content = Column(JSONB)
