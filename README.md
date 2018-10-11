@@ -18,6 +18,10 @@ Current implementation holds a basic implementation with an API inspired by that
 
 ### Docker (with Docker Compose)
 
+* Set the following variables in a `.env` file:
+    * `CC_ENV`: the location to your config file
+    * `CC_PORT`: the port you want to run on (will also be exposed)
+    * `SW_ENV`: The name of the root swagger file
 * Set connexion settings in config/<env>.py
 * `docker compose up`
 

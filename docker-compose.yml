@@ -13,9 +13,13 @@ services:
       POSTGRES_USER: pybossa
       POSTGRES_DB: cs
   cccs-connexion:
-    build: .
     environment:
       CC_ENV: ${CC_ENV} # Path of your config file. i.e. config/dev.py Recommended to set this in a `.env` file
+      SW_ENV: ${SW_ENV}
+    build: 
+      context: .
+      args:
+        SW_ENV: ${SW_ENV}
     command:  uwsgi --http :${CC_PORT} --wsgi-file app.py --master --processes 4 --threads 2 --stats :9191 
     volumes:
       - .:/code
