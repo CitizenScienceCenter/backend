@@ -22,6 +22,7 @@ Current implementation holds a basic implementation with an API inspired by that
     * `CC_ENV`: the location to your config file
     * `CC_PORT`: the port you want to run on (will also be exposed)
     * `SW_ENV`: The name of the root swagger file
+* For common deployments, there is an `envs/` folder containing env files. To use them, just make a symbolic link on your host to `.env`
 * Set connexion settings in config/<env>.py
 * `docker compose up`
 
