@@ -6,8 +6,8 @@ config/*
 !config/*.secret
 !config/test.py
 !config/sample.py
-
-.*.secret
+alembic.ini
+!.*.secret
 
 #### joe made this: http://goel.io/joe
 
