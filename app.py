@@ -10,6 +10,7 @@ from connexion.resolver import RestyResolver
 
 from flask import session, request, g, render_template
 from flask_cors import CORS
+from flask_dotenv import DotEnv
 
 from db import orm_handler
 
@@ -17,7 +18,8 @@ logging.basicConfig(level=logging.INFO)
 app = connexion.FlaskApp(__name__, static_url_path='./static/')
 app = connexion.App(__name__, specification_dir='./swagger/')
 application = app.app
-application.config.from_envvar('CC_ENV')
+env = DotEnv()
+env.init_app(application, env_file=".env", verbose_mode=False)
 db_session = orm_handler.init_db(application.config['DB_URI'], persist=True)
 app.add_api(application.config['SWAGGER_FILE'], resolver=RestyResolver('api'))
 

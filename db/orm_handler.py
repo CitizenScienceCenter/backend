@@ -2,7 +2,7 @@ from sqlalchemy import Column, DateTime, String, Integer, create_engine, JSON, F
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask import Flask, current_app
-import config
+
 import datetime
 from db.cs_base import CSBase
 

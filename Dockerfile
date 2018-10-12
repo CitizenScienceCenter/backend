@@ -9,9 +9,11 @@ RUN swagger validate /expand/swagger_complete.yaml
 
 FROM python:3.6.6-stretch
 ENV PYTHONUNBUFFERED 1
+ARG CC_ENV
 RUN mkdir /code
 WORKDIR /code
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 ADD . /code/
+RUN ln -sf envs/$CC_ENV.env .env
 COPY --from=0 /expand/swagger_complete.yaml /code/swagger/swagger_complete.yaml
