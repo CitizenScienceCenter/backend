@@ -4,8 +4,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Comments]
-      x-swagger-router-controller: api.comment
-      operationId: get_comments
+      x-swagger-router-controller: api.comment.model
+      operationId: get_all
       summary: Get a single comment
       parameters:
         - name: search_term
@@ -28,8 +28,8 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Comments]
-      x-swagger-router-controller: api.comment
-      operationId: create_comment
+      x-swagger-router-controller: api.comment.model
+      operationId: post
       summary: Post a comment
       parameters:
         - name: comment
@@ -46,8 +46,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Comments]
-      x-swagger-router-controller: api.comment
-      operationId: get_comment
+      x-swagger-router-controller: api.comment.model
+      operationId: get_one
       summary: Get a single comment
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -62,8 +62,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Comments]
-      x-swagger-router-controller: api.comment
-      operationId: put_comment
+      x-swagger-router-controller: api.comment.model
+      operationId: put
       summary: Modify/Create a Comment
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -80,8 +80,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Comments]
-      x-swagger-router-controller: api.comment
-      operationId: delete_comment
+      x-swagger-router-controller: api.comment.model
+      operationId: delete
       summary: Remove a Comment
       parameters:
         - $ref: './params.yaml#/parameters/id'

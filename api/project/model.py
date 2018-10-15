@@ -9,33 +9,19 @@ from flask import request
 
 db_session = orm_handler.db_session
 
-def get_projects(limit=20, search_term=None):
+def get_all(limit=20, search_term=None):
     q = db_session.query(Project)
     if search_term:
         q = q.filter(Project.name.match(search_term, postgresql_regconfig='english') | Project.description.match(search_term, postgresql_regconfig='english'))
     return [p.dump() for p in q][:limit]
 
 
-def get_project(id=None):
+def get_one(id=None):
     project = db_session.query(Project).filter(Project.id == id).one_or_none()
     return project.dump() if project is not None else ('Not found', 404)
 
-def get_stats(id=None):
-    tasks = db_session.query(Task).filter(Task.project_id == id).all()
-    no_tasks = len(tasks)
-    subs = 0
-    cons = []
-    for t in tasks:
-        submissions = db_session.query(Submission).filter(Submission.task_id == t.id).all()
-        subs += len(submissions)
-        for s in submissions:
-            uid = s.user_id
-            if uid not in cons:
-                cons.append(uid)
-    return {'project_id': id, 'task_count': no_tasks, 'submission_count': subs, 'contributor_count': len(cons)}, 200
-
 @access_checks.ensure_key
-def create_project(project):
+def post(project):
     logging.info('Creating project ')
     user = utils.get_user(request, db_session)
     project['owned_by'] = user.id
@@ -46,7 +32,7 @@ def create_project(project):
     return p.dump(), 201
 
 @access_checks.ensure_key
-def put_project(project_id, project):
+def put(project_id, project):
     p = db_session.query(Project).filter(Project.id == project_id).one_or_none()
     project['id'] = project_id
     if p is not None:
@@ -59,7 +45,7 @@ def put_project(project_id, project):
     return NoContent, (200 if p is not None else 201)
 
 @access_checks.ensure_key
-def delete_project(id):
+def delete(id):
     project = db_session.query(Project).filter(Project.id == id).one_or_none()
     if project is not None:
         logging.info('Deleting project %s..', id)

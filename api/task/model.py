@@ -11,7 +11,7 @@ from sqlalchemy.dialects import postgresql
 
 db_session = orm_handler.db_session
 
-def get_tasks(offset=0, search_term=None, limit=20):
+def get_all(offset=0, search_term=None, limit=20):
     q = db_session.query(Task)
     q = q.offset(offset)
     if search_term:
@@ -20,31 +20,12 @@ def get_tasks(offset=0, search_term=None, limit=20):
     return [t.dump() for t in q]
 
 
-def get_task(id):
+def get_one(id):
     task = db_session.query(Task).filter(Task.id == id).one_or_none()
     return task.dump() if task is not None else ('Not found', 404)
 
-def get_task_for_user_region():
-    user = utils.get_user(request, db_session)
-    task = db_session.query(Task, Media).outerjoin(Submission, Task.id == Submission.task_id).join(Media, Media.source_id == Task.id).filter(Task.info['SchoolState'].astext == user.info['region']).filter(Submission.user_id != user.id)
-    return
-
-
-# Specific method for Wenker project
-def get_random(id, search):
-    user = utils.get_user(request, db_session)
-    task = db_session.query(Task, Media).outerjoin(Submission, Task.id == Submission.task_id).join(Media, Media.source_id == Task.id).filter((Task.info['SchoolState'].astext == search) | (Task.info['SchoolState'].astext == '')).filter((Submission.id == None) | (Submission.user_id != user.id)).order_by(func.random()).first()
-    if task is None:
-        return NoContent, 404
-    else:
-        ret = {
-            'task': task[0].dump(),
-            'media': task[1].dump()
-        }
-        return ret, 200
-
 @access_checks.ensure_key
-def create_tasks(tasks):
+def post(tasks):
     logging.info('Creating tasks for project ')
     saved_tasks = []
     for t in tasks:
@@ -58,13 +39,7 @@ def create_tasks(tasks):
     return [t.dump() for t in saved_tasks][:len(saved_tasks)], 201
 
 @access_checks.ensure_key
-def project_tasks(id, limit=20, offset=0):
-    print(id, limit, offset)
-    task = db_session.query(Task).filter(Task.project_id == id).offset(offset).limit(limit).all()
-    return [p.dump() for p in task]
-
-@access_checks.ensure_key
-def put_task(task_id, task):
+def put(task_id, task):
     t = db_session.query(Task).filter(Task.id == task_id).one_or_none()
     if t is not None:
         logging.info('Updating task %s..', task_id)
@@ -76,15 +51,7 @@ def put_task(task_id, task):
     return NoContent, (200 if p is not None else 201)
 
 @access_checks.ensure_key
-def delete_tasks(tasks):
-    print('deleting {} tasks'.format(len(tasks)))
-    print(tasks)
-    db_session.query(Task).filter(Task.id.in_(tasks)).delete(synchronize_session='fetch')
-    db_session.commit()
-    return NoContent, 200
-
-@access_checks.ensure_key
-def delete_task(task_id):
+def delete(task_id):
     task = db_session.query(Task).filter(Task.id == task_id).one_or_none()
     if task is not None:
         logging.info('Deleting task %s..', project_id)
