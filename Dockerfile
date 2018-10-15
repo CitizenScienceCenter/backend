@@ -15,5 +15,4 @@ WORKDIR /code
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 ADD . /code/
-RUN ln -sf envs/$CC_ENV.env .env
 COPY --from=0 /expand/swagger_complete.yaml /code/swagger/swagger_complete.yaml
