@@ -1,6 +1,6 @@
 import connexion
 from connexion import NoContent
-from db import orm_handler, Model, utils
+from db import orm_handler, Model, utils, Media
 from decorators import access_checks
 from flask import request
 import logging
