@@ -94,7 +94,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      operationId: api.task.model.delete
+      operationId: api.task.custom.delete_tasks
       summary: Delete an array of tasks
       parameters:
         - name: tasks
