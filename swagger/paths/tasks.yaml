@@ -5,8 +5,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Tasks]
-      x-swagger-router-controller: api.task
-      operationId: get_task
+      operationId: api.task.model.get_one
       summary: Get a single task
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -21,8 +20,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      x-swagger-router-controller: api.task
-      operationId: put_task
+      operationId: api.task.model.put
       summary: Modify/Create a task
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -39,8 +37,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      x-swagger-router-controller: api.task
-      operationId: delete_task
+      operationId: api.task.model.delete
       summary: Delete a single tasks
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -53,8 +50,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Tasks]
-      x-swagger-router-controller: api.task
-      operationId: get_tasks
+      operationId: api.task.model.get_all
       summary: Get a list of tasks
       parameters:
         - name: offset
@@ -80,8 +76,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      x-swagger-router-controller: api.task
-      operationId: create_tasks
+      operationId: api.task.model.post
       summary: Post an array of tasks
       parameters:
         - name: tasks
@@ -99,8 +94,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Tasks]
-      x-swagger-router-controller: api.task
-      operationId: delete_tasks
+      operationId: api.task.model.delete
       summary: Delete an array of tasks
       parameters:
         - name: tasks

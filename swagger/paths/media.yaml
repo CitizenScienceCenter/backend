@@ -5,8 +5,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Media]
-      x-swagger-router-controller: api.media.custom
-      operationId: get_for_source
+      operationId: api.media.custom.get_for_source
       summary: Query media for a specific task or project
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -23,8 +22,7 @@ paths:
       security:
          - apiKeyHeader: []
       tags: [Media]  
-      x-swagger-router-controller: api.media.model
-      operationId: delete
+      operationId: api.media.model.delete
       summary: Delete all media files related to  source
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -39,20 +37,19 @@ paths:
         - apiKeyHeader: []
       tags: [Media]
       description: "Add a new media attachment"
-      x-swagger-router-controller: api.media.custom
-      operationId: upload
+      operationId: api.media.custom.upload
       consumes:
-      - multipart/form-data
+        - multipart/form-data
       parameters:
-      - name: attachment
-        in: formData
-        description: The file to be uploaded
-        type: file
-        required: true
-      - name: id
-        in: formData
-        type: string
-        required: false
+        - name: attachment
+          in: formData
+          description: The file to be uploaded
+          type: file
+          required: true
+        - name: id
+          in: formData
+          type: string
+          required: false
       responses:
         200:
           description: Media attached
@@ -62,8 +59,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Media]
-      x-swagger-router-controller: api.media.model
-      operationId: get_one
+      operationId: api.media.model.get_one
       summary: Get a single file
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -78,8 +74,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Media]
-      x-swagger-router-controller: api.media.model
-      operationId: put
+      operationId: api.media.model.put
       summary: Put a single file
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -100,8 +95,7 @@ paths:
         - apiKeyHeader: []
       tags: [Media]
       description: "The media details (for files already on the server or remotely hosted)"
-      x-swagger-router-controller: api.media.model
-      operationId: post
+      operationId: api.media.model.post
       parameters:
       - name: media
         in: body
@@ -116,8 +110,7 @@ paths:
         - anonUser: []
       tags: [Media]
       description: "Get a list of media"
-      x-swagger-router-controller: api.media.model
-      operationId: get_all
+      operationId: api.media.model.get_all
       parameters:
         - name: search_term
           in: query

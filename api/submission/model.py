@@ -9,7 +9,7 @@ from api import model
 db_session = orm_handler.db_session
 
 def get_all(limit=20, search_term=None):
-    return model.get_all(Submission, 20, search_term)
+    return model.get_all(Submission, limit, search_term)
 
 def get_one(id=None):
     return model.get_one(Submission, id)

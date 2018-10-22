@@ -5,16 +5,16 @@ paths:
         - apiKeyHeader: []
       tags: [Groups]
       description: "Add a new group"
-      x-swagger-router-controller: api.group.model
-      operationId: post
+      operationId: api.group.model.post
       consumes:
-      - multipart/form-data
+        - multipart/form-data
       parameters:
-      - name: group
-        in: body
-        required: true
-        schema:
-          $ref: './types.yaml#/definitions/Group'
+        - $ref: './params.yaml#/parameters/id'
+        - name: group
+          in: body
+          required: true
+          schema:
+            $ref: './types.yaml#/definitions/Group'
       responses:
         200:
           description: Group Created
@@ -23,8 +23,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Groups]
-      x-swagger-router-controller: api.group.model
-      operationId: get_one
+      operationId: api.group.model.get_one
       summary: Get a single group
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -39,8 +38,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Groups]
-      x-swagger-router-controller: api.group.model
-      operationId: put
+      operationId: api.group.model.put
       summary: Modify a group
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -62,8 +60,7 @@ paths:
         - anonUser: []
       tags: [Groups]
       description: "Get a list of group"
-      x-swagger-router-controller: api.group.model
-      operationId: get_all
+      operationId: api.group.model.get_all
       parameters:
         - name: search_term
           in: query

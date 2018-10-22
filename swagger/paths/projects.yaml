@@ -10,8 +10,7 @@ paths:
         - name: search
           in: query
           type: string
-      x-swagger-router-controller: api.task
-      operationId: get_random
+      operationId: api.task.custom.get_random
       responses:
         200:
           description: A single random project task
@@ -34,7 +33,7 @@ paths:
           type: integer
           minimum: 0
           default: 20
-      x-swagger-router-controller: api.task
+      x-swagger-router-controller: api.task.custom
       operationId: project_tasks
       responses:
         200:
@@ -49,8 +48,7 @@ paths:
       tags: [Projects]
       parameters:
         - $ref: './params.yaml#/parameters/id'
-      x-swagger-router-controller: api.project
-      operationId: get_stats
+      operationId: api.project.custom.get_stats
       responses:
         200: 
           description: Project stats
@@ -59,8 +57,7 @@ paths:
   projects:
     get:
       tags: [Projects]
-      x-swagger-router-controller: api.project
-      operationId: get_projects
+      operationId: api.project.model.get_all
       summary: Get all projects
       parameters:
         - name: search_term
@@ -82,8 +79,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      x-swagger-router-controller: api.project
-      operationId: create_project
+      operationId: api.project.model.post
       summary: Post a project
       parameters:
         - name: project
@@ -99,8 +95,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Projects]
-      x-swagger-router-controller: api.project
-      operationId: get_project
+      operationId: api.project.model.get_one
       summary: Get a single project
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -113,8 +108,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      x-swagger-router-controller: api.project
-      operationId: put_project
+      operationId: api.project.model.put
       summary: Modify/Create a project
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -131,8 +125,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      x-swagger-router-controller: api.project
-      operationId: delete_project
+      operationId: api.project.model.delete
       summary: Remove a project
       parameters:
         - $ref: './params.yaml#/parameters/id'

@@ -4,8 +4,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      x-swagger-router-controller: api.submission
-      operationId: get_submission
+      operationId: api.submission.model.get_one
       summary: Get a single submission
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -20,8 +19,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      x-swagger-router-controller: api.submission
-      operationId: put_submission
+      operationId: api.submission.model.put
       summary: Modify/Create a submission
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -38,8 +36,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      x-swagger-router-controller: api.submission
-      operationId: delete_submission
+      operationId: api.submission.model.delete
       summary: Remove a submission
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -53,8 +50,7 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Submissions]
-      x-swagger-router-controller: api.submission
-      operationId: get_submissions
+      operationId: api.submission.model.get_all
       summary: Get a single submission
       parameters:
         - name: search_term
@@ -77,8 +73,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Submissions]
-      x-swagger-router-controller: api.submission
-      operationId: create_submission
+      operationId: api.submission.model.post
       summary: Post a submission
       parameters:
         - name: submission
