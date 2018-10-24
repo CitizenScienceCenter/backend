@@ -15,7 +15,7 @@ from flask_dotenv import DotEnv
 from db import orm_handler
 
 logging.basicConfig(level=logging.INFO)
-app = connexion.FlaskApp(__name__, static_url_path='./static/')
+app = connexion.FlaskApp(__name__, static_url_path='./static')
 app = connexion.App(__name__, specification_dir='./swagger/')
 application = app.app
 env = DotEnv()

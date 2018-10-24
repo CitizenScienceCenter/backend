@@ -20,11 +20,59 @@ securityDefinitions:
     x-tokenInfoUrl: http://wenker.citizenscience.ch:8080/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
-host: wenker.citizenscience.ch:8080
+host: wenker.citizenscience.ch
 basePath: /api/v1
 schemes:
-  - http
   - https
 paths:
-  $ref: 'paths/index/yaml'
-  
+paths:
+  /users:
+    {$ref: 'paths/users.yaml#/paths/get_users'}
+  /users/authorize:
+    {$ref: 'paths/users.yaml#/paths/user_authorize'}
+  /users/validate:
+    {$ref: 'paths/users.yaml#/paths/user_validate'}
+  /users/register:
+    {$ref: 'paths/users.yaml#/paths/register_user'}
+  /users/reset:
+    {$ref: 'paths/users.yaml#/paths/user_reset'}
+  /users/login:
+    {$ref: 'paths/users.yaml#/paths/user_login'}
+  /users/{id}:
+    {$ref: 'paths/users.yaml#/paths/user_id'}
+  /users/{id}/submissions:
+    {$ref: 'paths/users.yaml#/paths/user_id_submissions'}
+  /projects:
+    {$ref: './paths/projects.yaml#/paths/projects'}
+  /projects/{id}:
+    {$ref: './paths/projects.yaml#/paths/project_id'}
+  /projects/{id}/stats:
+    {$ref: './paths/projects.yaml#/paths/project_stats'}
+  /projects/{id}/tasks:
+    {$ref: './paths/projects.yaml#/paths/project_tasks'}
+  /projects/{id}/tasks/random:
+    {$ref: './paths/projects.yaml#/paths/project_tasks_random'}
+  /tasks:
+    {$ref: './paths/tasks.yaml#/paths/tasks'}
+  /tasks/{id}:
+    {$ref: './paths/tasks.yaml#/paths/task_id'}
+  /submissions:
+    {$ref: './paths/submissions.yaml#/paths/submissions'}
+  /submission/{id}:
+    {$ref: './paths/submissions.yaml#/paths/submission_id'}
+  /media:
+    {$ref: './paths/media.yaml#/paths/media'}
+  /media/upload:
+    {$ref: './paths/media.yaml#/paths/media_upload'}
+  /media/{id}:
+    {$ref: './paths/media.yaml#/paths/media_id'}
+  /media/source/{id}:
+    {$ref: './paths/media.yaml#/paths/media_source_id'}
+  /groups:
+    {$ref: './paths/groups.yaml#/paths/groups'}
+  /groups/{id}:
+    {$ref: './paths/groups.yaml#/paths/group_id'}
+  /comments:
+    {$ref: './paths/comments.yaml#/paths/comments'}
+  /comments/{id}:
+    {$ref: './paths/comments.yaml#/paths/comment_id'}
