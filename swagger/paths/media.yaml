@@ -5,7 +5,8 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Media]
-      operationId: api.media.custom.get_for_source
+      x-swagger-router-controller: api.media.custom
+      operationId: get_for_source
       summary: Query media for a specific task or project
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -22,7 +23,8 @@ paths:
       security:
          - apiKeyHeader: []
       tags: [Media]  
-      operationId: api.media.model.delete
+      x-swagger-router-controller: api.media.model
+      operationId: delete_medium
       summary: Delete all media files related to  source
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -36,8 +38,9 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Media]
-      description: "Add a new media attachment"
-      operationId: api.media.custom.upload
+      description: "Add a new media attachment"      
+      x-swagger-router-controller: api.media.custom
+      operationId: upload
       consumes:
         - multipart/form-data
       parameters:
@@ -59,7 +62,8 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Media]
-      operationId: api.media.model.get_one
+      x-swagger-router-controller: api.media.model
+      operationId: get_medium
       summary: Get a single file
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -74,7 +78,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Media]
-      operationId: api.media.model.put
+      x-swagger-router-controller: api.media.model
+      operationId: update_medium
       summary: Put a single file
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -95,7 +100,8 @@ paths:
         - apiKeyHeader: []
       tags: [Media]
       description: "The media details (for files already on the server or remotely hosted)"
-      operationId: api.media.model.post
+      x-swagger-router-controller: api.media.model
+      operationId: create_medium
       parameters:
       - name: media
         in: body
@@ -110,7 +116,8 @@ paths:
         - anonUser: []
       tags: [Media]
       description: "Get a list of media"
-      operationId: api.media.model.get_all
+      x-swagger-router-controller: api.media.model
+      operationId: get_media
       parameters:
         - name: search_term
           in: query

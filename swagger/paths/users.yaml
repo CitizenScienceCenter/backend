@@ -2,7 +2,8 @@ paths:
   user_reset:
     get:
       tags: [Users]
-      operationId: api.user.custom.reset
+      x-swagger-router-controller: api.user.custom
+      operationId: reset
       summary: Reset user password
       parameters:
         - name: email
@@ -14,7 +15,8 @@ paths:
           description: Password reset
     post:
       tags: [Users]
-      operationId: api.user.custom.verify_reset
+      x-swagger-router-controller: api.user.custom
+      operationId: verify_reset
       summary: Verify password reset token
       parameters:
         - name: reset
@@ -43,7 +45,8 @@ paths:
          - apiKeyHeader: []
          - anonUser: []
       tags: [Users]
-      operationId: api.user.custom.get_subs
+      x-swagger-router-controller: api.user.custom
+      operationId: get_subs
       summary: Get all submissions for a user (or those matching an ID)
       parameters:
         - {$ref: './params.yaml#/parameters/id'}
@@ -59,7 +62,8 @@ paths:
   user_login:
     post:
       tags: [Users]
-      operationId: api.user.custom.login
+      x-swagger-router-controller: api.user.custom
+      operationId: login
       summary: Allow a user to login
       parameters:
         - name: user
@@ -77,7 +81,8 @@ paths:
   user_authorize:
     post:
       tags: [Users]
-      operationId: api.otoken.generate
+      x-swagger-router-controller: api.otoken
+      operationId: generate
       summary: Post auth for token response
       parameters:
         - name: token
@@ -91,7 +96,8 @@ paths:
     get:
       tags: [Users]
       summary: OAuth2 token info
-      operationId: api.user.custom.validate
+      x-swagger-router-controller: api.user.custom
+      operationId: validate
       parameters:
         - name: key
           in: query
@@ -107,7 +113,8 @@ paths:
          - apiKeyHeader: []
          - anonUser: []
       tags: [Users]
-      operationId: api.user.model.get_one
+      x-swagger-router-controller: api.user.model
+      operationId: get_user
       summary: Get all users (or those matching an ID)
       parameters:
         - {$ref: './params.yaml#/parameters/id'}
@@ -123,7 +130,8 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Users]
-      operationId: api.user.model.put
+      x-swagger-router-controller: api.user.model
+      operationId: update_user
       summary: Update user details (change password, add details etc)
       parameters:
         - {$ref: './params.yaml#/parameters/id'}
@@ -142,7 +150,8 @@ paths:
     post:
       tags: [Users]
       summary: Registration end point for a user account
-      operationId: api.user.model.post
+      x-swagger-router-controller: api.user.model
+      operationId: create_user
       parameters:
         - name: user
           in: body
@@ -156,7 +165,8 @@ paths:
       tags: [Users]
       security:
         - oauth2: []
-      operationId: api.user.model.get_all
+      x-swagger-router-controller: api.user.model
+      operationId: get_users
       parameters:
         - name: search_term
           in: query

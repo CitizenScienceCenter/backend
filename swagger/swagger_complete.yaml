@@ -27,7 +27,7 @@
           "Comments"
         ],
         "summary": "Get a single comment",
-        "operationId": "api.comment.model.get_all",
+        "operationId": "get_comments",
         "parameters": [
           {
             "type": "string",
@@ -102,7 +102,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.comment.model"
       },
       "post": {
         "security": [
@@ -117,7 +118,7 @@
           "Comments"
         ],
         "summary": "Post a comment",
-        "operationId": "api.comment.model.post",
+        "operationId": "create_comment",
         "parameters": [
           {
             "name": "comment",
@@ -234,7 +235,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.comment.model"
       }
     },
     "/comments/{id}": {
@@ -248,7 +250,7 @@
           "Comments"
         ],
         "summary": "Get a single comment",
-        "operationId": "api.comment.model.get_one",
+        "operationId": "get_comment",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -319,7 +321,8 @@
           "404": {
             "description": "Comment does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.comment.model"
       },
       "put": {
         "security": [
@@ -331,7 +334,7 @@
           "Comments"
         ],
         "summary": "Modify/Create a Comment",
-        "operationId": "api.comment.model.put",
+        "operationId": "update_comment",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -406,7 +409,8 @@
           "201": {
             "description": "New Comment created"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.comment.model"
       },
       "delete": {
         "security": [
@@ -418,7 +422,7 @@
           "Comments"
         ],
         "summary": "Remove a Comment",
-        "operationId": "api.comment.model.delete",
+        "operationId": "delete_comment",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -436,7 +440,8 @@
           "404": {
             "description": "Comment does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.comment.model"
       }
     },
     "/groups": {
@@ -453,7 +458,7 @@
         "tags": [
           "Groups"
         ],
-        "operationId": "api.group.model.get_all",
+        "operationId": "get_groups",
         "parameters": [
           {
             "type": "string",
@@ -531,7 +536,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.group.model"
       }
     },
     "/groups/{id}": {
@@ -548,7 +554,7 @@
           "Groups"
         ],
         "summary": "Get a single group",
-        "operationId": "api.group.model.get_one",
+        "operationId": "get_group",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -622,7 +628,8 @@
           "404": {
             "description": "Group does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.group.model"
       },
       "put": {
         "security": [
@@ -634,7 +641,7 @@
           "Groups"
         ],
         "summary": "Modify a group",
-        "operationId": "api.group.model.put",
+        "operationId": "update_group",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -768,7 +775,8 @@
           "404": {
             "description": "Group does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.group.model"
       },
       "post": {
         "security": [
@@ -783,7 +791,7 @@
         "tags": [
           "Groups"
         ],
-        "operationId": "api.group.model.post",
+        "operationId": "create_group",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -859,7 +867,8 @@
           "200": {
             "description": "Group Created"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.group.model"
       }
     },
     "/media": {
@@ -876,7 +885,7 @@
         "tags": [
           "Media"
         ],
-        "operationId": "api.media.model.get_all",
+        "operationId": "get_media",
         "parameters": [
           {
             "type": "string",
@@ -953,7 +962,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.media.model"
       },
       "post": {
         "security": [
@@ -965,7 +975,7 @@
         "tags": [
           "Media"
         ],
-        "operationId": "api.media.model.post",
+        "operationId": "create_medium",
         "parameters": [
           {
             "name": "media",
@@ -1031,7 +1041,8 @@
           "200": {
             "description": "Media attached"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.media.model"
       }
     },
     "/media/source/{id}": {
@@ -1048,7 +1059,7 @@
           "Media"
         ],
         "summary": "Query media for a specific task or project",
-        "operationId": "api.media.custom.get_for_source",
+        "operationId": "get_for_source",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1124,7 +1135,8 @@
           "404": {
             "description": "Media does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.media.custom"
       },
       "delete": {
         "security": [
@@ -1136,7 +1148,7 @@
           "Media"
         ],
         "summary": "Delete all media files related to  source",
-        "operationId": "api.media.model.delete",
+        "operationId": "delete_medium",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1154,7 +1166,8 @@
           "404": {
             "description": "Media does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.media.model"
       }
     },
     "/media/upload": {
@@ -1171,7 +1184,7 @@
         "tags": [
           "Media"
         ],
-        "operationId": "api.media.custom.upload",
+        "operationId": "upload",
         "parameters": [
           {
             "type": "file",
@@ -1190,7 +1203,8 @@
           "200": {
             "description": "Media attached"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.media.custom"
       }
     },
     "/media/{id}": {
@@ -1207,7 +1221,7 @@
           "Media"
         ],
         "summary": "Get a single file",
-        "operationId": "api.media.model.get_one",
+        "operationId": "get_medium",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1228,7 +1242,8 @@
           "404": {
             "description": "Media does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.media.model"
       },
       "put": {
         "security": [
@@ -1240,7 +1255,7 @@
           "Media"
         ],
         "summary": "Put a single file",
-        "operationId": "api.media.model.put",
+        "operationId": "update_medium",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1372,7 +1387,8 @@
           "404": {
             "description": "Media does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.media.model"
       }
     },
     "/projects": {
@@ -1381,7 +1397,7 @@
           "Projects"
         ],
         "summary": "Get all projects",
-        "operationId": "api.project.model.get_all",
+        "operationId": "get_projects",
         "parameters": [
           {
             "type": "string",
@@ -1460,7 +1476,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.project.model"
       },
       "post": {
         "security": [
@@ -1472,7 +1489,7 @@
           "Projects"
         ],
         "summary": "Post a project",
-        "operationId": "api.project.model.post",
+        "operationId": "create_project",
         "parameters": [
           {
             "name": "project",
@@ -1540,7 +1557,8 @@
           "201": {
             "description": "New project created"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.project.model"
       }
     },
     "/projects/{id}": {
@@ -1557,7 +1575,7 @@
           "Projects"
         ],
         "summary": "Get a single project",
-        "operationId": "api.project.model.get_one",
+        "operationId": "get_project",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1575,7 +1593,8 @@
           "404": {
             "description": "Project does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.project.model"
       },
       "put": {
         "security": [
@@ -1587,7 +1606,7 @@
           "Projects"
         ],
         "summary": "Modify/Create a project",
-        "operationId": "api.project.model.put",
+        "operationId": "update_project",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1666,7 +1685,8 @@
           "201": {
             "description": "New project created"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.project.model"
       },
       "delete": {
         "security": [
@@ -1678,7 +1698,7 @@
           "Projects"
         ],
         "summary": "Remove a project",
-        "operationId": "api.project.model.delete",
+        "operationId": "delete_project",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1696,7 +1716,8 @@
           "404": {
             "description": "Project does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.project.model"
       }
     },
     "/projects/{id}/stats": {
@@ -1712,7 +1733,7 @@
         "tags": [
           "Projects"
         ],
-        "operationId": "api.project.custom.get_stats",
+        "operationId": "project_stats",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1730,7 +1751,8 @@
           "404": {
             "description": "Project does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.project.custom"
       }
     },
     "/projects/{id}/tasks": {
@@ -1794,7 +1816,7 @@
         "tags": [
           "Projects"
         ],
-        "operationId": "api.task.custom.get_random",
+        "operationId": "get_random",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1817,7 +1839,48 @@
           "404": {
             "description": "Project does not exist or task not found"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.task.custom"
+      }
+    },
+    "/projects/{id}/tasks/region": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "anonUser": []
+          }
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "get_region",
+        "parameters": [
+          {
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "type": "string",
+            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "name": "region",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single project task from the user's region"
+          },
+          "404": {
+            "description": "Project does not exist or task not found"
+          }
+        },
+        "x-swagger-router-controller": "api.task.custom"
       }
     },
     "/submission/{id}": {
@@ -1831,7 +1894,7 @@
           "Submissions"
         ],
         "summary": "Get a single submission",
-        "operationId": "api.submission.model.get_one",
+        "operationId": "get_submission",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1897,7 +1960,8 @@
           "404": {
             "description": "Submission does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.submission.model"
       },
       "put": {
         "security": [
@@ -1909,7 +1973,7 @@
           "Submissions"
         ],
         "summary": "Modify/Create a submission",
-        "operationId": "api.submission.model.put",
+        "operationId": "update_submission",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -1979,7 +2043,8 @@
           "201": {
             "description": "New submission created"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.submission.model"
       },
       "delete": {
         "security": [
@@ -1991,7 +2056,7 @@
           "Submissions"
         ],
         "summary": "Remove a submission",
-        "operationId": "api.submission.model.delete",
+        "operationId": "delete_submission",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -2009,7 +2074,8 @@
           "404": {
             "description": "Submission does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.submission.model"
       }
     },
     "/submissions": {
@@ -2023,7 +2089,7 @@
           "Submissions"
         ],
         "summary": "Get a single submission",
-        "operationId": "api.submission.model.get_all",
+        "operationId": "get_submissions",
         "parameters": [
           {
             "type": "string",
@@ -2093,7 +2159,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.submission.model"
       },
       "post": {
         "security": [
@@ -2108,7 +2175,7 @@
           "Submissions"
         ],
         "summary": "Post a submission",
-        "operationId": "api.submission.model.post",
+        "operationId": "create_submission",
         "parameters": [
           {
             "name": "submission",
@@ -2215,7 +2282,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.submission.model"
       }
     },
     "/tasks": {
@@ -2232,7 +2300,7 @@
           "Tasks"
         ],
         "summary": "Get a list of tasks",
-        "operationId": "api.task.model.get_all",
+        "operationId": "get_tasks",
         "parameters": [
           {
             "type": "number",
@@ -2317,7 +2385,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.task.model"
       },
       "post": {
         "security": [
@@ -2329,7 +2398,7 @@
           "Tasks"
         ],
         "summary": "Post an array of tasks",
-        "operationId": "api.task.model.post",
+        "operationId": "create_tasks",
         "parameters": [
           {
             "name": "tasks",
@@ -2457,7 +2526,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.task.model"
       },
       "delete": {
         "security": [
@@ -2469,7 +2539,7 @@
           "Tasks"
         ],
         "summary": "Delete an array of tasks",
-        "operationId": "api.task.custom.delete_tasks",
+        "operationId": "delete_tasks",
         "parameters": [
           {
             "name": "tasks",
@@ -2486,7 +2556,8 @@
           "204": {
             "description": "Tasks were deleted"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.task.custom"
       }
     },
     "/tasks/{id}": {
@@ -2503,7 +2574,7 @@
           "Tasks"
         ],
         "summary": "Get a single task",
-        "operationId": "api.task.model.get_one",
+        "operationId": "get_task",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -2578,7 +2649,8 @@
           "404": {
             "description": "Task does not exist"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.task.model"
       },
       "put": {
         "security": [
@@ -2590,7 +2662,7 @@
           "Tasks"
         ],
         "summary": "Modify/Create a task",
-        "operationId": "api.task.model.put",
+        "operationId": "update_task",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -2669,7 +2741,8 @@
           "201": {
             "description": "New task created"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.task.model"
       },
       "delete": {
         "security": [
@@ -2681,7 +2754,7 @@
           "Tasks"
         ],
         "summary": "Delete a single tasks",
-        "operationId": "api.task.model.delete",
+        "operationId": "delete_task",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -2696,7 +2769,8 @@
           "204": {
             "description": "Task was deleted"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.task.model"
       }
     },
     "/users": {
@@ -2709,7 +2783,7 @@
         "tags": [
           "Users"
         ],
-        "operationId": "api.user.model.get_all",
+        "operationId": "get_users",
         "parameters": [
           {
             "type": "string",
@@ -2781,7 +2855,8 @@
               }
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.model"
       }
     },
     "/users/authorize": {
@@ -2790,7 +2865,7 @@
           "Users"
         ],
         "summary": "Post auth for token response",
-        "operationId": "api.otoken.generate",
+        "operationId": "generate",
         "parameters": [
           {
             "name": "token",
@@ -2846,7 +2921,8 @@
           "200": {
             "description": "Token created"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.otoken"
       }
     },
     "/users/login": {
@@ -2855,7 +2931,7 @@
           "Users"
         ],
         "summary": "Allow a user to login",
-        "operationId": "api.user.custom.login",
+        "operationId": "login",
         "parameters": [
           {
             "name": "user",
@@ -2923,7 +2999,8 @@
           "404": {
             "description": "User not found"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.custom"
       }
     },
     "/users/register": {
@@ -2932,7 +3009,7 @@
           "Users"
         ],
         "summary": "Registration end point for a user account",
-        "operationId": "api.user.model.post",
+        "operationId": "create_user",
         "parameters": [
           {
             "name": "user",
@@ -2993,7 +3070,8 @@
           "200": {
             "description": "Created user"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.model"
       }
     },
     "/users/reset": {
@@ -3002,7 +3080,7 @@
           "Users"
         ],
         "summary": "Reset user password",
-        "operationId": "api.user.custom.reset",
+        "operationId": "reset",
         "parameters": [
           {
             "type": "string",
@@ -3015,14 +3093,15 @@
           "200": {
             "description": "Password reset"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.custom"
       },
       "post": {
         "tags": [
           "Users"
         ],
         "summary": "Verify password reset token",
-        "operationId": "api.user.custom.verify_reset",
+        "operationId": "verify_reset",
         "parameters": [
           {
             "name": "reset",
@@ -3055,7 +3134,8 @@
           "401": {
             "description": "Unauthorised user"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.custom"
       }
     },
     "/users/validate": {
@@ -3064,7 +3144,7 @@
           "Users"
         ],
         "summary": "OAuth2 token info",
-        "operationId": "api.user.custom.validate",
+        "operationId": "validate",
         "parameters": [
           {
             "type": "string",
@@ -3126,7 +3206,8 @@
               ]
             }
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.custom"
       }
     },
     "/users/{id}": {
@@ -3143,7 +3224,7 @@
           "Users"
         ],
         "summary": "Get all users (or those matching an ID)",
-        "operationId": "api.user.model.get_one",
+        "operationId": "get_user",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -3211,7 +3292,8 @@
           "404": {
             "description": "User not found"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.model"
       },
       "put": {
         "security": [
@@ -3226,7 +3308,7 @@
           "Users"
         ],
         "summary": "Update user details (change password, add details etc)",
-        "operationId": "api.user.model.put",
+        "operationId": "update_user",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -3348,7 +3430,8 @@
           "404": {
             "description": "User not found"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.model"
       }
     },
     "/users/{id}/submissions": {
@@ -3365,7 +3448,7 @@
           "Users"
         ],
         "summary": "Get all submissions for a user (or those matching an ID)",
-        "operationId": "api.user.custom.get_subs",
+        "operationId": "get_subs",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -3434,7 +3517,8 @@
           "404": {
             "description": "User not found"
           }
-        }
+        },
+        "x-swagger-router-controller": "api.user.custom"
       }
     }
   },

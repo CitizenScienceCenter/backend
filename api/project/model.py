@@ -10,23 +10,23 @@ from api import model
 
 db_session = orm_handler.db_session
 
-def get_all(limit=20, search_term=None):
+def get_projects(limit=20, search_term=None):
     return model.get_all(Project, limit, search_term)
 
-def get_one(id=None):
+def get_project(id=None):
     return model.get_one(Project, id)
 
 @access_checks.ensure_key
-def post(project):
+def create_project(project):
     user = utils.get_user(request, db_session)
     project['owned_by'] = user.id
     return model.post(Project, project)
 
 @access_checks.ensure_key
-def put(id, project):
+def update_project(id, project):
     return model.put(Project, id, project)
 
 @access_checks.ensure_key
-def delete(id):
+def delete_project(id):
     # TODO delete tasks first
     return model.delete(Project, id)

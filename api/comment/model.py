@@ -8,21 +8,21 @@ from api import model
 
 db_session = orm_handler.db_session
 
-def get_all(limit=20, search_term=None):
+def get_comments(limit=20, search_term=None):
     return model.get_all(Comment, limit, search_term)
 
-def get_one(id=None):
+def get_comment(id=None):
     return model.get_one(Comment, id)
 
 @access_checks.ensure_key
-def post(comment):
+def create_comment(comment):
     logging.info('Creating Comment ')
     return model.post(Comment, comment)
 
 @access_checks.ensure_key
-def put(id, comment):
+def update_comment(id, comment):
     return model.put(Comment, id, comment)
 
 @access_checks.ensure_key
-def delete(id):
+def delete_comment(id):
     return model.delete(Comment, id)

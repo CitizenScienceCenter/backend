@@ -5,7 +5,8 @@ paths:
         - apiKeyHeader: []
       tags: [Groups]
       description: "Add a new group"
-      operationId: api.group.model.post
+      x-swagger-router-controller: api.group.model
+      operationId: create_group
       consumes:
         - multipart/form-data
       parameters:
@@ -23,7 +24,8 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Groups]
-      operationId: api.group.model.get_one
+      x-swagger-router-controller: api.group.model
+      operationId: get_group
       summary: Get a single group
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -38,7 +40,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Groups]
-      operationId: api.group.model.put
+      x-swagger-router-controller: api.group.model
+      operationId: update_group
       summary: Modify a group
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -60,7 +63,8 @@ paths:
         - anonUser: []
       tags: [Groups]
       description: "Get a list of group"
-      operationId: api.group.model.get_all
+      x-swagger-router-controller: api.group.model
+      operationId: get_groups
       parameters:
         - name: search_term
           in: query

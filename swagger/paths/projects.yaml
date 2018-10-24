@@ -10,10 +10,29 @@ paths:
         - name: search
           in: query
           type: string
-      operationId: api.task.custom.get_random
+      x-swagger-router-controller: api.task.custom
+      operationId: get_random
       responses:
         200:
           description: A single random project task
+        404:
+          description: Project does not exist or task not found
+  project_tasks_region:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Projects]
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+        - name: region
+          in: query
+          type: string
+      x-swagger-router-controller: api.task.custom
+      operationId: get_region
+      responses:
+        200:
+          description: A single project task from the user's region
         404:
           description: Project does not exist or task not found
   project_tasks:
@@ -48,7 +67,8 @@ paths:
       tags: [Projects]
       parameters:
         - $ref: './params.yaml#/parameters/id'
-      operationId: api.project.custom.get_stats
+      x-swagger-router-controller: api.project.custom
+      operationId: project_stats
       responses:
         200: 
           description: Project stats
@@ -57,7 +77,8 @@ paths:
   projects:
     get:
       tags: [Projects]
-      operationId: api.project.model.get_all
+      x-swagger-router-controller: api.project.model
+      operationId: get_projects
       summary: Get all projects
       parameters:
         - name: search_term
@@ -79,7 +100,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.model.post
+      x-swagger-router-controller: api.project.model
+      operationId: create_project
       summary: Post a project
       parameters:
         - name: project
@@ -95,7 +117,8 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Projects]
-      operationId: api.project.model.get_one
+      x-swagger-router-controller: api.project.model
+      operationId: get_project
       summary: Get a single project
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -108,7 +131,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.model.put
+      x-swagger-router-controller: api.project.model
+      operationId: update_project
       summary: Modify/Create a project
       parameters:
         - $ref: './params.yaml#/parameters/id'
@@ -125,7 +149,8 @@ paths:
       security:
         - apiKeyHeader: []
       tags: [Projects]
-      operationId: api.project.model.delete
+      x-swagger-router-controller: api.project.model
+      operationId: delete_project
       summary: Remove a project
       parameters:
         - $ref: './params.yaml#/parameters/id'

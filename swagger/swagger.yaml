@@ -53,6 +53,8 @@ paths:
     {$ref: './paths/projects.yaml#/paths/project_tasks'}
   /projects/{id}/tasks/random:
     {$ref: './paths/projects.yaml#/paths/project_tasks_random'}
+  /projects/{id}/tasks/region:
+    {$ref: './paths/projects.yaml#/paths/project_tasks_region'}
   /tasks:
     {$ref: './paths/tasks.yaml#/paths/tasks'}
   /tasks/{id}:

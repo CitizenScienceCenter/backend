@@ -8,7 +8,7 @@ from flask import request
 
 db_session = orm_handler.db_session
 
-def get_stats(id=None):
+def project_stats(id=None):
     tasks = db_session.query(Task).filter(Task.project_id == id).all()
     no_tasks = len(tasks)
     subs = 0

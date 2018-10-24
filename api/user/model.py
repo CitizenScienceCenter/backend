@@ -14,14 +14,14 @@ from api import model
 
 db_session = orm_handler.db_session
 
-def get_all(limit=20, search_term=None):
+
+def get_users(limit=20, search_term=None):
     return model.get_all(User, limit, search_term)
 
-def get_one(id=None):
+def get_user(id=None):
     return model.get_one(User, id)
 
-@access_checks.ensure_key
-def post(user):
+def create_user(user):
     user['api_key'] = uuid.uuid4()
     user['pwd'] = pbkdf2_sha256.encrypt(user['pwd'], rounds=200000, salt_size=16)
     print(user)
@@ -30,11 +30,11 @@ def post(user):
     return model.post(User, user)
 
 @access_checks.ensure_key
-def put(id, user):
+def update_user(id, user):
     # TODO ensure only user can edit their own profile
     return model.put(User, id, user)
 
 @access_checks.ensure_key
-def delete(id):
+def delete_user(id):
     # TODO ensure only user can delete their own profile
     return model.delete(User, id)
