@@ -179,7 +179,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Comment created",
             "schema": {
               "type": "object",
@@ -234,6 +234,9 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Comment already exists"
           }
         },
         "x-swagger-router-controller": "api.comment.model"
@@ -454,7 +457,7 @@
             "anonUser": []
           }
         ],
-        "description": "Get a list of group",
+        "description": "Get a list of groups",
         "tags": [
           "Groups"
         ],
@@ -475,7 +478,7 @@
         ],
         "responses": {
           "200": {
-            "description": "List of group",
+            "description": "List of groups",
             "schema": {
               "type": "array",
               "items": {
@@ -713,7 +716,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Return Group",
             "schema": {
               "type": "object",
@@ -786,7 +789,7 @@
         ],
         "description": "Add a new group",
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "tags": [
           "Groups"
@@ -864,8 +867,11 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Group Created"
+          },
+          "409": {
+            "description": "Group already exists"
           }
         },
         "x-swagger-router-controller": "api.group.model"
@@ -1556,6 +1562,9 @@
         "responses": {
           "201": {
             "description": "New project created"
+          },
+          "409": {
+            "description": "Project already exists"
           }
         },
         "x-swagger-router-controller": "api.project.model"
@@ -2231,7 +2240,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Submission created",
             "schema": {
               "type": "object",
@@ -2466,7 +2475,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Task created",
             "schema": {
               "type": "object",
@@ -2735,9 +2744,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Task modified"
-          },
           "201": {
             "description": "New task created"
           }
@@ -3067,8 +3073,11 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Created user"
+          },
+          "409": {
+            "description": "User exists"
           }
         },
         "x-swagger-router-controller": "api.user.model"
@@ -3374,7 +3383,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "User updated",
             "schema": {
               "type": "object",
