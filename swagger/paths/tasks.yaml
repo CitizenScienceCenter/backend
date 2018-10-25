@@ -31,7 +31,7 @@ paths:
           schema:
             $ref: './types.yaml#/definitions/Task'
       responses:
-        200:
+        201:
           description: Task modified
         201:
           description: New task created
@@ -91,7 +91,7 @@ paths:
             items:
               $ref: './types.yaml#/definitions/Task'
       responses:
-        200:
+        201:
           description: Task created
           schema:
             $ref: './types.yaml#/definitions/Task'

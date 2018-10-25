@@ -140,7 +140,7 @@ paths:
           schema:
             {$ref: './types.yaml#/definitions/User'}
       responses:
-        201:
+        200:
           description: User updated
           schema:
             {$ref: './types.yaml#/definitions/User'}
@@ -158,8 +158,10 @@ paths:
           schema:
             {$ref: './types.yaml#/definitions/User'}
       responses:
-        200:
+        201:
           description: Created user
+        409:
+          description: User exists
   get_users:
     get:
       tags: [Users]

@@ -111,6 +111,8 @@ paths:
       responses:
         201:
           description: New project created
+        409:
+          description: Project already exists
   project_id:
     get:
       security:

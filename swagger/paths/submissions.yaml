@@ -86,7 +86,7 @@ paths:
           schema:
             $ref: './types.yaml#/definitions/Submission'
       responses:
-        200:
+        201:
           description: Submission created
           schema:
             $ref: './types.yaml#/definitions/Submission'

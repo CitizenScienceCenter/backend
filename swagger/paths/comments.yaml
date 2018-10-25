@@ -37,10 +37,12 @@ paths:
           schema:
             $ref: './types.yaml#/definitions/Comment'
       responses:
-        200:
+        201:
           description: Comment created
           schema:
             $ref: './types.yaml#/definitions/Comment'
+        409:
+          description: Comment already exists
   comment_id:
     get:
       security:

@@ -5,6 +5,7 @@ from connexion import NoContent
 from db import orm_handler, Media
 from decorators import access_checks
 from werkzeug.utils import secure_filename
+from sqlalchemy.exc import IntegrityError
 import uuid
 from flask import send_file
 import fleep
@@ -28,11 +29,14 @@ def get_file(model, id=None):
     return send_file(m.path) if m is not None else ('Not found', 404)
 
 def post(model, object):
-    p= model(**object)
-    db_session.add(p)
-    db_session.commit()
-    print(p.id)
-    return p.dump(), 201
+    p = model(**object)
+    try:
+        db_session.add(p)
+        db_session.commit()
+        print(p.id)
+        return p.dump(), 201
+    except IntegrityError as ie:
+        return {'msg': 'Resource already exists', 'ok': False}, 409
 
 @access_checks.ensure_key
 def put(model, id, object):
@@ -47,7 +51,7 @@ def put(model, id, object):
     else:
         logging.info('Creating object %s..', id)
         p = model(**object)
-        db_session.add(s)
+        db_session.add(p)
     db_session.commit()
     print(p.id)
     return p.dump(), (200 if p is not None else 201)

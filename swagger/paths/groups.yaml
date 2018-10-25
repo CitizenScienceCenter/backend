@@ -17,8 +17,10 @@ paths:
           schema:
             $ref: './types.yaml#/definitions/Group'
       responses:
-        200:
+        201:
           description: Group Created
+        409:
+          description: Group already exists
     get:
       security:
         - apiKeyHeader: []
@@ -50,7 +52,7 @@ paths:
           schema:
             $ref: './types.yaml#/definitions/Group'
       responses:
-        201:
+        200:
           description: Return Group
           schema:
             $ref: './types.yaml#/definitions/Group' 
@@ -62,7 +64,7 @@ paths:
         - apiKeyHeader: []
         - anonUser: []
       tags: [Groups]
-      description: "Get a list of group"
+      description: "Get a list of groups"
       x-swagger-router-controller: api.group.model
       operationId: get_groups
       parameters:
@@ -76,7 +78,7 @@ paths:
           default: 20
       responses:
         200:
-          description: List of group
+          description: List of groups
           schema:
             type: array
             items: 

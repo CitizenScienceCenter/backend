@@ -12,6 +12,10 @@ from db import orm_handler
 
 from app import app
 
+from test import t_con
+
+
+
 # app = connexion.FlaskApp(__name__)
 # app = connexion.App(__name__, specification_dir='swagger/')
 # app.app.config.from_envvar('CC_ENV')
@@ -37,13 +41,13 @@ def client():
 
 def test_register(client):
     lg = client.post('/api/v1/users/register', json={
-        'email': app.app.config['TEST_USER'], 'pwd': app.app.config['TEST_PWD']
+        'email': t_con.TEST_USER, 'pwd': t_con.TEST_PWD
     })
-    assert lg.status_code == 201
+    assert lg.status_code == 201 or lg.status_code == 409
 
 def test_login(client):
     lg = client.post('/api/v1/users/login', json={
-        'email': app.app.config['TEST_USER'], 'pwd': app.app.config['TEST_PWD']
+        'email': t_con.TEST_USER, 'pwd': t_con.TEST_PWD
     })
     print(lg.data)
     assert lg.status_code == 200

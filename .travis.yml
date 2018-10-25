@@ -11,4 +11,4 @@ before_script:
 services:
   - postgresql
 script:
-  - CC_ENV=config/test.py pytest
+  - pytest test_*
