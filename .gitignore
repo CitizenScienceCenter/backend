@@ -139,5 +139,3 @@ envs/local.env
 envs/prod.env
 envs/uzh.env
 envs/wenker.env
-test/config.py
-test/__init__.py
