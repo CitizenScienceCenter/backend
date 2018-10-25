@@ -1,1 +1,0 @@
-from test import config as t_con
