@@ -11,4 +11,5 @@ before_script:
 services:
   - postgresql
 script:
+  - ln -sf envs/test.env .env
   - pytest test_*

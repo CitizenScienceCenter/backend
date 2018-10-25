@@ -132,6 +132,7 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 .gitsecret/keys/random_seed
+!envs/test.env
 !envs/*.secret
 envs/docker.env
 envs/local.env
