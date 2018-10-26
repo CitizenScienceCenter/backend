@@ -12,4 +12,4 @@ services:
   - postgresql
 script:
   - ln -sf envs/test.env .env
-  - pytest test_*
+  - pytest test/
