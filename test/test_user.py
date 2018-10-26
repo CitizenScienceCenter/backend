@@ -32,5 +32,11 @@ def test_login(client):
     lg = client.post('/api/v1/users/login', json={
         'email': t_con.TEST_USER, 'pwd': t_con.TEST_PWD
     })
-    print(lg.data)
     assert lg.status_code == 200
+
+@pytest.mark.run(order=3)
+def test_login_fail(client):
+    lg = client.post('/api/v1/users/login', json={
+        'email': "hfkjhdfgkj@gfhjkg.com", 'pwd': "hdjkfhkjdhf"
+    })
+    assert lg.status_code == 404
