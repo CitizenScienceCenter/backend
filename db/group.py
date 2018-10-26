@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 class Group(orm.Base):
     __tablename__ = 'groups'
-    name = Column(String(100), unique=True)
+    name = Column(String(100)) # TODO add alembic migration to remove unique
     description = Column(String(1000), unique=True)
     url =Column(String(200))
     created_by = Column(UUID, ForeignKey('users.id'))

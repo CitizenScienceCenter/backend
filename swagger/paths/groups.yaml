@@ -1,26 +1,5 @@
 paths:
   group_id:
-    post:
-      security:
-        - apiKeyHeader: []
-      tags: [Groups]
-      description: "Add a new group"
-      x-swagger-router-controller: api.group.model
-      operationId: create_group
-      consumes:
-        - application/json
-      parameters:
-        - $ref: './params.yaml#/parameters/id'
-        - name: group
-          in: body
-          required: true
-          schema:
-            $ref: './types.yaml#/definitions/Group'
-      responses:
-        201:
-          description: Group Created
-        409:
-          description: Group already exists
     get:
       security:
         - apiKeyHeader: []
@@ -58,6 +37,20 @@ paths:
             $ref: './types.yaml#/definitions/Group' 
         404:
           description: Group does not exist
+    delete:
+      security:
+        - apiKeyHeader: []
+      tags: [Groups]
+      x-swagger-router-controller: api.group.model
+      operationId: delete_group
+      summary: Delete a group
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+      responses:
+        200:
+          description: Group Deleted
+        404:
+          description: Group does not exist
   groups:
     get:
       security:
@@ -83,3 +76,23 @@ paths:
             type: array
             items: 
               $ref: './types.yaml#/definitions/Group'
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Groups]
+      description: "Add a new group"
+      x-swagger-router-controller: api.group.model
+      operationId: create_group
+      consumes:
+        - application/json
+      parameters:
+        - name: group
+          in: body
+          required: true
+          schema:
+            $ref: './types.yaml#/definitions/Group'
+      responses:
+        201:
+          description: Group Created
+        409:
+          description: Group already exists

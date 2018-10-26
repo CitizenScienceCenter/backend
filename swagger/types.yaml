@@ -132,7 +132,6 @@ definitions:
     required:
       - name
       - description
-      - created_by
     allOf:
      - $ref: '#/definitions/Base'
     properties:

@@ -485,8 +485,7 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "description",
-                  "created_by"
+                  "description"
                 ],
                 "allOf": [
                   {
@@ -541,6 +540,92 @@
           }
         },
         "x-swagger-router-controller": "api.group.model"
+      },
+      "post": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "description": "Add a new group",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "Groups"
+        ],
+        "operationId": "create_group",
+        "parameters": [
+          {
+            "name": "group",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "description"
+              ],
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "description": "Creation time",
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true,
+                      "example": "2015-07-07T15:49:51.230+02:00"
+                    },
+                    "id": {
+                      "type": "string",
+                      "maxLength": 20,
+                      "readOnly": true
+                    },
+                    "info": {
+                      "description": "A JSON field to extend a model with extra info",
+                      "type": "object"
+                    },
+                    "updated_at": {
+                      "description": "Creation time",
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true,
+                      "example": "2015-07-07T15:49:51.230+02:00"
+                    }
+                  }
+                }
+              ],
+              "properties": {
+                "api_key": {
+                  "type": "string",
+                  "readOnly": true
+                },
+                "created_by": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Group Created"
+          },
+          "409": {
+            "description": "Group already exists"
+          }
+        },
+        "x-swagger-router-controller": "api.group.model"
       }
     },
     "/groups/{id}": {
@@ -575,8 +660,7 @@
               "type": "object",
               "required": [
                 "name",
-                "description",
-                "created_by"
+                "description"
               ],
               "allOf": [
                 {
@@ -661,8 +745,7 @@
               "type": "object",
               "required": [
                 "name",
-                "description",
-                "created_by"
+                "description"
               ],
               "allOf": [
                 {
@@ -722,8 +805,7 @@
               "type": "object",
               "required": [
                 "name",
-                "description",
-                "created_by"
+                "description"
               ],
               "allOf": [
                 {
@@ -781,20 +863,17 @@
         },
         "x-swagger-router-controller": "api.group.model"
       },
-      "post": {
+      "delete": {
         "security": [
           {
             "apiKeyHeader": []
           }
         ],
-        "description": "Add a new group",
-        "consumes": [
-          "application/json"
-        ],
         "tags": [
           "Groups"
         ],
-        "operationId": "create_group",
+        "summary": "Delete a group",
+        "operationId": "delete_group",
         "parameters": [
           {
             "pattern": "^[a-zA-Z0-9-]+$",
@@ -803,75 +882,14 @@
             "name": "id",
             "in": "path",
             "required": true
-          },
-          {
-            "name": "group",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "name",
-                "description",
-                "created_by"
-              ],
-              "allOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "created_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    },
-                    "id": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "readOnly": true
-                    },
-                    "info": {
-                      "description": "A JSON field to extend a model with extra info",
-                      "type": "object"
-                    },
-                    "updated_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    }
-                  }
-                }
-              ],
-              "properties": {
-                "api_key": {
-                  "type": "string",
-                  "readOnly": true
-                },
-                "created_by": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              }
-            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Group Created"
+          "200": {
+            "description": "Group Deleted"
           },
-          "409": {
-            "description": "Group already exists"
+          "404": {
+            "description": "Group does not exist"
           }
         },
         "x-swagger-router-controller": "api.group.model"
