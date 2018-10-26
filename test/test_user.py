@@ -20,12 +20,14 @@ def client():
     with app.app.test_client() as c:
         yield c
 
+@pytest.mark.run(order=1)
 def test_register(client):
     lg = client.post('/api/v1/users/register', json={
         'email': t_con.TEST_USER, 'pwd': t_con.TEST_PWD
     })
     assert lg.status_code == 201 or lg.status_code == 409
 
+@pytest.mark.run(order=2)
 def test_login(client):
     lg = client.post('/api/v1/users/login', json={
         'email': t_con.TEST_USER, 'pwd': t_con.TEST_PWD
