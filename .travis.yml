@@ -13,3 +13,6 @@ services:
 script:
   - ln -sf envs/test.env .env
   - pytest test/
+notifications:
+  webhooks: https://chat.citizenscience.ch/hooks/xnYY4LLB2LWXqmxHd/ABijvSTDjRoNvPLin6JyLTRyBDGNQTDmihLutzRcT5bDHmWg
+
