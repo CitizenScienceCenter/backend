@@ -29,7 +29,7 @@ def create_user(user):
         user['username'] = user['email']
     return model.post(User, user)
 
-@access_checks.ensure_key
+@access_checks.ensure_owner(User)
 def update_user(id, user):
     # TODO ensure only user can edit their own profile
     return model.put(User, id, user)

@@ -17,7 +17,7 @@ def get_group(id=None):
 @access_checks.ensure_key
 def create_group(group):
     user = utils.get_user(request, db_session)
-    group['created_by'] = user.id
+    group['owned_by'] = user.id
     return model.post(Group, group)
 
 @access_checks.ensure_key

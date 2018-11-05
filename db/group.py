@@ -9,6 +9,6 @@ class Group(orm.Base):
     name = Column(String(100)) # TODO add alembic migration to remove unique
     description = Column(String(1000), unique=True)
     url =Column(String(200))
-    created_by = Column(UUID, ForeignKey('users.id'))
+    owned_by = Column(UUID, ForeignKey('users.id'))
     api_key = Column(String(100))
 
