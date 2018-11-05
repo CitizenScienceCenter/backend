@@ -2,10 +2,11 @@ from flask import session, request, g
 from connexion import NoContent
 from functools import wraps
 from db import *
-
-# from db import orm_handler, User
+import prison
 
 db_session = orm_handler.db_session
+db_tables = orm_handler.Base.metadata.tables.keys()
+
 
 def ensure_key(func):
     @wraps(func)
@@ -29,7 +30,19 @@ def ensure_key(func):
 def ensure_model(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
-        return func(*args, **kwargs)
+        if 'search_term' in request.args:
+            search = prison.loads(request.args['search_term'])
+            allowed_table = True
+            for t in search['select']['tables']:
+                if t.lower() not in db_tables:
+                    allowed_table = False
+                    break
+            print(allowed_table)
+            if not allowed_table:
+                return NoContent, 401
+            return func(*args, **kwargs)
+        else:
+            return func(*args, **kwargs)
     return decorated_function
 
 

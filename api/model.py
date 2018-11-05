@@ -16,6 +16,7 @@ import prison
 db_session = orm_handler.db_session
 js = jtos.JTOS()
 
+@access_checks.ensure_model
 def get_all(model, limit=25, search_term=None):
     # TODO add offset
     q = db_session.query(model)
@@ -24,7 +25,6 @@ def get_all(model, limit=25, search_term=None):
             st = prison.loads(search_term)
             q_stmt = js.parseObject(st)
             print(q_stmt)
-            # TODO check statement is only querying models in db
             # TODO execute query
         except Exception as e:
             # TODO handle parsing error
