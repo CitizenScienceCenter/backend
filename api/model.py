@@ -17,12 +17,15 @@ db_session = orm_handler.db_session
 js = jtos.JTOS()
 
 def get_all(model, limit=25, search_term=None):
+    # TODO add offset
     q = db_session.query(model)
     if search_term:
         try:
             st = prison.loads(search_term)
             q_stmt = js.parseObject(st)
             print(q_stmt)
+            # TODO check statement is only querying models in db
+            # TODO execute query
         except Exception as e:
             # TODO handle parsing error
             return e
@@ -47,7 +50,6 @@ def post(model, object):
     except IntegrityError as ie:
         return {'msg': 'Resource already exists', 'ok': False}, 409
 
-@access_checks.ensure_key
 def put(model, id, object):
     p = db_session.query(model).filter(model.id == id).one_or_none()
     print(p.dump())
@@ -65,7 +67,6 @@ def put(model, id, object):
     print(p.id)
     return p.dump(), (200 if p is not None else 201)
 
-@access_checks.ensure_key
 def delete(model, id):
     d = db_session.query(model).filter(model.id == id).one_or_none()
     if d is not None:

@@ -34,7 +34,7 @@ def update_user(id, user):
     # TODO ensure only user can edit their own profile
     return model.put(User, id, user)
 
-@access_checks.ensure_key
+@access_checks.ensure_owner(User)
 def delete_user(id):
     # TODO ensure only user can delete their own profile
     return model.delete(User, id)

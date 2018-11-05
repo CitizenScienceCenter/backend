@@ -26,7 +26,7 @@ def create_project(project):
 def update_project(id, project):
     return model.put(Project, id, project)
 
-@access_checks.ensure_key
+@access_checks.ensure_owner(Project)
 def delete_project(id):
     # TODO delete tasks first
     return model.delete(Project, id)

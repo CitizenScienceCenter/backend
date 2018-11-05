@@ -141,7 +141,7 @@ definitions:
         type: string
       url:
         type: string
-      created_by:
+      owned_by:
         type: string
       api_key:
         type: string

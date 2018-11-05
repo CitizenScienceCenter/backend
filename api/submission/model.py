@@ -22,6 +22,6 @@ def create_submission(submission):
 def update_submission(id, submission):
     return model.put(Submission, id, submission)
 
-@access_checks.ensure_key
+@access_checks.ensure_owner(Submission)
 def delete_submission(id):
     return model.delete(Submission, id)

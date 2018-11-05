@@ -24,6 +24,6 @@ def create_group(group):
 def update_group(id, group):
     return model.put(Group, id, group)
 
-@access_checks.ensure_key
+@access_checks.ensure_owner(Group)
 def delete_group(id):
     return model.delete(Group, id)
