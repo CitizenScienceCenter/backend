@@ -1,8 +1,9 @@
 import connexion
 import logging
-import os
+import os, json
 from connexion import NoContent
 from db import orm_handler, Media
+from db.JTOS import jtos
 from decorators import access_checks
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
@@ -10,13 +11,21 @@ import uuid
 from flask import send_file
 import fleep
 from pathlib import Path
+import prison
 
 db_session = orm_handler.db_session
+js = jtos.JTOS()
 
-def get_all(model, limit, search_term):
+def get_all(model, limit=25, search_term=None):
     q = db_session.query(model)
-    # if search_term:
-    #     q = q.filter(model.source_id == search_term)
+    if search_term:
+        try:
+            st = prison.loads(search_term)
+            q_stmt = js.parseObject(st)
+            print(q_stmt)
+        except Exception as e:
+            # TODO handle parsing error
+            return e
     return [p.dump() for p in q][:limit]
 
 

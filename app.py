@@ -34,7 +34,7 @@ port = application.config['PORT'] or 8080
 debug = application.config['DEBUG'] or False
 
 if __name__ == '__main__':
-    if 'dev' in os.environ['CC_ENV'] or 'local' in os.environ['CC_ENV'] or 'test' in os.environ['CC_ENV']:
+    if 'dev' in application.config['CC_ENV'] or 'local' in application.config['CC_ENV'] or 'test' in application.config['CC_ENV']:
         print('Running in Debug Mode')
         app.run(port=port, debug=True)
     else:

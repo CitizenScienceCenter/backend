@@ -1,0 +1,3 @@
+[submodule "JTOS"]
+	path = JTOS
+	url = git@github.com:encima/JTOS.git

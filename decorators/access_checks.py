@@ -25,6 +25,11 @@ def ensure_key(func):
             return NoContent, 401
     return decorated_function
 
+def ensure_model(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        return func(*args, **kwargs)
+    return decorated_function
 
 def ensure_owner(func):
     @wraps(func)
@@ -38,10 +43,6 @@ def ensure_owner(func):
                 return func(*args, **kwargs)
             else:
                 return NoContent, 401
-        elif 'X-ANON' in request.headers:
-            # TODO handle anonymous users (separate table?) and provide limited restrictions
-            key = request.headers['X-ANON']
-            return NoContent, 401
         else:
             return NoContent, 401
     return decorated_function
