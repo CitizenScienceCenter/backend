@@ -18,21 +18,25 @@ db_session = orm_handler.db_session
 def get_users(limit=20, search_term=None):
     return model.get_all(User, limit, search_term)
 
+
 def get_user(id=None):
     return model.get_one(User, id)
 
+
 def create_user(user):
-    user['api_key'] = uuid.uuid4()
-    user['pwd'] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user['pwd'])
+    user["api_key"] = uuid.uuid4()
+    user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     print(user)
-    if ('username' in user and len(user['username']) == 0) or not 'username' in user:
-        user['username'] = user['email']
+    if ("username" in user and len(user["username"]) == 0) or not "username" in user:
+        user["username"] = user["email"]
     return model.post(User, user)
+
 
 @access_checks.ensure_owner(User)
 def update_user(id, user):
     # TODO ensure only user can edit their own profile
     return model.put(User, id, user)
+
 
 @access_checks.ensure_owner(User)
 def delete_user(id):
