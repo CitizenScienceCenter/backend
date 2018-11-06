@@ -38,9 +38,6 @@ def test_create_groups(client):
 
 @pytest.mark.run(order=5)
 def test_create_groups__invalid(client):
-    import pdb
-
-    pdb.set_trace()
     user = utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
     lg = client.post(
         "/api/v1/groups", json={}, headers=[("X-API-KEY", user["api_key"])]
