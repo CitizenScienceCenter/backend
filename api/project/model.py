@@ -21,8 +21,6 @@ def get_project(id=None):
 
 @access_checks.ensure_key
 def create_project(project):
-    user = utils.get_user(request, db_session)
-    project["owned_by"] = user.id
     return model.post(Project, project)
 
 

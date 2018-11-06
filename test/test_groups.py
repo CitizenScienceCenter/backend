@@ -23,46 +23,33 @@ def client():
     with app.app.test_client() as c:
         yield c
 
-
-@pytest.mark.run(order=4)
-def test_create_groups(client):
-    user = utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
-    lg = client.post(
-        "/api/v1/groups",
-        json={"name": "Test Group", "description": "A Test Group"},
-        headers=[("X-API-KEY", user["api_key"])],
-    )
-    assert lg.status_code == 201
-    test_delete_groups(client)
+@pytest.fixture(scope="function")
+def user(client):
+    return utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
 
 
-@pytest.mark.run(order=5)
-def test_create_groups__invalid(client):
-    user = utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
-    lg = client.post(
-        "/api/v1/groups", json={}, headers=[("X-API-KEY", user["api_key"])]
-    )
-    assert lg.status_code == 400
+class TestGroups():
 
 
-@pytest.mark.run(order=6)
-def test_query_groups(client):
-    user = utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
-    q_statement = "(select:(fields:!(email,id,password),orderBy:(email:ASC,id:desc),tables:!(groups)))"
-    lg = client.get(
-        "/api/v1/groups?search_term={}".format(q_statement),
-        headers=[("X-API-KEY", user["api_key"])],
-    )
-    assert lg.status_code == 200
+    @pytest.mark.run(order=4)
+    def test_create_and_delete_groups(self, client, user):
+        group_dict = {"name": "Test Group", "description": "A Test Group"}
+        group = utils.create_group(client, group_dict, user["api_key"])
+        utils.delete_group(client, group["id"], user["api_key"])
 
+    @pytest.mark.run(order=5)
+    def test_create_groups__invalid(self, client, user):
+        lg = client.post(
+            "/api/v1/groups", json={}, headers=[("X-API-KEY", user["api_key"])]
+        )
+        assert lg.status_code == 400
 
-@pytest.mark.run(order=7)
-def test_delete_groups(client):
-    user = utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
-    groups = utils.get_groups(client, user["api_key"])
-    for g in groups:
-        lg = client.delete(
-            "/api/v1/groups/{0}".format(g["id"]),
+    @pytest.mark.run(order=6)
+    def test_query_groups(self, client, user):
+        q_statement = "(select:(fields:!(email,id,password),orderBy:(email:ASC,id:desc),tables:!(groups)))"
+        lg = client.get(
+            "/api/v1/groups?search_term={}".format(q_statement),
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert lg.status_code == 200
+

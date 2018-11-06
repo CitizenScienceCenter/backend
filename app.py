@@ -20,7 +20,11 @@ app = connexion.App(__name__, specification_dir="./swagger/")
 application = app.app
 env = DotEnv()
 env.init_app(application, env_file=".env", verbose_mode=False)
-db_session = orm_handler.init_db(application.config["DB_URI"], persist=True)
+db_session = None
+if "test" in application.config["CC_ENV"]:
+    db_session = orm_handler.init_db(application.config["DB_URI"], persist=False)
+else:
+    db_session = orm_handler.init_db(application.config["DB_URI"], persist=True)
 app.add_api(application.config["SWAGGER_FILE"], resolver=RestyResolver("api"))
 
 application.secret_key = application.config["SECRET_KEY"] or uuid.uuid4()

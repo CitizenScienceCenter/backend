@@ -45,12 +45,14 @@ def get_file(model, id=None):
 
 def post(model, object):
     p = model(**object)
+    print(p)
     try:
         db_session.add(p)
         db_session.commit()
         print(p.id)
         return p.dump(), 201
     except IntegrityError as ie:
+        print(ie)
         return {"msg": "Resource already exists", "ok": False}, 409
 
 

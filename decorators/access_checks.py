@@ -62,16 +62,32 @@ class ensure_owner(object):
                 model_id = request.view_args["id"]
                 model = self.model
                 query_field = None
-                if model is Project or model is Group:
+                owned_id = None
+                if model is Group:
                     query_field = model.owned_by
+                    user = db_session.query(User).filter(User.api_key == key).one_or_none()
+                    if user is None:
+                        return NoContent, 401
+                    owned_id = user.id
+                elif model is Project:
+                    query_field = model.owned_by
+                    project = db_session.query(model).filter(model.id == model_id).one_or_none()
+                    if project is not None:
+                        print(project.owned_by)
+                        account = db_session.query(User).all()
+                        print(account)
+                        if account:
+                            owned_id = project.owned_by
+                        else:
+                            return NoContent, 401
+                    else:
+                        return NoContent, 404
                 else:
                     query_field = model.user_id
-                user = db_session.query(User).filter(User.api_key == key).one_or_none()
-                print(user)
-                if user is not None:
+                if owned_id is not None:
                     obj = (
                         db_session.query(model)
-                        .filter(query_field == user.id)
+                        .filter(query_field == owned_id)
                         .filter(model.id == model_id)
                         .one_or_none()
                     )

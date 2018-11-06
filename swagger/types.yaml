@@ -93,6 +93,7 @@ definitions:
       - name
       - description
       - platform
+      - owned_by
     properties:
       name:
         type: string
@@ -106,6 +107,7 @@ definitions:
           - Both
       owned_by:
         type: string
+        description: The ID of the group that this project is linked to
   Task:
     type: object
     allOf:
