@@ -23,34 +23,37 @@ def client():
     with app.app.test_client() as c:
         yield c
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def user(client):
     return utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
 
+@pytest.fixture(scope="module")
+def group(client, user):
+    group_dict = {"name": "Test Group", "description": "A Test Group"}
+    group = utils.create_group(client, group_dict, user["api_key"])
+    return group
 
 class TestGroups():
 
+    def test_create_group(self, client, user, group):
+        assert 'id' in group
+        assert group['id'] is not None
 
-    @pytest.mark.run(order=4)
-    def test_create_and_delete_groups(self, client, user):
-        group_dict = {"name": "Test Group", "description": "A Test Group"}
-        group = utils.create_group(client, group_dict, user["api_key"])
-        print(group)
+    def test_query_groups(self, client, user):
+        q_statement = "(select:(fields:!(id,name),orderBy:(id:desc),tables:!(groups)))"
+        lg = client.get(
+            "/api/v1/groups?search_term={}".format(q_statement),
+            headers=[("X-API-KEY", user["api_key"])],
+        )
+        assert lg.status_code == 200
+
+    def test_delete_group(self, client, user, group):
         utils.delete_group(client, group["id"], user["api_key"])
 
-    @pytest.mark.run(order=5)
     def test_create_groups__invalid(self, client, user):
         lg = client.post(
             "/api/v1/groups", json={}, headers=[("X-API-KEY", user["api_key"])]
         )
         assert lg.status_code == 400
 
-    @pytest.mark.run(order=6)
-    def test_query_groups(self, client, user):
-        q_statement = "(select:(fields:!(email,id,password),orderBy:(email:ASC,id:desc),tables:!(groups)))"
-        lg = client.get(
-            "/api/v1/groups?search_term={}".format(q_statement),
-            headers=[("X-API-KEY", user["api_key"])],
-        )
-        assert lg.status_code == 200
 

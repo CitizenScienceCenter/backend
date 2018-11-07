@@ -27,6 +27,8 @@ def get_all(model, limit=25, search_term=None):
             q_stmt = js.parseObject(st)
             print(q_stmt)
             # TODO execute query
+            r = db_session.execute(q_stmt)
+            print(r)
         except Exception as e:
             # TODO handle parsing error
             return e
