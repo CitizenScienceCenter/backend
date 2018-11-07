@@ -35,6 +35,7 @@ class TestGroups():
     def test_create_and_delete_groups(self, client, user):
         group_dict = {"name": "Test Group", "description": "A Test Group"}
         group = utils.create_group(client, group_dict, user["api_key"])
+        print(group)
         utils.delete_group(client, group["id"], user["api_key"])
 
     @pytest.mark.run(order=5)

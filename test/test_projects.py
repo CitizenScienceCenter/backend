@@ -23,14 +23,17 @@ def client():
     with app.app.test_client() as c:
         yield c
 
+
 @pytest.fixture(scope="module")
 def user(client):
     return utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
 
+
 @pytest.fixture(scope="module")
 def group(client, user):
-    group_dict = {'name':"project group", 'description': "project group"}
+    group_dict = {"name": "project group", "description": "project group"}
     return utils.create_group(client, group_dict, user["api_key"])
+
 
 @pytest.fixture(scope="module")
 def project(client, user, group):
@@ -45,13 +48,12 @@ def project(client, user, group):
         headers=[("X-API-KEY", user["api_key"])],
     )
 
-class TestProjects:
 
+class TestProjects:
     @pytest.mark.run(order=8)
     def test_get_projects(self, client, user):
         lg = client.get("/api/v1/projects", headers=[("X-API-KEY", user["api_key"])])
         assert lg.status_code == 200
-
 
     @pytest.mark.run(order=9)
     def test_create_project(self, client, user, group, project):
@@ -59,7 +61,13 @@ class TestProjects:
 
     @pytest.mark.run(order=10)
     def test_delete_project(self, client, user, group, project):
-        pd = client.delete('/api/v1/projects/{}'.format(json.loads(project.data)['id']),headers=[("X-API-KEY", user["api_key"])])
+        pd = client.delete(
+            "/api/v1/projects/{}".format(json.loads(project.data)["id"]),
+            headers=[("X-API-KEY", user["api_key"])],
+        )
         assert pd.status_code == 200
-        gd = client.delete('/api/v1/groups/{}'.format(group['id']),headers=[("X-API-KEY", user["api_key"])])
+        gd = client.delete(
+            "/api/v1/groups/{}".format(group["id"]),
+            headers=[("X-API-KEY", user["api_key"])],
+        )
         assert gd.status_code == 200
