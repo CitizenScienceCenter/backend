@@ -91,6 +91,12 @@ class ensure_owner(object):
                             return NoContent, 401
                     else:
                         return NoContent, 404
+                elif model is User:
+                    query_field = model.id
+                    user = db_session.query(User).filter(User.api_key == key).one_or_none()
+                    if user is None:
+                        return "Requesting user was not found", 404
+                    owned_id = user.id
                 else:
                     query_field = model.user_id
                 if owned_id is not None:

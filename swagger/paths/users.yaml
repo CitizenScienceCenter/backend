@@ -146,6 +146,23 @@ paths:
             {$ref: './types.yaml#/definitions/User'}
         404:
           description: User not found
+    delete:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Users]
+      x-swagger-router-controller: api.user.model
+      operationId: delete_user
+      summary: Delete user (only allowed by the user themselves)
+      parameters:
+        - {$ref: './params.yaml#/parameters/id'}
+      responses:
+        200:
+          description: User deleted
+        404:
+          description: User not found
+        401:
+          description: Not authorised
   register_user:
     post:
       tags: [Users]

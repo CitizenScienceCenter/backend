@@ -12,7 +12,7 @@ from db import orm_handler
 
 from app import app
 
-from test import t_con
+from test import t_con, utils
 
 
 @pytest.fixture(scope="module")
@@ -21,15 +21,15 @@ def client():
         yield c
 
 
-@pytest.mark.run(order=1)
+@pytest.mark.first
 def test_register(client):
     lg = client.post(
         "/api/v1/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
-    assert lg.status_code == 201 or lg.status_code == 409
+    assert lg.status_code == 201
 
 
-@pytest.mark.run(order=2)
+@pytest.mark.second
 def test_login(client):
     lg = client.post(
         "/api/v1/users/login", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
@@ -44,3 +44,34 @@ def test_login_fail(client):
         json={"email": "hfkjhdfgkj@gfhjkg.com", "pwd": "hdjkfhkjdhf"},
     )
     assert lg.status_code == 404
+
+@pytest.mark.run(order=4)
+def test_create_users(client):
+    domain = "@test.com"
+    for x in range(0,10):
+        user = "user_{}".format(x)
+        lg = client.post(
+            "/api/v1/users/register", json={"email": "{}{}".format(user, domain), "pwd": user}
+        )
+        assert lg.status_code == 201
+
+@pytest.mark.run(order=5)
+def test_delete_users(client):
+    domain = "@test.com"
+    for x in range(0, 10):
+        user = "user_{}".format(x)
+        user = utils.login(client, "{}{}".format(user, domain), user)
+        lg = client.delete(
+            "/api/v1/users/{}".format(user['id']),
+            headers=[("X-API-KEY", user["api_key"])],
+        )
+        assert lg.status_code == 200
+
+@pytest.mark.last
+def test_delete_initial_user(client):
+    user = utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
+    lg = client.delete(
+        "/api/v1/users/{}".format(user['id']),
+        headers=[("X-API-KEY", user["api_key"])],
+    )
+    assert lg.status_code == 200

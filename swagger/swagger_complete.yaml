@@ -522,13 +522,13 @@
                     "type": "string",
                     "readOnly": true
                   },
-                  "created_by": {
-                    "type": "string"
-                  },
                   "description": {
                     "type": "string"
                   },
                   "name": {
+                    "type": "string"
+                  },
+                  "owned_by": {
                     "type": "string"
                   },
                   "url": {
@@ -601,13 +601,13 @@
                   "type": "string",
                   "readOnly": true
                 },
-                "created_by": {
-                  "type": "string"
-                },
                 "description": {
                   "type": "string"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "owned_by": {
                   "type": "string"
                 },
                 "url": {
@@ -697,13 +697,13 @@
                   "type": "string",
                   "readOnly": true
                 },
-                "created_by": {
-                  "type": "string"
-                },
                 "description": {
                   "type": "string"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "owned_by": {
                   "type": "string"
                 },
                 "url": {
@@ -782,13 +782,13 @@
                   "type": "string",
                   "readOnly": true
                 },
-                "created_by": {
-                  "type": "string"
-                },
                 "description": {
                   "type": "string"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "owned_by": {
                   "type": "string"
                 },
                 "url": {
@@ -842,13 +842,13 @@
                   "type": "string",
                   "readOnly": true
                 },
-                "created_by": {
-                  "type": "string"
-                },
                 "description": {
                   "type": "string"
                 },
                 "name": {
+                  "type": "string"
+                },
+                "owned_by": {
                   "type": "string"
                 },
                 "url": {
@@ -1446,7 +1446,8 @@
                 "required": [
                   "name",
                   "description",
-                  "platform"
+                  "platform",
+                  "owned_by"
                 ],
                 "allOf": [
                   {
@@ -1486,6 +1487,7 @@
                     "type": "string"
                   },
                   "owned_by": {
+                    "description": "The ID of the group that this project is linked to",
                     "type": "string"
                   },
                   "platform": {
@@ -1523,7 +1525,8 @@
               "required": [
                 "name",
                 "description",
-                "platform"
+                "platform",
+                "owned_by"
               ],
               "allOf": [
                 {
@@ -1563,6 +1566,7 @@
                   "type": "string"
                 },
                 "owned_by": {
+                  "description": "The ID of the group that this project is linked to",
                   "type": "string"
                 },
                 "platform": {
@@ -1651,7 +1655,8 @@
               "required": [
                 "name",
                 "description",
-                "platform"
+                "platform",
+                "owned_by"
               ],
               "allOf": [
                 {
@@ -1691,6 +1696,7 @@
                   "type": "string"
                 },
                 "owned_by": {
+                  "description": "The ID of the group that this project is linked to",
                   "type": "string"
                 },
                 "platform": {
@@ -3453,6 +3459,43 @@
                 }
               ]
             }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "x-swagger-router-controller": "api.user.model"
+      },
+      "delete": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "anonUser": []
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user (only allowed by the user themselves)",
+        "operationId": "delete_user",
+        "parameters": [
+          {
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "type": "string",
+            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted"
+          },
+          "401": {
+            "description": "Not authorised"
           },
           "404": {
             "description": "User not found"

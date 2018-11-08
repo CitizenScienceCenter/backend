@@ -8,6 +8,7 @@ from decorators import access_checks
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
 import uuid
+from collections import namedtuple
 from flask import send_file
 import fleep
 from pathlib import Path
@@ -20,18 +21,18 @@ js = jtos.JTOS()
 @access_checks.ensure_model
 def get_all(model, limit=25, search_term=None):
     # TODO add offset
-    q = db_session.query(model)
     if search_term:
         try:
             st = prison.loads(search_term)
             q_stmt = js.parseObject(st)
             print(q_stmt)
-            # TODO execute query
-            r = db_session.execute(q_stmt)
-            print(r)
+            res = db_session.execute(q_stmt)
+            records = [model(**r) for r in res.fetchall()]
+            return [p.dump() for p in records][:limit]
         except Exception as e:
             # TODO handle parsing error
             return e
+    q = db_session.query(model)
     return [p.dump() for p in q][:limit]
 
 

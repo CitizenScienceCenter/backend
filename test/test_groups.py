@@ -35,21 +35,33 @@ def group(client, user):
 
 class TestGroups():
 
+    @pytest.mark.run(order=6)
     def test_create_group(self, client, user, group):
         assert 'id' in group
         assert group['id'] is not None
 
+    @pytest.mark.run(order=7)
     def test_query_groups(self, client, user):
-        q_statement = "(select:(fields:!(id,name),orderBy:(id:desc),tables:!(groups)))"
+        q_statement = "(select:(fields:!(id,name,description),orderBy:(id:desc),tables:!(groups)))"
         lg = client.get(
             "/api/v1/groups?search_term={}".format(q_statement),
             headers=[("X-API-KEY", user["api_key"])],
         )
+        groups = json.loads(lg.data)
         assert lg.status_code == 200
+        assert len(groups) == 1
+        assert 'description' in groups[0]
+        assert groups[0]['description'] == 'A Test Group'
 
+    @pytest.mark.run(order=8)
     def test_delete_group(self, client, user, group):
         utils.delete_group(client, group["id"], user["api_key"])
 
+    @pytest.mark.run(order=9)
+    def test_delete_group_not_owned_by_user(self, client, user):
+        pass
+
+    @pytest.mark.run(order=10)
     def test_create_groups__invalid(self, client, user):
         lg = client.post(
             "/api/v1/groups", json={}, headers=[("X-API-KEY", user["api_key"])]

@@ -28,17 +28,16 @@ def create_user(user):
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     print(user)
     if ("username" in user and len(user["username"]) == 0) or not "username" in user:
-        user["username"] = user["email"]
+        user["username"] = user["email"].split("@")[0]
     return model.post(User, user)
 
 
 @access_checks.ensure_owner(User)
 def update_user(id, user):
-    # TODO ensure only user can edit their own profile
     return model.put(User, id, user)
 
 
 @access_checks.ensure_owner(User)
 def delete_user(id):
-    # TODO ensure only user can delete their own profile
+    print(id)
     return model.delete(User, id)
