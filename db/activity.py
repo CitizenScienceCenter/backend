@@ -14,10 +14,10 @@ import db.orm_handler as orm
 from sqlalchemy.dialects.postgresql import UUID
 
 
-class Project(orm.Base):
-    __tablename__ = "projects"
+class Activity(orm.Base):
+    __tablename__ = "activities"
     name = Column(String(100))
     description = Column(String(1000))
+    platform = Column(String(50), nullable=False, default="Both")
     active = Column(Boolean, default=False)
-    owned_by = Column(UUID, ForeignKey("users.id"))
-    activities = relationship("Activity")
+    part_of = Column(UUID, ForeignKey("projects.id"))

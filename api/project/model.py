@@ -1,35 +1,51 @@
 import connexion
-import logging
 from connexion import NoContent
-from sqlalchemy.orm import lazyload, joinedload
-from db import orm_handler, Project, User, Submission, Task, utils
+from db import orm_handler, Comment, utils, Activity, User, Project
 from decorators import access_checks
 from flask import request
+import logging
 from api import model
-
 
 db_session = orm_handler.db_session
 
+Model = Project
 
 def get_projects(limit=20, search_term=None):
-    return model.get_all(Project, limit, search_term)
+    ms, code =  model.get_all(Model, limit, search_term)
+    return [m.dump() for m in ms][:limit]
 
 
 def get_project(id=None):
-    return model.get_one(Project, id)
+    m, code = model.get_one(Model, id)
+    return m.dump(), code
 
 
 @access_checks.ensure_key
 def create_project(project):
-    return model.post(Project, project)
+    user = utils.get_user(request, db_session)
+    project["owned_by"] = user.id
+    p = Model(**project)
+    user.member_of.append(p)
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(p)
+    return p.dump(), 201
 
 
 @access_checks.ensure_key
-def update_project(id, project):
-    return model.put(Project, id, project)
+def update_project(id, proj):
+    m, code = model.put(Model, id, proj)
+    return m.dump(), code
 
 
-@access_checks.ensure_owner(Project)
+@access_checks.ensure_owner(Model)
 def delete_project(id):
-    # TODO delete tasks first
-    return model.delete(Project, id)
+    user = utils.get_user(request, db_session)
+    project = db_session.query(Model).filter(Model.id==id).one_or_none()
+    if project is None:
+        return "Project was not found", 404
+    users = db_session.query(User).filter(User.member_of.any(Model.id==project.id)).all()
+    for u in users:
+        u.member_of.remove(project)
+    db_session.commit()
+    return model.delete(Model, id)

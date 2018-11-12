@@ -12,34 +12,38 @@ from api import model
 
 db_session = orm_handler.db_session
 
+Model = Task
 
 def get_tasks(limit=20, search_term=None):
-    return model.get_all(Task, limit, search_term)
+    ms, code =  model.get_all(Model, limit, search_term)
+    return [m.dump() for m in ms][:limit]
 
 
 def get_task(id=None):
-    return model.get_one(Task, id)
+    m, code = model.get_one(Model, id)
+    return m.dump(), code
 
 
 @access_checks.ensure_key
 def create_tasks(tasks):
     for task in tasks:
-        model.post(Task, task)
+        model.post(Model, task)
     return NoContent, 201
 
 
 @access_checks.ensure_key
 def update_task(id, task):
-    return model.put(Task, id, task)
+    m, code = model.put(Model, id, task)
+    return m.dump(), code
 
 
 @access_checks.ensure_key
 def delete_task(id):
-    return model.delete(Task, id)
+    return model.delete(Model, id)
 
 
 @access_checks.ensure_key
 def delete_tasks(tasks):
     for task in tasks:
-        model.delete(Task, task)
+        model.delete(Model, task)
     return NoContent, 200

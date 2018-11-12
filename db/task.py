@@ -16,7 +16,7 @@ import db.orm_handler as orm
 
 class Task(orm.Base):
     __tablename__ = "tasks"
-    project_id = Column(UUID, ForeignKey("projects.id", ondelete="cascade"))
+    activity_id = Column(UUID, ForeignKey("activities.id", ondelete="cascade"))
     sequence = Column(Integer)
     title = Column(String(300))
     required = Column(Boolean, default=True)

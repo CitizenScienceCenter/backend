@@ -24,7 +24,7 @@ def client():
 @pytest.mark.first
 def test_register(client):
     lg = client.post(
-        "/api/v1/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+        "/api/v2/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
     assert lg.status_code == 201
 
@@ -32,7 +32,7 @@ def test_register(client):
 @pytest.mark.second
 def test_login(client):
     lg = client.post(
-        "/api/v1/users/login", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+        "/api/v2/users/login", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
     assert lg.status_code == 200
 
@@ -40,7 +40,7 @@ def test_login(client):
 @pytest.mark.run(order=3)
 def test_login_fail(client):
     lg = client.post(
-        "/api/v1/users/login",
+        "/api/v2/users/login",
         json={"email": "hfkjhdfgkj@gfhjkg.com", "pwd": "hdjkfhkjdhf"},
     )
     assert lg.status_code == 404
@@ -51,7 +51,7 @@ def test_create_users(client):
     for x in range(0,10):
         user = "user_{}".format(x)
         lg = client.post(
-            "/api/v1/users/register", json={"email": "{}{}".format(user, domain), "pwd": user}
+            "/api/v2/users/register", json={"email": "{}{}".format(user, domain), "pwd": user}
         )
         assert lg.status_code == 201
 
@@ -62,7 +62,7 @@ def test_delete_users(client):
         user = "user_{}".format(x)
         user = utils.login(client, "{}{}".format(user, domain), user)
         lg = client.delete(
-            "/api/v1/users/{}".format(user['id']),
+            "/api/v2/users/{}".format(user['id']),
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert lg.status_code == 200
@@ -71,7 +71,7 @@ def test_delete_users(client):
 def test_delete_initial_user(client):
     user = utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
     lg = client.delete(
-        "/api/v1/users/{}".format(user['id']),
+        "/api/v2/users/{}".format(user['id']),
         headers=[("X-API-KEY", user["api_key"])],
     )
     assert lg.status_code == 200

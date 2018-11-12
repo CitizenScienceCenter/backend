@@ -63,7 +63,7 @@ class ensure_owner(object):
                 model = self.model
                 query_field = None
                 owned_id = None
-                if model is Group:
+                if model is Project:
                     query_field = model.owned_by
                     user = (
                         db_session.query(User)
@@ -74,23 +74,24 @@ class ensure_owner(object):
                     if user is None:
                         return NoContent, 401
                     owned_id = user.id
-                elif model is Project:
-                    query_field = model.owned_by
-                    project = (
-                        db_session.query(model)
-                        .filter(model.id == model_id)
-                        .one_or_none()
-                    )
-                    if project is not None:
-                        print(project.owned_by)
-                        account = db_session.query(User).all()
-                        print(account)
-                        if account:
-                            owned_id = project.owned_by
-                        else:
-                            return NoContent, 401
-                    else:
-                        return NoContent, 404
+                elif model is Activity:
+                    return func(*args, **kwargs)
+                    # query_field = model.part_of
+                    # act = (
+                    #     db_session.query(model)
+                    #     .filter(model.id == model_id)
+                    #     .one_or_none()
+                    # )
+                    # if act is not None:
+                    #     print(project.owned_by)
+                    #     account = db_session.query(User).all()
+                    #     print(account)
+                    #     if account:
+                    #         owned_id = project.owned_by
+                    #     else:
+                    #         return NoContent, 401
+                    # else:
+                    #     return NoContent, 404
                 elif model is User:
                     query_field = model.id
                     user = db_session.query(User).filter(User.api_key == key).one_or_none()

@@ -8,26 +8,32 @@ from api import model
 
 db_session = orm_handler.db_session
 
+Model = Comment
 
 def get_comments(limit=20, search_term=None):
-    return model.get_all(Comment, limit, search_term)
+    ms, code =  model.get_all(Model, limit, search_term)
+    return [m.dump() for m in ms][:limit]
 
 
 def get_comment(id=None):
-    return model.get_one(Comment, id)
+    m, code = model.get_one(Model, id)
+    return m.dump(), code
 
 
 @access_checks.ensure_key
 def create_comment(comment):
     logging.info("Creating Comment ")
-    return model.post(Comment, comment)
+    m, code = model.post(Model, comment)
+    return m.dump(), code
 
 
 @access_checks.ensure_key
 def update_comment(id, comment):
-    return model.put(Comment, id, comment)
+    m, code = model.put(Model, id, comment)
+    return m.dump(), code
 
 
+# TODO modify to ensure_owner
 @access_checks.ensure_key
 def delete_comment(id):
-    return model.delete(Comment, id)
+    return model.delete(Model, id)

@@ -2,7 +2,7 @@ import json
 import pytest
 
 def login(client, username, password):
-    u = client.post('/api/v1/users/login', json={
+    u = client.post('/api/v2/users/login', json={
         "email": username,
         "pwd": password
     }, follow_redirects=True)
@@ -13,17 +13,17 @@ def login(client, username, password):
 
 
 def logout(client):
-    return client.get('/api/v1/users/logout', follow_redirects=True)
+    return client.get('/api/v2/users/logout', follow_redirects=True)
 
-def get_groups(client, api_key):
-    g = client.get('/api/v1/groups', headers=[('X-API-KEY', api_key)])
+def get_projects(client, api_key):
+    g = client.get('/api/v2/projects', headers=[('X-API-KEY', api_key)])
     assert g.status_code == 200
     return json.loads(g.data)
 
-def create_group(client, group_dict, api_key):
+def create_project(client, proj_dict, api_key):
     lg = client.post(
-        "/api/v1/groups",
-        json=group_dict,
+        "/api/v2/projects",
+        json=proj_dict,
         headers=[("X-API-KEY", api_key)],
     )
     assert lg.status_code == 201
@@ -31,7 +31,7 @@ def create_group(client, group_dict, api_key):
 
 def delete_group(client, gid, api_key):
     lg = client.delete(
-        "/api/v1/groups/{0}".format(gid),
+        "/api/v2/groups/{0}".format(gid),
         headers=[("X-API-KEY", api_key)],
     )
     assert lg.status_code == 200
