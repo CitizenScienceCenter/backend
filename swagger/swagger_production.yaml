@@ -21,7 +21,7 @@ securityDefinitions:
     scopes:
       apiKey: Unique identifier of the user accessing the service.
 host: api.citizenscience.ch
-basePath: /api/v1
+basePath: /api/v2
 schemes:
   - https
 paths:
@@ -45,12 +45,14 @@ paths:
     {$ref: './paths/projects.yaml#/paths/projects'}
   /projects/{id}:
     {$ref: './paths/projects.yaml#/paths/project_id'}
-  /projects/{id}/stats:
-    {$ref: './paths/projects.yaml#/paths/project_stats'}
-  /projects/{id}/tasks:
-    {$ref: './paths/projects.yaml#/paths/project_tasks'}
-  /projects/{id}/tasks/random:
-    {$ref: './paths/projects.yaml#/paths/project_tasks_random'}
+  /activities:
+    {$ref: './paths/activities.yaml#/paths/activities'}
+  /activities/{id}:
+    {$ref: './paths/activities.yaml#/paths/activity_id'}
+  # /activities/{id}/stats:
+  #   {$ref: './paths/activities.yaml#/paths/activity_stats'}
+  # /activities/{id}/tasks:
+  #   {$ref: './paths/activities.yaml#/paths/activity_tasks'}
   /tasks:
     {$ref: './paths/tasks.yaml#/paths/tasks'}
   /tasks/{id}:
@@ -67,10 +69,6 @@ paths:
     {$ref: './paths/media.yaml#/paths/media_id'}
   /media/source/{id}:
     {$ref: './paths/media.yaml#/paths/media_source_id'}
-  /groups:
-    {$ref: './paths/groups.yaml#/paths/groups'}
-  /groups/{id}:
-    {$ref: './paths/groups.yaml#/paths/group_id'}
   /comments:
     {$ref: './paths/comments.yaml#/paths/comments'}
   /comments/{id}:

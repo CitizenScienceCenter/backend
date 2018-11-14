@@ -12,18 +12,20 @@ from pathlib import Path
 
 db_session = orm_handler.db_session
 
+
 def get_for_source(id=None, limit=20):
     m = db_session.query(Media).filter(Media.source_id == id)
     return [p.dump() for p in m][:limit]
 
+
 @access_checks.ensure_key
 def upload(attachment, id=None):
-    logging.info('Creating Media ')
-    f = connexion.request.files['attachment']
+    logging.info("Creating Media ")
+    f = connexion.request.files["attachment"]
     filename = secure_filename(f.filename)
     uid = uuid.uuid4().hex
     ext = Path(f.filename).suffix
-    path = './static/uploads/{}{}'.format(uid, ext)
+    path = "./static/uploads/{}{}".format(uid, ext)
     f.save(path)
     with open(path, "rb") as f:
         info = fleep.get(f.read(128))

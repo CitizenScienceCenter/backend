@@ -55,24 +55,6 @@ definitions:
         description: Name of file
       filetype:
         type: string
-  Comment:
-    type: object
-    required:
-      - source_id
-      - content
-      - user_id
-    allOf:
-    - $ref: '#/definitions/Base'
-    properties:
-      source_id:
-        type: string
-        description: The task or project or user it is related to
-      content:
-        type: object
-      parent:
-        type: string
-      user_id:
-        type: string
   Otoken:
     type: object
     allOf:
@@ -92,7 +74,23 @@ definitions:
     required:
       - name
       - description
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      owned_by:
+        type: string
+        description: The ID of the user that this project is owned by
+  Activity:
+    type: object
+    allOf:
+     - $ref: '#/definitions/Base'
+    required:
+      - name
+      - description
       - platform
+      - part_of
     properties:
       name:
         type: string
@@ -104,8 +102,9 @@ definitions:
           - Desktop
           - Mobile
           - Both
-      owned_by:
+      part_of:
         type: string
+        description: The ID of the project that this activity is part of
   Task:
     type: object
     allOf:
@@ -127,25 +126,6 @@ definitions:
         type: string
       required:
         type: boolean
-  Group:
-    type: object
-    required:
-      - name
-      - description
-    allOf:
-     - $ref: '#/definitions/Base'
-    properties:
-      name:
-        type: string
-      description:
-        type: string
-      url:
-        type: string
-      created_by:
-        type: string
-      api_key:
-        type: string
-        readOnly: true
   Submission:
     type: object
     required:
@@ -160,3 +140,21 @@ definitions:
         type: string
       content:
         type: object
+  Comment:
+    type: object
+    required:
+      - source_id
+      - content
+      - user_id
+    allOf:
+    - $ref: '#/definitions/Base'
+    properties:
+      source_id:
+        type: string
+        description: The task or project (or anything with an ID) it is related to
+      content:
+        type: object
+      parent:
+        type: string
+      user_id:
+        type: string

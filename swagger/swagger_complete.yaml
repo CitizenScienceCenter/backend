@@ -6,7 +6,8 @@
     "application/json"
   ],
   "schemes": [
-    "http"
+    "http",
+    "https"
   ],
   "swagger": "2.0",
   "info": {
@@ -14,8 +15,346 @@
     "version": "0.1"
   },
   "host": "0.0.0.0:8080",
-  "basePath": "/api/v1",
+  "basePath": "/api/v2",
   "paths": {
+    "/activities": {
+      "get": {
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Get all Activities",
+        "operationId": "get_activities",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "search_term",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 20,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return Activities",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "description",
+                  "platform",
+                  "part_of"
+                ],
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "created_at": {
+                        "description": "Creation time",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2015-07-07T15:49:51.230+02:00"
+                      },
+                      "id": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "readOnly": true
+                      },
+                      "info": {
+                        "description": "A JSON field to extend a model with extra info",
+                        "type": "object"
+                      },
+                      "updated_at": {
+                        "description": "Creation time",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2015-07-07T15:49:51.230+02:00"
+                      }
+                    }
+                  }
+                ],
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "part_of": {
+                    "description": "The ID of the project that this activity is part of",
+                    "type": "string"
+                  },
+                  "platform": {
+                    "type": "string",
+                    "enum": [
+                      "Desktop",
+                      "Mobile",
+                      "Both"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-swagger-router-controller": "api.activity.model"
+      },
+      "post": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Post a activity",
+        "operationId": "create_activity",
+        "parameters": [
+          {
+            "name": "activity",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "description",
+                "platform",
+                "part_of"
+              ],
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "description": "Creation time",
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true,
+                      "example": "2015-07-07T15:49:51.230+02:00"
+                    },
+                    "id": {
+                      "type": "string",
+                      "maxLength": 20,
+                      "readOnly": true
+                    },
+                    "info": {
+                      "description": "A JSON field to extend a model with extra info",
+                      "type": "object"
+                    },
+                    "updated_at": {
+                      "description": "Creation time",
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true,
+                      "example": "2015-07-07T15:49:51.230+02:00"
+                    }
+                  }
+                }
+              ],
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "part_of": {
+                  "description": "The ID of the project that this activity is part of",
+                  "type": "string"
+                },
+                "platform": {
+                  "type": "string",
+                  "enum": [
+                    "Desktop",
+                    "Mobile",
+                    "Both"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "New Activity created"
+          },
+          "409": {
+            "description": "Activity already exists"
+          }
+        },
+        "x-swagger-router-controller": "api.activity.model"
+      }
+    },
+    "/activities/{id}": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "anonUser": []
+          }
+        ],
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Get a single activity",
+        "operationId": "get_activity",
+        "parameters": [
+          {
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "type": "string",
+            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return Activity"
+          },
+          "404": {
+            "description": "Activity does not exist"
+          }
+        },
+        "x-swagger-router-controller": "api.activity.model"
+      },
+      "put": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Modify/Create a Activity",
+        "operationId": "update_activity",
+        "parameters": [
+          {
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "type": "string",
+            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "activity",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "description",
+                "platform",
+                "part_of"
+              ],
+              "allOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "created_at": {
+                      "description": "Creation time",
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true,
+                      "example": "2015-07-07T15:49:51.230+02:00"
+                    },
+                    "id": {
+                      "type": "string",
+                      "maxLength": 20,
+                      "readOnly": true
+                    },
+                    "info": {
+                      "description": "A JSON field to extend a model with extra info",
+                      "type": "object"
+                    },
+                    "updated_at": {
+                      "description": "Creation time",
+                      "type": "string",
+                      "format": "date-time",
+                      "readOnly": true,
+                      "example": "2015-07-07T15:49:51.230+02:00"
+                    }
+                  }
+                }
+              ],
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "part_of": {
+                  "description": "The ID of the project that this activity is part of",
+                  "type": "string"
+                },
+                "platform": {
+                  "type": "string",
+                  "enum": [
+                    "Desktop",
+                    "Mobile",
+                    "Both"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activity modified"
+          },
+          "201": {
+            "description": "New Activity created"
+          }
+        },
+        "x-swagger-router-controller": "api.activity.model"
+      },
+      "delete": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Remove an Activity",
+        "operationId": "delete_activity",
+        "parameters": [
+          {
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "type": "string",
+            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Activity was deleted"
+          },
+          "404": {
+            "description": "Activity does not exist"
+          }
+        },
+        "x-swagger-router-controller": "api.activity.model"
+      }
+    },
     "/comments": {
       "get": {
         "security": [
@@ -92,7 +431,7 @@
                     "type": "string"
                   },
                   "source_id": {
-                    "description": "The task or project or user it is related to",
+                    "description": "The task or project (or anything with an ID) it is related to",
                     "type": "string"
                   },
                   "user_id": {
@@ -168,7 +507,7 @@
                   "type": "string"
                 },
                 "source_id": {
-                  "description": "The task or project or user it is related to",
+                  "description": "The task or project (or anything with an ID) it is related to",
                   "type": "string"
                 },
                 "user_id": {
@@ -226,7 +565,7 @@
                   "type": "string"
                 },
                 "source_id": {
-                  "description": "The task or project or user it is related to",
+                  "description": "The task or project (or anything with an ID) it is related to",
                   "type": "string"
                 },
                 "user_id": {
@@ -312,7 +651,7 @@
                   "type": "string"
                 },
                 "source_id": {
-                  "description": "The task or project or user it is related to",
+                  "description": "The task or project (or anything with an ID) it is related to",
                   "type": "string"
                 },
                 "user_id": {
@@ -395,7 +734,7 @@
                   "type": "string"
                 },
                 "source_id": {
-                  "description": "The task or project or user it is related to",
+                  "description": "The task or project (or anything with an ID) it is related to",
                   "type": "string"
                 },
                 "user_id": {
@@ -445,454 +784,6 @@
           }
         },
         "x-swagger-router-controller": "api.comment.model"
-      }
-    },
-    "/groups": {
-      "get": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          },
-          {
-            "anonUser": []
-          }
-        ],
-        "description": "Get a list of groups",
-        "tags": [
-          "Groups"
-        ],
-        "operationId": "get_groups",
-        "parameters": [
-          {
-            "type": "string",
-            "name": "search_term",
-            "in": "query"
-          },
-          {
-            "minimum": 0,
-            "type": "integer",
-            "default": 20,
-            "name": "limit",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of groups",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "description"
-                ],
-                "allOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "created_at": {
-                        "description": "Creation time",
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true,
-                        "example": "2015-07-07T15:49:51.230+02:00"
-                      },
-                      "id": {
-                        "type": "string",
-                        "maxLength": 20,
-                        "readOnly": true
-                      },
-                      "info": {
-                        "description": "A JSON field to extend a model with extra info",
-                        "type": "object"
-                      },
-                      "updated_at": {
-                        "description": "Creation time",
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true,
-                        "example": "2015-07-07T15:49:51.230+02:00"
-                      }
-                    }
-                  }
-                ],
-                "properties": {
-                  "api_key": {
-                    "type": "string",
-                    "readOnly": true
-                  },
-                  "created_by": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "url": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "x-swagger-router-controller": "api.group.model"
-      },
-      "post": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          }
-        ],
-        "description": "Add a new group",
-        "consumes": [
-          "application/json"
-        ],
-        "tags": [
-          "Groups"
-        ],
-        "operationId": "create_group",
-        "parameters": [
-          {
-            "name": "group",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "required": [
-                "name",
-                "description"
-              ],
-              "allOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "created_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    },
-                    "id": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "readOnly": true
-                    },
-                    "info": {
-                      "description": "A JSON field to extend a model with extra info",
-                      "type": "object"
-                    },
-                    "updated_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    }
-                  }
-                }
-              ],
-              "properties": {
-                "api_key": {
-                  "type": "string",
-                  "readOnly": true
-                },
-                "created_by": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Group Created"
-          },
-          "409": {
-            "description": "Group already exists"
-          }
-        },
-        "x-swagger-router-controller": "api.group.model"
-      }
-    },
-    "/groups/{id}": {
-      "get": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          },
-          {
-            "anonUser": []
-          }
-        ],
-        "tags": [
-          "Groups"
-        ],
-        "summary": "Get a single group",
-        "operationId": "get_group",
-        "parameters": [
-          {
-            "pattern": "^[a-zA-Z0-9-]+$",
-            "type": "string",
-            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Return Organisation",
-            "schema": {
-              "type": "object",
-              "required": [
-                "name",
-                "description"
-              ],
-              "allOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "created_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    },
-                    "id": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "readOnly": true
-                    },
-                    "info": {
-                      "description": "A JSON field to extend a model with extra info",
-                      "type": "object"
-                    },
-                    "updated_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    }
-                  }
-                }
-              ],
-              "properties": {
-                "api_key": {
-                  "type": "string",
-                  "readOnly": true
-                },
-                "created_by": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Group does not exist"
-          }
-        },
-        "x-swagger-router-controller": "api.group.model"
-      },
-      "put": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          }
-        ],
-        "tags": [
-          "Groups"
-        ],
-        "summary": "Modify a group",
-        "operationId": "update_group",
-        "parameters": [
-          {
-            "pattern": "^[a-zA-Z0-9-]+$",
-            "type": "string",
-            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "name": "group",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "required": [
-                "name",
-                "description"
-              ],
-              "allOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "created_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    },
-                    "id": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "readOnly": true
-                    },
-                    "info": {
-                      "description": "A JSON field to extend a model with extra info",
-                      "type": "object"
-                    },
-                    "updated_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    }
-                  }
-                }
-              ],
-              "properties": {
-                "api_key": {
-                  "type": "string",
-                  "readOnly": true
-                },
-                "created_by": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Return Group",
-            "schema": {
-              "type": "object",
-              "required": [
-                "name",
-                "description"
-              ],
-              "allOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "created_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    },
-                    "id": {
-                      "type": "string",
-                      "maxLength": 20,
-                      "readOnly": true
-                    },
-                    "info": {
-                      "description": "A JSON field to extend a model with extra info",
-                      "type": "object"
-                    },
-                    "updated_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    }
-                  }
-                }
-              ],
-              "properties": {
-                "api_key": {
-                  "type": "string",
-                  "readOnly": true
-                },
-                "created_by": {
-                  "type": "string"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "url": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Group does not exist"
-          }
-        },
-        "x-swagger-router-controller": "api.group.model"
-      },
-      "delete": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          }
-        ],
-        "tags": [
-          "Groups"
-        ],
-        "summary": "Delete a group",
-        "operationId": "delete_group",
-        "parameters": [
-          {
-            "pattern": "^[a-zA-Z0-9-]+$",
-            "type": "string",
-            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Group Deleted"
-          },
-          "404": {
-            "description": "Group does not exist"
-          }
-        },
-        "x-swagger-router-controller": "api.group.model"
       }
     },
     "/media": {
@@ -1445,8 +1336,7 @@
                 "type": "object",
                 "required": [
                   "name",
-                  "description",
-                  "platform"
+                  "description"
                 ],
                 "allOf": [
                   {
@@ -1486,15 +1376,8 @@
                     "type": "string"
                   },
                   "owned_by": {
+                    "description": "The ID of the user that this project is owned by",
                     "type": "string"
-                  },
-                  "platform": {
-                    "type": "string",
-                    "enum": [
-                      "Desktop",
-                      "Mobile",
-                      "Both"
-                    ]
                   }
                 }
               }
@@ -1522,8 +1405,7 @@
               "type": "object",
               "required": [
                 "name",
-                "description",
-                "platform"
+                "description"
               ],
               "allOf": [
                 {
@@ -1563,15 +1445,8 @@
                   "type": "string"
                 },
                 "owned_by": {
+                  "description": "The ID of the user that this project is owned by",
                   "type": "string"
-                },
-                "platform": {
-                  "type": "string",
-                  "enum": [
-                    "Desktop",
-                    "Mobile",
-                    "Both"
-                  ]
                 }
               }
             }
@@ -1650,8 +1525,7 @@
               "type": "object",
               "required": [
                 "name",
-                "description",
-                "platform"
+                "description"
               ],
               "allOf": [
                 {
@@ -1691,15 +1565,8 @@
                   "type": "string"
                 },
                 "owned_by": {
+                  "description": "The ID of the user that this project is owned by",
                   "type": "string"
-                },
-                "platform": {
-                  "type": "string",
-                  "enum": [
-                    "Desktop",
-                    "Mobile",
-                    "Both"
-                  ]
                 }
               }
             }
@@ -1745,169 +1612,6 @@
           }
         },
         "x-swagger-router-controller": "api.project.model"
-      }
-    },
-    "/projects/{id}/stats": {
-      "get": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          },
-          {
-            "anonUser": []
-          }
-        ],
-        "tags": [
-          "Projects"
-        ],
-        "operationId": "project_stats",
-        "parameters": [
-          {
-            "pattern": "^[a-zA-Z0-9-]+$",
-            "type": "string",
-            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Project stats"
-          },
-          "404": {
-            "description": "Project does not exist"
-          }
-        },
-        "x-swagger-router-controller": "api.project.custom"
-      }
-    },
-    "/projects/{id}/tasks": {
-      "get": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          },
-          {
-            "anonUser": []
-          }
-        ],
-        "tags": [
-          "Projects"
-        ],
-        "operationId": "project_tasks",
-        "parameters": [
-          {
-            "pattern": "^[a-zA-Z0-9-]+$",
-            "type": "string",
-            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "number",
-            "default": 0,
-            "name": "offset",
-            "in": "query"
-          },
-          {
-            "minimum": 0,
-            "type": "integer",
-            "default": 20,
-            "name": "limit",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Project tasks"
-          },
-          "404": {
-            "description": "Project does not exist"
-          }
-        },
-        "x-swagger-router-controller": "api.task.custom"
-      }
-    },
-    "/projects/{id}/tasks/random": {
-      "get": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          },
-          {
-            "anonUser": []
-          }
-        ],
-        "tags": [
-          "Projects"
-        ],
-        "operationId": "get_random",
-        "parameters": [
-          {
-            "pattern": "^[a-zA-Z0-9-]+$",
-            "type": "string",
-            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "name": "search",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A single random project task"
-          },
-          "404": {
-            "description": "Project does not exist or task not found"
-          }
-        },
-        "x-swagger-router-controller": "api.task.custom"
-      }
-    },
-    "/projects/{id}/tasks/region": {
-      "get": {
-        "security": [
-          {
-            "apiKeyHeader": []
-          },
-          {
-            "anonUser": []
-          }
-        ],
-        "tags": [
-          "Projects"
-        ],
-        "operationId": "get_region",
-        "parameters": [
-          {
-            "pattern": "^[a-zA-Z0-9-]+$",
-            "type": "string",
-            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
-            "name": "id",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "name": "region",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A single project task from the user's region"
-          },
-          "404": {
-            "description": "Project does not exist or task not found"
-          }
-        },
-        "x-swagger-router-controller": "api.task.custom"
       }
     },
     "/submission/{id}": {
@@ -3453,6 +3157,43 @@
                 }
               ]
             }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "x-swagger-router-controller": "api.user.model"
+      },
+      "delete": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          },
+          {
+            "anonUser": []
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user (only allowed by the user themselves)",
+        "operationId": "delete_user",
+        "parameters": [
+          {
+            "pattern": "^[a-zA-Z0-9-]+$",
+            "type": "string",
+            "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted"
+          },
+          "401": {
+            "description": "Not authorised"
           },
           "404": {
             "description": "User not found"
