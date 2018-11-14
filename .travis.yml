@@ -7,7 +7,7 @@ addons:
   postgresql: "9.4"  
 before_script:
   - psql -c "CREATE USER pybossa WITH PASSWORD 'tester';" -U postgres
-  - psql -c "CREATE DATABASE cs WITH OWNER pybossa;" -U postgres 
+  - psql -c "CREATE DATABASE testcs WITH OWNER pybossa;" -U postgres
 services:
   - postgresql
 script:
