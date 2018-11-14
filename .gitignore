@@ -3,8 +3,11 @@ sdk/*
 static/uploads/*
 pgdata/
 config/*
+!config/*.secret
 !config/test.py
 !config/sample.py
+alembic.ini
+!.*.secret
 
 #### joe made this: http://goel.io/joe
 
@@ -129,3 +132,10 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 .gitsecret/keys/random_seed
+!envs/test.env
+!envs/*.secret
+envs/docker.env
+envs/local.env
+envs/prod.env
+envs/uzh.env
+envs/wenker.env

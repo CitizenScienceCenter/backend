@@ -1,0 +1,49 @@
+import connexion
+from connexion import NoContent
+from db import orm_handler, Task, Submission, Media, utils
+from decorators import access_checks
+from sqlalchemy.sql.expression import func
+from sqlalchemy.orm import joinedload
+from flask import request
+import sqlalchemy
+import logging
+from sqlalchemy.dialects import postgresql
+from api import model
+
+db_session = orm_handler.db_session
+
+Model = Task
+
+def get_tasks(limit=20, search_term=None):
+    ms, code =  model.get_all(Model, limit, search_term)
+    return [m.dump() for m in ms][:limit]
+
+
+def get_task(id=None):
+    m, code = model.get_one(Model, id)
+    return m.dump(), code
+
+
+@access_checks.ensure_key
+def create_tasks(tasks):
+    for task in tasks:
+        model.post(Model, task)
+    return NoContent, 201
+
+
+@access_checks.ensure_key
+def update_task(id, task):
+    m, code = model.put(Model, id, task)
+    return m.dump(), code
+
+
+@access_checks.ensure_key
+def delete_task(id):
+    return model.delete(Model, id)
+
+
+@access_checks.ensure_key
+def delete_tasks(tasks):
+    for task in tasks:
+        model.delete(Model, task)
+    return NoContent, 200
