@@ -25,7 +25,6 @@ basePath: /api/v2
 schemes:
   - https
 paths:
-paths:
   /users:
     {$ref: 'paths/users.yaml#/paths/get_users'}
   /users/authorize:
