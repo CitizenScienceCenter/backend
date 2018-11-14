@@ -23,14 +23,14 @@ def get_activity(id=None):
 
 
 @access_checks.ensure_key
-def create_activity(act):
-    m, code = model.post(Model, act)
+def create_activity(activity):
+    m, code = model.post(Model, activity)
     return m.dump(), code
 
 
 @access_checks.ensure_key
-def update_activity(id, act):
-    m, code = model.put(Model, id, act)
+def update_activity(id, activity):
+    m, code = model.put(Model, id, activity)
     return m.dump(), code
 
 

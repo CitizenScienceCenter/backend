@@ -47,7 +47,7 @@ def activity(client, user, project):
     return client.post(
         "/api/v2/activities",
         json=act_dict,
-        headers=[("X-API-KEY", user["api_key"])],
+        headers=[("X-API-KEY", user["api_key"])]
     )
 
 
@@ -89,12 +89,12 @@ class TestActivities:
     @pytest.mark.run(order=17)
     def test_delete_activity(self, client, user, project, activity):
         pd = client.delete(
-            "/api/v2/activities/{}".format(json.loads(project.data)["id"]),
+            "/api/v2/activities/{}".format(json.loads(activity.data)["id"]),
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert pd.status_code == 200
         gd = client.delete(
-            "/api/v2/activities/{}".format(group["id"]),
+            "/api/v2/projects/{}".format(project["id"]),
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert gd.status_code == 200

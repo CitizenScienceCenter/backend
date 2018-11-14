@@ -21,7 +21,7 @@ securityDefinitions:
     scopes:
       apiKey: Unique identifier of the user accessing the service.
 host: wenker.citizenscience.ch
-basePath: /api/v1
+basePath: /api/v2
 schemes:
   - https
 paths:

@@ -33,8 +33,8 @@ def create_project(project):
 
 
 @access_checks.ensure_key
-def update_project(id, proj):
-    m, code = model.put(Model, id, proj)
+def update_project(id, project):
+    m, code = model.put(Model, id, project)
     return m.dump(), code
 
 
