@@ -6,7 +6,6 @@
     "application/json"
   ],
   "schemes": [
-    "http",
     "https"
   ],
   "swagger": "2.0",
@@ -14,7 +13,7 @@
     "title": "CCCS",
     "version": "0.1"
   },
-  "host": "0.0.0.0:8080",
+  "host": "wenker.citizenscience.ch",
   "basePath": "/api/v2",
   "paths": {
     "/activities": {
@@ -3291,11 +3290,6 @@
     }
   },
   "securityDefinitions": {
-    "anonUser": {
-      "type": "apiKey",
-      "name": "X-ANON",
-      "in": "header"
-    },
     "apiKeyHeader": {
       "type": "apiKey",
       "name": "X-API-KEY",
@@ -3304,11 +3298,11 @@
     "oauth2": {
       "type": "oauth2",
       "flow": "implicit",
-      "authorizationUrl": "http://localhost:8081/oauth/authorize",
+      "authorizationUrl": "http://wenker.citizenscience.ch:8080/oauth/authorize",
       "scopes": {
         "apiKey": "Unique identifier of the user accessing the service."
       },
-      "x-tokenInfoUrl": "http://localhost:8081/api/v1/users/validate"
+      "x-tokenInfoUrl": "http://wenker.citizenscience.ch:8080/api/v1/users/validate"
     }
   }
 }
