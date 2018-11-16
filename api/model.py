@@ -38,7 +38,7 @@ def get_all(model, limit=25, search_term=None):
 
 def get_one(model, id=None):
     m = db_session.query(model).filter(model.id == id).one_or_none()
-    return m if m is not None else ("Not found", 404)
+    return m, 200 if m is not None else ("Not found", 404)
 
 
 def get_file(model, id=None):
@@ -60,6 +60,7 @@ def post(model, object):
 
 
 def put(model, id, object):
+    print(object)
     p = db_session.query(model).filter(model.id == id).one_or_none()
     print(p.dump())
     if "id" in object:

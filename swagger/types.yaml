@@ -4,7 +4,7 @@ definitions:
     properties:
         id:
           type: string
-          maxLength: 20
+          maxLength: 100
           readOnly: true
         info:
           type: object
