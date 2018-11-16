@@ -39,6 +39,7 @@ def create_user(user):
     created_user.member_of.append(p)
     db_session.add(created_user)
     db_session.commit()
+    db_session.refresh(created_user)
     return created_user.dump(), code
 
 
