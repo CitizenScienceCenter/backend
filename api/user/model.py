@@ -33,7 +33,7 @@ def create_user(user):
     print(user)
     if ("username" in user and len(user["username"]) == 0) or not "username" in user:
         user["username"] = user["email"].split("@")[0]
-    created_user, code =  model.post(Model, user)
+    created_user, code = model.post(Model, user)
     user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
     p = Project(**user_project)
     created_user.member_of.append(p)
