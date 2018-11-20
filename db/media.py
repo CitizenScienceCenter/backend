@@ -20,8 +20,8 @@ class Media(orm.Base):
     name = Column(String(400))
     filetype = Column(String(400))
 
-    def __init__(self, source_id, path, name, f_type):
-        self.source_id = source_id
-        self.path = path
-        self.name = name
-        self.filetype = f_type
+    # def __init__(self, id, source_id, path, name, f_type):
+    #     self.source_id = source_id
+    #     self.path = path
+    #     self.name = name
+    #     self.filetype = f_type
