@@ -35,7 +35,7 @@ def create_user(user):
         user["username"] = user["email"].split("@")[0]
     created_user, code = model.post(Model, user)
     if isinstance(created_user, Model):
-        if (created_user.info['anonymous'] is False):
+        if (created_user.info is not None and created_user.info['anonymous'] is False):
             user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
             p = Project(**user_project)
             created_user.member_of.append(p)
