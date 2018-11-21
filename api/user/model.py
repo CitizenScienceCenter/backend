@@ -35,12 +35,13 @@ def create_user(user):
         user["username"] = user["email"].split("@")[0]
     created_user, code = model.post(Model, user)
     if isinstance(created_user, Model):
-        user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
-        p = Project(**user_project)
-        created_user.member_of.append(p)
-        db_session.add(created_user)
-        db_session.commit()
-        db_session.refresh(created_user)
+        if (created_user.info['anonymous'] is False):
+            user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
+            p = Project(**user_project)
+            created_user.member_of.append(p)
+            db_session.add(created_user)
+            db_session.commit()
+            db_session.refresh(created_user)
         return created_user.dump(), code
     else:
         return created_user, 409

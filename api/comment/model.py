@@ -11,7 +11,8 @@ db_session = orm_handler.db_session
 Model = Comment
 
 def get_comments(limit=20, search_term=None):
-    ms, code =  model.get_all(Model, limit, search_term)
+    ms, code = model.get_all(Model, limit, search_term)
+    print(ms)
     return [m.dump() for m in ms][:limit]
 
 
