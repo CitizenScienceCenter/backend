@@ -194,6 +194,33 @@
         "x-swagger-router-controller": "api.activity.model"
       }
     },
+    "/activities/count": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Activities"
+        ],
+        "summary": "Get row count of query",
+        "operationId": "get_activity_count",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "search_term",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Row count"
+          }
+        },
+        "x-swagger-router-controller": "api.activity.model"
+      }
+    },
     "/activities/{id}": {
       "get": {
         "security": [
@@ -1463,6 +1490,33 @@
         "x-swagger-router-controller": "api.project.model"
       }
     },
+    "/projects/count": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Get row count of query",
+        "operationId": "get_project_count",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "search_term",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Row count"
+          }
+        },
+        "x-swagger-router-controller": "api.project.model"
+      }
+    },
     "/projects/{id}": {
       "get": {
         "security": [
@@ -2017,6 +2071,33 @@
         "x-swagger-router-controller": "api.submission.model"
       }
     },
+    "/submissions/count": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Submissions"
+        ],
+        "summary": "Get row count of query",
+        "operationId": "get_submission_count",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "search_term",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Row count"
+          }
+        },
+        "x-swagger-router-controller": "api.submission.model"
+      }
+    },
     "/tasks": {
       "get": {
         "security": [
@@ -2289,6 +2370,33 @@
           }
         },
         "x-swagger-router-controller": "api.task.custom"
+      }
+    },
+    "/tasks/count": {
+      "get": {
+        "security": [
+          {
+            "apiKeyHeader": []
+          }
+        ],
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Get row count of query",
+        "operationId": "get_task_count",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "search_term",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Row count"
+          }
+        },
+        "x-swagger-router-controller": "api.task.model"
       }
     },
     "/tasks/{id}": {

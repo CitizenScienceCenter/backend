@@ -2,7 +2,7 @@ import connexion
 import logging
 import os, json
 from connexion import NoContent
-from db import orm_handler, Media
+from db import orm_handler, Media, Activity, Task
 from db.JTOS import jtos
 from decorators import access_checks
 from werkzeug.utils import secure_filename
@@ -20,7 +20,6 @@ js = jtos.JTOS()
 
 @access_checks.ensure_model
 def get_all(model, limit=25, search_term=None):
-    # TODO add offset
     if search_term:
         try:
             st = prison.loads(search_term)
@@ -38,6 +37,17 @@ def get_all(model, limit=25, search_term=None):
     q = db_session.query(model).all()
     return q, 200
 
+def get_count(model, search_term=None):
+    st = prison.loads(search_term)
+    count_query = st.copy()
+    count_query['select']['fields'] = ['COUNT(*)']
+    if 'limit' in count_query:
+        del count_query['limit']
+    if 'offset' in count_query:
+        del count_query['offset']
+    count_stmt = js.parseObject(count_query)
+    count = db_session.execute(count_stmt).fetchone()
+    return count[0], 200
 
 def get_one(model, id=None):
     m = db_session.query(model).filter(model.id == id).one_or_none()

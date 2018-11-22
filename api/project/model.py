@@ -14,6 +14,9 @@ def get_projects(limit=20, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
     return [m.dump() for m in ms][:limit]
 
+def get_project_count(search_term=None):
+    ms, code = model.get_count(Model, search_term)
+    return ms, code
 
 def get_project(id=None):
     m, code = model.get_one(Model, id)

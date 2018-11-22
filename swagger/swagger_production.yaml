@@ -41,24 +41,28 @@ paths:
     {$ref: 'paths/users.yaml#/paths/user_id'}
   /users/{id}/submissions:
     {$ref: 'paths/users.yaml#/paths/user_id_submissions'}
-  /projects:
+/projects:
     {$ref: './paths/projects.yaml#/paths/projects'}
+  /projects/count:
+    {$ref: './paths/projects.yaml#/paths/count'}
   /projects/{id}:
     {$ref: './paths/projects.yaml#/paths/project_id'}
   /activities:
     {$ref: './paths/activities.yaml#/paths/activities'}
+  /activities/count:
+    {$ref: './paths/activities.yaml#/paths/count'}
   /activities/{id}:
     {$ref: './paths/activities.yaml#/paths/activity_id'}
-  # /activities/{id}/stats:
-  #   {$ref: './paths/activities.yaml#/paths/activity_stats'}
-  # /activities/{id}/tasks:
-  #   {$ref: './paths/activities.yaml#/paths/activity_tasks'}
   /tasks:
     {$ref: './paths/tasks.yaml#/paths/tasks'}
+  /tasks/count:
+    {$ref: './paths/tasks.yaml#/paths/count'}
   /tasks/{id}:
     {$ref: './paths/tasks.yaml#/paths/task_id'}
   /submissions:
     {$ref: './paths/submissions.yaml#/paths/submissions'}
+  /submissions/count:
+    {$ref: './paths/submissions.yaml#/paths/submissions/count'}
   /submission/{id}:
     {$ref: './paths/submissions.yaml#/paths/submission_id'}
   /media:

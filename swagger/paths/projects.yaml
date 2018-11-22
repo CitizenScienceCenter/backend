@@ -38,6 +38,21 @@ paths:
           description: New project created
         409:
           description: Project already exists
+  count:
+    get:
+      security:
+      - apiKeyHeader: []
+      tags: [Projects]
+      x-swagger-router-controller: api.project.model
+      operationId: get_project_count
+      summary: Get row count of query
+      parameters:
+      - name: search_term
+        in: query
+        type: string
+      responses:
+        200:
+          description: Row count
   project_id:
     get:
       security:

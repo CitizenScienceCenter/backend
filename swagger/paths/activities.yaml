@@ -74,6 +74,21 @@ paths:
           description: Activity stats
         404:
           description: Activity does not exist
+  count:
+    get:
+      security:
+      - apiKeyHeader: []
+      tags: [Activities]
+      x-swagger-router-controller: api.activity.model
+      operationId: get_activity_count
+      summary: Get row count of query
+      parameters:
+      - name: search_term
+        in: query
+        type: string
+      responses:
+        200:
+          description: Row count
   activities:
     get:
       tags: [Activities]

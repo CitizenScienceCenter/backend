@@ -64,6 +64,21 @@ paths:
       responses:
         204:
           description: Tasks were deleted
+  count:
+    get:
+      security:
+      - apiKeyHeader: []
+      tags: [Tasks]
+      x-swagger-router-controller: api.task.model
+      operationId: get_task_count
+      summary: Get row count of query
+      parameters:
+      - name: search_term
+        in: query
+        type: string
+      responses:
+        200:
+          description: Row count
   task_id:
     get:
       security:

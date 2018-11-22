@@ -41,6 +41,21 @@ paths:
           description: Submission created
           schema:
             $ref: './types.yaml#/definitions/Submission'
+  count:
+    get:
+      security:
+        - apiKeyHeader: []
+      tags: [Submissions]
+      x-swagger-router-controller: api.submission.model
+      operationId: get_submission_count
+      summary: Get row count of query
+      parameters:
+      - name: search_term
+        in: query
+        type: string
+      responses:
+        200:
+          description: Row count
   submission_id:
     get:
       security:

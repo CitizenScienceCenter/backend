@@ -16,6 +16,9 @@ def get_activities(limit=20, search_term=None):
     ms, code = model.get_all(Model, limit, search_term)
     return [m.dump() for m in ms][:limit]
 
+def get_activity_count(search_term=None):
+    ms, code = model.get_count(Model, search_term)
+    return ms, code
 
 def get_activity(id=None):
     m, code = model.get_one(Model, id)
