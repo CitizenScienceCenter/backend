@@ -12,8 +12,7 @@ Model = Comment
 
 def get_comments(limit=20, search_term=None):
     ms, code = model.get_all(Model, limit, search_term)
-    print(ms)
-    return [m.dump() for m in ms][:limit]
+    return [dict(m) for m in ms][:limit], code
 
 
 def get_comment(id=None):

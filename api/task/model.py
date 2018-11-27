@@ -16,7 +16,7 @@ Model = Task
 
 def get_tasks(limit=20, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
-    return [m.dump() for m in ms][:limit]
+    return [dict(m) for m in ms][:limit], code
 
 def get_task_count(search_term=None):
     ms, code = model.get_count(Model, search_term)
