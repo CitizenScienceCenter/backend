@@ -17,7 +17,7 @@ db_session = orm_handler.db_session
 
 Model = User
 
-def get_users(limit=20, search_term=None):
+def get_users(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
     return [dict(m) for m in ms][:limit], code
 
