@@ -4,6 +4,7 @@ from db import orm_handler, Submission, utils
 from decorators import access_checks
 from flask import request
 import logging
+import json
 from api import model
 
 db_session = orm_handler.db_session
@@ -12,7 +13,7 @@ Model = Submission
 
 def get_submissions(limit=20, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
-    return [m.dump() for m in ms][:limit]
+    return [dict(m) for m in ms][:limit]
 
 def get_submission_count(search_term=None):
     ms, code = model.get_count(Model, search_term)
