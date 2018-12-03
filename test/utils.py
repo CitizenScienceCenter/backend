@@ -11,7 +11,6 @@ def login(client, username, password):
     assert 'api_key' in u
     return u
 
-
 def logout(client):
     return client.get('/api/v2/users/logout', follow_redirects=True)
 

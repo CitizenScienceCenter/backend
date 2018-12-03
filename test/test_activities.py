@@ -86,6 +86,13 @@ class TestActivities:
         # 2. Add a deleted flag/make it inactive to the info and hide it from get results (unless queried)
         pass
 
+    @pytest.mark.run(order=18)
+    def test_delete_activity(self, client, user, project, activity):
+        pd = client.delete(
+            "/api/v2/activities/{}".format(json.loads(activity.data)["id"])
+        )
+        assert pd.status_code == 401
+
     @pytest.mark.run(order=17)
     def test_delete_activity(self, client, user, project, activity):
         pd = client.delete(
