@@ -110,13 +110,13 @@ definitions:
     allOf:
      - $ref: '#/definitions/Base'
     required:
-      - project_id
+      - activity_id
       - sequence
       - title
       - content
       - required
     properties:
-      project_id:
+      activity_id:
         type: string
       sequence:
         type: integer
