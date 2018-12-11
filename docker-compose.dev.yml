@@ -17,21 +17,19 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    env_file: ${ENVFILE}
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: tester
-      POSTGRES_USER: pybossa
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_USER: ${PG_USER}
       POSTGRES_DB: cs
   cccs-connexion-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
     command: bash -c "./pgsql_healthcheck.sh && python app.py"
-    env_file: ./envs/docker.env
-    environment:
-      CC_ENV: ${CC_ENV}
-      SW_ENV: ${SW_ENV}
+    env_file: ${ENVFILE}
     volumes:
       - .:/code
     ports:

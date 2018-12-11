@@ -25,9 +25,8 @@ def db_session():
     persist = False
     if db_instance:
         return db_instance
-    print(os.getenv('DB_URI'))
-    db_uri = 'postgresql://pybossa:tester@dbdev:5432/cs?sslmode=disable'
-    engine = create_engine(db_uri, convert_unicode=True)
+    db_uri = os.getenv('DB_URI')
+    engine = create_engine(db_uri)
     db_session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine)
     )
