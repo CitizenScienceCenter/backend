@@ -1,0 +1,40 @@
+version: '2.2'
+
+services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    restart: always
+    ports:
+      - "5000:8080"
+    environment:
+      SWAGGER_JSON: /swagger/swagger_complete.yaml
+    volumes:
+      - ./swagger:/swagger
+    depends_on:
+      - cccs-connexion-dev
+  dbdev:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: tester
+      POSTGRES_USER: pybossa
+      POSTGRES_DB: cs
+  cccs-connexion-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "./pgsql_healthcheck.sh && python app.py"
+    env_file: ./envs/docker.env
+    environment:
+      CC_ENV: ${CC_ENV}
+      SW_ENV: ${SW_ENV}
+    volumes:
+      - .:/code
+    ports:
+      - "${CC_PORT}:${CC_PORT}"
+    depends_on:
+      - dbdev

@@ -13,7 +13,7 @@ from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from api import model
 from api.project import model as ProjectAPI
 
-db_session = orm_handler.db_session
+db_session = orm_handler.db_session()
 
 Model = User
 

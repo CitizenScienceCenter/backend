@@ -14,39 +14,37 @@ from flask_dotenv import DotEnv
 
 from db import orm_handler
 
-logging.basicConfig(level=logging.INFO)
-app = connexion.FlaskApp(__name__, static_url_path="./static")
-app = connexion.App(__name__, specification_dir="./swagger/")
-application = app.app
-env = DotEnv()
-env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
-env.init_app(application, env_file=env_loc, verbose_mode=False)
-db_session = None
-if "test" in application.config["CC_ENV"]:
-    db_session = orm_handler.init_db(application.config["DB_URI"], persist=False)
-else:
-    db_session = orm_handler.init_db(application.config["DB_URI"], persist=True)
-app.add_api(application.config["SWAGGER_FILE"], resolver=RestyResolver("api"))
+class Server:
+    application = None
+    app = None
 
-application.secret_key = application.config["SECRET_KEY"] or uuid.uuid4()
-CORS(application)
+    def __init__(self):
+        logging.basicConfig(level=logging.INFO)
+        app = connexion.FlaskApp(__name__)
+        self.app = connexion.App(__name__, specification_dir="./swagger/")
+        self.application = app.app
+        env = DotEnv()
+        env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
+        env.init_app(self.application, env_file=env_loc, verbose_mode=False)
+        self.port = self.application.config['PORT'] or 8080
+        self.debug = self.application.config["DEBUG"] or False
+        self.app.add_api(self.application.config["SWAGGER_FILE"], options={'swagger_ui': False})
+        self.application.secret_key = self.application.config["SECRET_KEY"] or uuid.uuid4()
+        CORS(self.application)
 
+        @self.application.teardown_appcontext
+        def shutdown_session(exception=None):
+            orm_handler.db_session().remove()
 
-@application.teardown_appcontext
-def shutdown_session(exception=None):
-    db_session.remove()
+    def run(self):
+        if self.application.config["CC_ENV"] in ["dev", "local", "test", "docker"]:
+            print("Running in Debug Mode")
+            self.app.run(port=self.port, debug=True)
+        else:
+            self.app.run(port=self.port, debug=self.debug, server="gevent")
 
-
-port = application.config["PORT"] or 8080
-debug = application.config["DEBUG"] or False
+s = None
 
 if __name__ == "__main__":
-    if (
-        "dev" in application.config["CC_ENV"]
-        or "local" in application.config["CC_ENV"]
-        or "test" in application.config["CC_ENV"]
-    ):
-        print("Running in Debug Mode")
-        app.run(port=port, debug=True)
-    else:
-        app.run(port=port, debug=debug, server="gevent")
+    s = Server()
+    s.run()

@@ -13,15 +13,21 @@ from flask import Flask, current_app
 
 import datetime
 from db.cs_base import CSBase
-
+from dotenv import load_dotenv
+import os
 
 Base = declarative_base(cls=CSBase)
-db_session = None
+db_instance = None
 
-
-def init_db(uri=None, persist=True):
-    global db_session
-    engine = create_engine(uri, convert_unicode=True)
+def db_session():
+    global db_instance
+    load_dotenv()
+    persist = False
+    if db_instance:
+        return db_instance
+    print(os.getenv('DB_URI'))
+    db_uri = 'postgresql://pybossa:tester@dbdev:5432/cs?sslmode=disable'
+    engine = create_engine(db_uri, convert_unicode=True)
     db_session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine)
     )
@@ -29,4 +35,5 @@ def init_db(uri=None, persist=True):
     if not persist:
         Base.metadata.drop_all(engine)
     Base.metadata.create_all(bind=engine)
-    return db_session
+    db_instance = db_session
+    return db_instance

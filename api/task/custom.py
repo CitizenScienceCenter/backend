@@ -12,11 +12,10 @@ from sqlalchemy.dialects import postgresql
 db_session = orm_handler.db_session
 
 
-@access_checks.ensure_key
 def project_tasks(id, limit=20, offset=0):
     print(id, limit, offset)
     task = (
-        db_session.query(Task)
+        db_session().query(Task)
         .filter(Task.project_id == id)
         .offset(offset)
         .limit(limit)
@@ -25,11 +24,10 @@ def project_tasks(id, limit=20, offset=0):
     return [p.dump() for p in task]
 
 
-@access_checks.ensure_key
 def get_region(pid, region):
     user = utils.get_user(request, db_session)
     task = (
-        db_session.query(Task, Media)
+        db_session().query(Task, Media)
         .outerjoin(Submission, Task.id == Submission.task_id)
         .join(Media, Media.source_id == Task.id)
         .filter(Task.info["SchoolState"].astext == user.info["region"])
@@ -39,23 +37,20 @@ def get_region(pid, region):
     return
 
 
-@access_checks.ensure_key
 def delete_tasks(tasks):
     print("deleting {} tasks".format(len(tasks)))
     print(tasks)
-    db_session.query(Task).filter(Task.id.in_(tasks)).delete(
+    db_session().query(Task).filter(Task.id.in_(tasks)).delete(
         synchronize_session="fetch"
     )
-    db_session.commit()
+    db_session().commit()
     return NoContent, 200
 
 
-# Specific method for Wenker project
-@access_checks.ensure_key
 def get_random(id, search):
     user = utils.get_user(request, db_session)
     task = (
-        db_session.query(Task, Media)
+        db_session().query(Task, Media)
         .outerjoin(Submission, Task.id == Submission.task_id)
         .join(Media, Media.source_id == Task.id)
         .filter(

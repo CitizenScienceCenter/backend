@@ -10,13 +10,13 @@ db_session = orm_handler.db_session
 
 
 def activity_stats(id=None):
-    tasks = db_session.query(Task).filter(Task.project_id == id).all()
+    tasks = db_session().query(Task).filter(Task.project_id == id).all()
     no_tasks = len(tasks)
     subs = 0
     cons = []
     for t in tasks:
         submissions = (
-            db_session.query(Submission).filter(Submission.task_id == t.id).all()
+            db_session().query(Submission).filter(Submission.task_id == t.id).all()
         )
         subs += len(submissions)
         for s in submissions:

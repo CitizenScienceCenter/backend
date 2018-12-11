@@ -6,7 +6,7 @@ from flask import request
 import logging
 from api import model
 
-db_session = orm_handler.db_session
+db_session = orm_handler.db_session()
 
 Model = Project
 
@@ -23,7 +23,6 @@ def get_project(id=None):
     return m.dump(), code
 
 
-@access_checks.ensure_key
 def create_project(project):
     user = utils.get_user(request, db_session)
     project["owned_by"] = user.id
@@ -35,7 +34,6 @@ def create_project(project):
     return p.dump(), 201
 
 
-@access_checks.ensure_key
 def update_project(id, project):
     m, code = model.put(Model, id, project)
     return m.dump(), code

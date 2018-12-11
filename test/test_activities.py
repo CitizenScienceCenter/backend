@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 from db import orm_handler
 
-from app import app
+from app import Server
 
 from test import t_con, utils
 
@@ -20,7 +20,8 @@ import prison
 
 @pytest.fixture(scope="module")
 def client():
-    with app.app.test_client() as c:
+    s = Server()
+    with s.app.app.test_client() as c:
         yield c
 
 

@@ -4,29 +4,21 @@ from functools import wraps
 from db import *
 import prison
 
-db_session = orm_handler.db_session
+db_session = orm_handler.db_session()
 db_tables = orm_handler.Base.metadata.tables.keys()
 
 
-def ensure_key(func):
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        print("access check")
-        if "X-API-KEY" in request.headers:
-            key = request.headers["X-API-KEY"]
-            user_key = db_session.query(User).filter(User.api_key == key).one_or_none()
-            if user_key is not None:
-                return func(*args, **kwargs)
-            else:
-                return NoContent, 401
-        elif "X-ANON" in request.headers:
-            # TODO handle anonymous users (separate table?) and provide limited restrictions
-            key = request.headers["X-ANON"]
-            return NoContent, 401
+def ensure_key(token, required_scopes=None):
+        key = token
+        user_key = db_session.query(User).filter(User.api_key == key).one_or_none()
+        if user_key is not None:
+            return dict(sub=user_key.username)
         else:
-            return NoContent, 401
+            return None
 
-    return decorated_function
+def ensure_anon_key(token, required_scopes=None):
+    return ensure_key(token, required_scopes)
+
 
 
 def ensure_model(func):

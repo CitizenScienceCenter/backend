@@ -7,7 +7,7 @@ import logging
 import json
 from api import model
 
-db_session = orm_handler.db_session
+db_session = orm_handler.db_session()
 
 Model = Submission
 
@@ -24,13 +24,11 @@ def get_submission(id=None):
     return m.dump(), code
 
 
-@access_checks.ensure_key
 def create_submission(submission):
     m, code = model.post(Model, submission)
     return m.dump(), code
 
 
-@access_checks.ensure_key
 def update_submission(id, submission):
     m, code = model.put(Model, id, submission)
     return m.dump(), code

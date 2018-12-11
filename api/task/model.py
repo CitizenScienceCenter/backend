@@ -10,7 +10,7 @@ import logging
 from sqlalchemy.dialects import postgresql
 from api import model
 
-db_session = orm_handler.db_session
+db_session = orm_handler.db_session()
 
 Model = Task
 
@@ -28,25 +28,21 @@ def get_task(id=None):
     return m.dump(), code
 
 
-@access_checks.ensure_key
 def create_tasks(tasks):
     for task in tasks:
         model.post(Model, task)
     return NoContent, 201
 
 
-@access_checks.ensure_key
 def update_task(id, task):
     m, code = model.put(Model, id, task)
     return m.dump(), code
 
 
-@access_checks.ensure_key
 def delete_task(id):
     return model.delete(Model, id)
 
 
-@access_checks.ensure_key
 def delete_tasks(tasks):
     for task in tasks:
         model.delete(Model, task)

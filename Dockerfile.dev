@@ -1,0 +1,17 @@
+FROM quay.io/goswagger/swagger
+WORKDIR /expand/
+COPY . .
+RUN swagger expand swagger/swagger.yaml > /expand/swagger_complete.yaml
+RUN swagger validate /expand/swagger_complete.yaml
+
+
+FROM python:3.6.6-stretch
+ENV PYTHONUNBUFFERED 1
+ARG CC_ENV
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt .
+RUN pip3 install -r requirements.txt
+RUN ls
+COPY --from=0 /expand/swagger_complete.yaml /code/swagger/swagger_complete.yaml
+EXPOSE 8080:8080

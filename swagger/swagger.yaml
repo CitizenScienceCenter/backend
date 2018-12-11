@@ -11,10 +11,12 @@ securityDefinitions:
     type: apiKey
     in: header
     name: X-API-KEY
+    x-apikeyInfoFunc: decorators.access_checks.ensure_key
   anonUser:
     type: apiKey
     in: header
     name: X-ANON
+    x-apikeyInfoFunc: decorators.access_checks.ensure_anon_key
   oauth2:
     type: oauth2
     flow: implicit
