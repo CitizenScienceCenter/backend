@@ -22,7 +22,7 @@ db_instance = None
 def db_session():
     global db_instance
     load_dotenv()
-    persist = False
+    persist = True
     if db_instance:
         return db_instance
     db_uri = os.getenv('DB_URI')

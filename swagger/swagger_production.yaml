@@ -14,10 +14,10 @@ securityDefinitions:
   oauth2:
     type: oauth2
     flow: implicit
-    authorizationUrl: https://api.citizenscience.ch/oauth/authorize
+    authorizationUrl: http://wenker.citizenscience.ch:8080/oauth/authorize
     # the token info URL is hardcoded for our mock_tokeninfo.py script
     # you can also pass it as an environment variable TOKENINFO_URL
-    x-tokenInfoUrl: https://api.citizenscience.ch/api/v1/users/validate
+    x-tokenInfoUrl: http://wenker.citizenscience.ch:8080/api/v1/users/validate
     scopes:
       apiKey: Unique identifier of the user accessing the service.
 host: api.citizenscience.ch
@@ -26,7 +26,7 @@ schemes:
   - https
 paths:
   /users:
-    {$ref: 'paths/users.yaml#/paths/get_users'}
+   {$ref: 'paths/users.yaml#/paths/get_users'}
   /users/authorize:
     {$ref: 'paths/users.yaml#/paths/user_authorize'}
   /users/validate:
@@ -41,7 +41,7 @@ paths:
     {$ref: 'paths/users.yaml#/paths/user_id'}
   /users/{id}/submissions:
     {$ref: 'paths/users.yaml#/paths/user_id_submissions'}
-/projects:
+  /projects:
     {$ref: './paths/projects.yaml#/paths/projects'}
   /projects/count:
     {$ref: './paths/projects.yaml#/paths/count'}
@@ -62,7 +62,7 @@ paths:
   /submissions:
     {$ref: './paths/submissions.yaml#/paths/submissions'}
   /submissions/count:
-    {$ref: './paths/submissions.yaml#/paths/submissions/count'}
+    {$ref: './paths/submissions.yaml#/paths/count'}
   /submission/{id}:
     {$ref: './paths/submissions.yaml#/paths/submission_id'}
   /media:

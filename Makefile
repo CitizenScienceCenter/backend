@@ -1,5 +1,5 @@
 include ${ENVFILE}
-export $(shell sed 's/=.*//' ${ENVFILE})
+export
 
 .PHONY: all
 all:
@@ -14,15 +14,17 @@ clean:
 .PHONY: start
 start:
 		git secret reveal -f
-		cp ${ENVFILE} .env
-		docker-compose -f ${COMPOSE_FILE} up --build --force-recreate
+		-cp -f ${ENVFILE} .env
+		docker-compose up --build --force-recreate
 
 .PHONY: start_service
 start_service:
+		git secret reveal -f
+		-cp -f ${ENVFILE} .env
 		docker-compose -f ${COMPOSE_FILE} up --build --force-recreate -d
 
 .PHONYL: stop
 stop:
 		docker-compose -f ${COMPOSE_FILE} down
-		rm .env
+		-rm .env
 
