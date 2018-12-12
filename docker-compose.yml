@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   swagger-ui:
-    image: swaggerapi/swagger-ui
+    image: swaggerapi/swagger-ui:latest
     restart: always
     env_file: ${ENVFILE}
     ports:
@@ -30,10 +30,10 @@ services:
       context: .
       args:
         SW_ENV: ${SW_ENV}
-    command:  uwsgi --http :${CC_PORT} --wsgi-file uwsgi.py --callable server --master --processes 4 --threads 2 --stats :9191 
+    command:  uwsgi --http :${CC_PORT} --wsgi-file uwsgi.py --master --processes 4 --threads 2 --stats :9191 
     env_file: ${ENVFILE}
     volumes:
-      - ~/dev/wenkerbogen-switzerland:/code/static/upload
+      - ~/dev/upload:/code/static/upload
     ports:
       - "${CC_PORT}:${CC_PORT}"
     depends_on:

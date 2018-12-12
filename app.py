@@ -25,7 +25,7 @@ class Server:
         self.application = app.app
         env = DotEnv()
         env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
-        env.init_app(self.application, env_file=env_loc, verbose_mode=False)
+        env.init_app(self.application, env_file=env_loc, verbose_mode=True)
         self.port = int(self.application.config['PORT']) or 8080
         self.debug = self.application.config["DEBUG"] or False
         self.app.add_api(self.application.config["SWAGGER_FILE"], options={'swagger_ui': False})
