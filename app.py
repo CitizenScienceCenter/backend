@@ -14,34 +14,44 @@ from flask_dotenv import DotEnv
 
 from db import orm_handler
 
+
 class Server:
     application = None
     app = None
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
-        app = connexion.FlaskApp(__name__)
-        self.app = connexion.App(__name__, specification_dir="./swagger/")
-        self.application = app.app
+        self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./swagger/")
+
         env = DotEnv()
         env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
-        env.init_app(self.application, env_file=env_loc, verbose_mode=True)
-        self.port = int(self.application.config['PORT']) or 8080
-        self.debug = self.application.config["DEBUG"] or False
-        self.app.add_api(self.application.config["SWAGGER_FILE"], options={'swagger_ui': False})
-        self.application.secret_key = self.application.config["SECRET_KEY"] or uuid.uuid4()
-        CORS(self.application)
+        env.init_app(self.connexion_app.app, env_file=env_loc, verbose_mode=False)
 
-        @self.application.teardown_appcontext
+        self.connexion_app.add_api(self.connexion_app.app.config["SWAGGER_FILE"], options={'swagger_ui': False})
+
+        self.port = int(self.connexion_app.app.config['PORT']) or 8080
+        self.debug = bool(self.connexion_app.app.config["DEBUG"]) or False
+
+        self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()
+
+        @self.connexion_app.app.after_request
+        def apply_cors(response):
+            response.headers["Access-Control-Allow-Origin"] = "*"
+            return response
+
+        @self.connexion_app.app.teardown_appcontext
         def shutdown_session(exception=None):
             orm_handler.db_session().remove()
 
     def run(self):
-        if self.application.config["CC_ENV"] in ["dev", "local", "test", "docker"]:
+        if self.connexion_app.app.config["CC_ENV"] in ["dev", "local", "test", "docker"]:
             print("Running in Debug Mode")
-            self.app.run(port=self.port, debug=True)
+            self.connexion_app.run(port=self.port, debug=True)
         else:
-            self.app.run(port=self.port, debug=self.debug, server="gevent")
+            self.connexion_app.run(port=self.port, debug=self.debug, server="gevent")
+
+
+s = None
 
 if __name__ == "__main__":
     s = Server()
