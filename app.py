@@ -37,6 +37,9 @@ class Server:
         @self.connexion_app.app.after_request
         def apply_cors(response):
             response.headers["Access-Control-Allow-Origin"] = "*"
+            response.headers["Access-Control-Allow-Headers"] = "*"
+            response.headers["Access-Control-Allow-Methods"] = "GET, PUT, POST, OPTIONS";
+            response.headers["Access-Control-Allow-Credentials"] = "true";
             return response
 
         @self.connexion_app.app.teardown_appcontext
