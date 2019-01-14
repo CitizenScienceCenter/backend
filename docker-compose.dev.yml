@@ -7,9 +7,7 @@ services:
     ports:
       - "5000:8080"
     environment:
-      SWAGGER_JSON: /swagger/swagger_complete.yaml
-    volumes:
-      - ./swagger:/swagger
+      URL: ${SWAGGER_URL}
     depends_on:
       - cccs-connexion-dev
   dbdev:
