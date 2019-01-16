@@ -21,7 +21,7 @@ import prison
 @pytest.fixture(scope="module")
 def client():
     s = Server()
-    with s.app.app.test_client() as c:
+    with s.connexion_app.app.test_client() as c:
         yield c
 
 
@@ -71,9 +71,9 @@ class TestActivities:
         )
         act = json.loads(lg.data)
         assert lg.status_code == 200
-        assert len(act) == 1
+        assert len(act) == 3
         assert 'description' in act[0]
-        assert act[0]['description'] == 'Test Activity'
+        assert act[0]['description'] == 'Lorem ipsum dolor'
         assert lg.status_code == 200
 
     @pytest.mark.run(order=15)

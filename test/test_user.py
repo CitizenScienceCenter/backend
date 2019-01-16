@@ -18,7 +18,7 @@ from test import t_con, utils
 @pytest.fixture(scope="module")
 def client():
     s = Server()
-    with s.app.app.test_client() as c:
+    with s.connexion_app.app.test_client() as c:
         yield c
 
 

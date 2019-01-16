@@ -22,7 +22,7 @@ def get_all(model, limit=25, search_term=None):
     if search_term:
         try:
             st = prison.loads(search_term)
-            q_stmt = js.parseObject(st)
+            q_stmt = js.parse_object(st)
             print(q_stmt)
             res = db_session().execute(q_stmt)
             result_set = res.fetchall()

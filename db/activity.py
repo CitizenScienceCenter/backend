@@ -21,3 +21,10 @@ class Activity(orm.Base):
     platform = Column(String(50), nullable=False, default="Both")
     active = Column(Boolean, default=False)
     part_of = Column(UUID, ForeignKey("projects.id"))
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description
+        }
