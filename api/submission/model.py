@@ -13,7 +13,10 @@ Model = Submission
 
 def get_submissions(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
-    return [dict(m) for m in ms][:limit], code
+    if len(ms) > 0 and isinstance(ms[1], Submission):
+        return [m.dump() for m in ms][:limit], code
+    else:
+        return [dict(m) for m in ms][:limit], code
 
 def get_submission_count(search_term=None):
     ms, code = model.get_count(Model, search_term)

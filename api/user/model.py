@@ -19,7 +19,10 @@ Model = User
 
 def get_users(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
-    return [dict(m) for m in ms][:limit], code
+    if len(ms) > 0 and isinstance(ms[1], User):
+        return [m.dump() for m in ms][:limit], code
+    else:
+        return [dict(m) for m in ms][:limit], code
 
 
 def get_user(id=None):

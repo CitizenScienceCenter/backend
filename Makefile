@@ -1,5 +1,7 @@
-include ${ENVFILE}
+include .env
 export
+
+export ENVFILE=.env
 
 .PHONY: all
 all:
@@ -8,19 +10,18 @@ all:
 .PHONY: clean
 clean:
 		docker-compose -f ${COMPOSE_FILE} rm
+		-rm .env
 
 .PHONY: test
 
 .PHONY: start
 start:
 		git secret reveal -f
-		-cp -f ${ENVFILE} .env
 		docker-compose up --build --force-recreate
 
 .PHONY: start_service
 start_service:
 		git secret reveal -f
-		-cp -f ${ENVFILE} .env
 		docker-compose -f ${COMPOSE_FILE} up --build --force-recreate -d
 
 .PHONYL: stop

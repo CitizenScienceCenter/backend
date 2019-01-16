@@ -8,6 +8,19 @@ Current implementation holds a basic implementation with an API inspired by that
 
 ## Running
 
+### Make
+
+* Ensure the correct `env` file has been symlinked to `.env`.
+* `make start` or `make start_service`
+
+NOTE: starting as as service means that the processs is daemonized immediately and you must attach to the running container in order to debug (unless you redirect logs)
+
+* `make stop` and `make clean`
+
+### .env Contents
+
+
+
 ### Locally
 
 * `virtualenv env`

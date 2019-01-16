@@ -12,7 +12,10 @@ Model = Media
 
 def get_media(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
-    return [dict(m) for m in ms][:limit], code
+    if len(ms) > 0 and isinstance(ms[1], Media):
+        return [m.dump() for m in ms][:limit], code
+    else:
+        return [dict(m) for m in ms][:limit], code
 
 
 def get_medium(id=None):
