@@ -12,7 +12,7 @@ Model = Project
 
 def get_projects(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
-    if len(ms) > 0 and isinstance(ms[1], Project):
+    if len(ms) > 0 and isinstance(ms[0], Project):
         return [m.dump() for m in ms][:limit], code
     else:
         return [dict(m) for m in ms][:limit], code
