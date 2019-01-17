@@ -3,7 +3,7 @@ import logging
 import os, json
 from connexion import NoContent
 from db import orm_handler, Media, Activity, Task
-from db.JTOS import jtos
+from db.JTOS.jtos import jtos
 from decorators import access_checks
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import IntegrityError
