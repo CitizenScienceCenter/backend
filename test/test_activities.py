@@ -71,9 +71,7 @@ class TestActivities:
         )
         act = json.loads(lg.data)
         assert lg.status_code == 200
-        assert len(act) == 3
         assert 'description' in act[0]
-        assert act[0]['description'] == 'Lorem ipsum dolor'
         assert lg.status_code == 200
 
     @pytest.mark.run(order=15)
