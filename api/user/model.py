@@ -24,7 +24,7 @@ def get_users(limit=100, search_term=None):
     else:
         return [dict(m) for m in ms][:limit], code
 
-
+@access_checks.ensure_owner(Model)
 def get_user(id=None):
     m, code = model.get_one(Model, id)
     return m.dump(), code

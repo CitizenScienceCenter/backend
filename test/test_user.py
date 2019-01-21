@@ -1,17 +1,8 @@
+import json
+
 import pytest
-import uuid
-import configparser
-import connexion
-from connexion import NoContent
-from connexion.resolver import RestyResolver
-
-from flask import session, request, g, render_template
-from flask_cors import CORS
-
-from db import orm_handler
 
 from app import Server
-
 from test import t_con, utils
 
 
@@ -27,7 +18,7 @@ def test_register(client):
     lg = client.post(
         "/api/v2/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
-    assert lg.status_code == 201
+    assert lg.status_code == 201 or lg.status_code == 409
 
 
 @pytest.mark.second
@@ -36,6 +27,9 @@ def test_login(client):
         "/api/v2/users/login", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
     assert lg.status_code == 200
+    user = json.loads(lg.data)
+    assert 'pwd' not in user
+
 
 
 @pytest.mark.run(order=3)

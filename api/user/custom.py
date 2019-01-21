@@ -29,6 +29,7 @@ def login(user):
     logging.info(q)
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
+            del q.pwd
             return q.dump(), 200
         else:
             return NoContent, 401
