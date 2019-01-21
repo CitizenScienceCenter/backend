@@ -29,7 +29,7 @@ class Server:
 
         self.connexion_app.add_api(self.connexion_app.app.config["SWAGGER_FILE"], options={'swagger_ui': False})
 
-        self.port = int(self.connexion_app.app.config['PORT']) or 8080
+        self.port = int(self.connexion_app.app.config['CC_PORT']) or 8080
         self.debug = bool(self.connexion_app.app.config["DEBUG"]) or False
 
         self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()
