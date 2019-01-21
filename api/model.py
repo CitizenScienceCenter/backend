@@ -29,6 +29,7 @@ def get_all(model, limit=25, search_term=None):
             print(e)
             return e
     q = db_session().query(model).all()
+    db_session().close()
     return q, 200
 
 def get_count(model, search_term=None):
@@ -41,15 +42,18 @@ def get_count(model, search_term=None):
         del count_query['offset']
     count_stmt = js.parse_object(count_query)
     count = db_session().execute(count_stmt).fetchone()
+    db_session().close()
     return count[0], 200
 
 def get_one(model, id=None):
     m = db_session().query(model).filter(model.id == id).one_or_none()
+    db_session().close()
     return m, 200 if m is not None else ("Not found", 404)
 
 
 def get_file(model, id=None):
     m = db_session().query(model).filter(model.id == id).one_or_none()
+    db_session().close()
     return send_file(m.path) if m is not None else ("Not found", 404)
 
 
@@ -82,6 +86,7 @@ def put(model, id, object):
         db_session.add(p)
     db_session().commit()
     print(p.id)
+    db_session().close()
     return p, (200 if p is not None else 201)
 
 

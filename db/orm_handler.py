@@ -26,7 +26,7 @@ def db_session():
     if db_instance:
         return db_instance
     db_uri = os.getenv('DB_URI')
-    engine = create_engine(db_uri)
+    engine = create_engine(db_uri, pool_size=25, max_overflow=10)
     db_session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine)
     )

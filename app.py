@@ -49,7 +49,7 @@ class Server:
     def run(self):
         if self.connexion_app.app.config["CC_ENV"] in ["dev", "local", "test", "docker"]:
             print("Running in Debug Mode")
-            self.connexion_app.run(port=self.port, debug=True)
+            self.connexion_app.run(port=self.port, debug=True, threaded=True)
         else:
             self.connexion_app.run(port=self.port, debug=self.debug, server="gevent")
 
