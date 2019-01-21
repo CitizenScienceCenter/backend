@@ -1,4 +1,4 @@
-include .env
+-include .env
 export
 
 export ENVFILE=.env
@@ -6,6 +6,13 @@ export ENVFILE=.env
 .PHONY: all
 all:
 		clean
+		start
+
+.PHONY: activate
+activate:
+		git secret reveal -f
+		-rm .env
+		ln -s envs/${ENVIRON}.env .env
 
 .PHONY: clean
 clean:

@@ -1,18 +1,13 @@
-import connexion
 import logging
-import os, json
-from connexion import NoContent
-from db import orm_handler, Media, Activity, Task
-from jtos import jtos
-from decorators import access_checks
-from werkzeug.utils import secure_filename
-from sqlalchemy.exc import IntegrityError
-import uuid
-from collections import namedtuple
-from flask import send_file
-import fleep
-from pathlib import Path
+
 import prison
+from connexion import NoContent
+from flask import send_file
+from jtos import jtos
+from sqlalchemy.exc import IntegrityError
+
+from db import orm_handler
+from decorators import access_checks
 
 db_session = orm_handler.db_session
 js = jtos.JTOS()
