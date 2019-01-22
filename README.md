@@ -8,40 +8,42 @@ Current implementation holds a basic implementation with an API inspired by that
 
 ## Running
 
-### Make
-
 * Ensure the correct `env` file has been symlinked to `.env`.
+
+OR
+
+* run `make ENVIRON=docker activate` to symlink `envs/docker.env`
 * `make start` or `make start_service`
 
 NOTE: starting as as service means that the processs is daemonized immediately and you must attach to the running container in order to debug (unless you redirect logs)
 
 * `make stop` and `make clean`
 
+### Testing
+
+`make test`
+
+NOTE: This requires that port 5432 is available on your system. You can change this in the Makefile but this port **MUST** be fixed at 5432 for CI.
+
+
 ### .env Contents
 
+```env
+CC_ENV=local # environment variable
+CC_PORT=9000 
+SW_ENV=swagger.yaml # swagger file to build from
+DB_URI=postgresql://testing:testing@localhost/testcs?sslmode=disable
+HOST=http://0.0.0.0:8081 # host for frontend
+DEBUG=True
+SWAGGER_DIR=swagger/
+SWAGGER_FILE=swagger_complete.yaml # Swagger file to  pass to main app
+SECRET_KEY=SUPES_SECRET987 # Secret key for sessions
+COMPOSE_FILE=docker-compose.dev.yml # Docker compose file
+PG_USER=testing # DB user
+PG_PASSWORD=testing # DB pwd
 
-
-### Locally
-
-* `virtualenv env`
-* `source env/bin/activate`
-* `pip install -r requirements.txt`
-* Set connection settings and others in `config.py`
-* `python app.py`
-
-### Docker (with Docker Compose)
-
-* Set the following variables in a `.env` file:
-    * `CC_ENV`: the location to your config file
-    * `CC_PORT`: the port you want to run on (will also be exposed)
-    * `SW_ENV`: The name of the root swagger file
-* For common deployments, there is an `envs/` folder containing env files. To use them, just make a symbolic link on your host to `.env`
-* Set connexion settings in config/<env>.py
-* `docker compose up`
-
-## Using
-
-When it is running, port 8080 is exposed. You can use Nginx (or similar) to proxy through to this or access it through this port. You can access a hosted version [here](https://api.citizenscience.ch)
+# DB will always be called `cs`
+```
 
 ## Generate SDKs
 
@@ -53,9 +55,9 @@ Requires [swagger-codegen](https://swagger.io/swagger-codegen/).
 
 ## TODO
 
-* Oauth support
-* Generate E-R diagram
-* Ownserhip handling
-* Android/iOS client SDK generation
-* Reduce NoContent responses
-* Auth decorator
+* [ ] Oauth support
+* [ ] Generate E-R diagram
+* [ ] Ownership handling
+* [ ] Android/iOS client SDK generation
+* [ ] Reduce NoContent responses
+* [x] Auth decorator
