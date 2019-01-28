@@ -32,22 +32,22 @@ components:
       required:
         - username
         - pwd
-      allOf:
-        - $ref: '#/components/schemas/Base'
-        - properties:
-            username:
-              type: string
-            email:
-              type: string
-              format: email
-            pwd:
-              type: string
-            api_key:
-              type: string
+      additionalProperties:
+        $ref: '#/components/schemas/Base'
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        pwd:
+          type: string
+        api_key:
+          type: string
     Media:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/Base'
+      additionalProperties:
+        $ref: '#/components/schemas/Base'
       required:
         - source_id
         - path
@@ -116,8 +116,8 @@ components:
           description: The ID of the project that this activity is part of
     Task:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/Base'
+      additionalProperties:
+        $ref: '#/components/schemas/Base'
       required:
         - activity_id
         - sequence
@@ -140,8 +140,8 @@ components:
       required:
         - task_id
         - user_id
-      allOf:
-        - $ref: '#/components/schemas/Base'
+      additionalProperties:
+        $ref: '#/components/schemas/Base'
       properties:
         task_id:
           type: string

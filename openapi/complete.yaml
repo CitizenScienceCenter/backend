@@ -1,38 +1,8 @@
 {
-  "openapi": "3.0.2",
+  "openapi": "3.0.1",
   "info": {
     "title": "CCCS",
     "version": "0.2.1"
-  },
-  "documentation": {
-    "url": "https://docs.citizenscience.ch",
-    "description": "Central documentation for API, Database, and Clients"
-  },
-  "securitySchemes": {
-    "anonUser": {
-      "type": "apiKey",
-      "name": "X-ANON",
-      "in": "header",
-      "x-apikeyInfoFunc": "decorators.access_checks.ensure_anon_key"
-    },
-    "apiKeyHeader": {
-      "type": "apiKey",
-      "name": "X-API-KEY",
-      "in": "header",
-      "x-apikeyInfoFunc": "decorators.access_checks.ensure_key"
-    },
-    "oauth2": {
-      "type": "oauth2",
-      "x-tokenInfoUrl": "http://localhost:8081/api/v1/users/validate",
-      "flows": {
-        "implicit": {
-          "authorizationUrl": "http://localhost:8081/oauth/authorize",
-          "scopes": {
-            "apiKey": "Unique identifier of the user accessing the service."
-          }
-        }
-      }
-    }
   },
   "servers": [
     {
@@ -2022,6 +1992,22 @@
         "x-swagger-router-controller": "api.user.custom"
       }
     }
+  },
+  "components": {
+          "securitySchemes": {
+            "anonUser": {
+              "type": "apiKey",
+              "name": "X-ANON",
+              "in": "header",
+              "x-apikeyInfoFunc": "decorators.access_checks.ensure_anon_key"
+            },
+            "apiKeyHeader": {
+              "type": "apiKey",
+              "name": "X-API-KEY",
+              "in": "header",
+              "x-apikeyInfoFunc": "decorators.access_checks.ensure_key"
+            },
+          },
   }
 }
 

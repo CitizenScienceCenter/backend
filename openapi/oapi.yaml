@@ -2,28 +2,6 @@ openapi: 3.0.0
 info:
   title: CCCS
   version: "0.2.1"
-documentation:
-  url: https://docs.citizenscience.ch
-  description: Central documentation for API, Database, and Clients
-securitySchemes:
-  anonUser:
-    type: apiKey
-    name: X-ANON
-    in: header
-    x-apikeyInfoFunc: decorators.access_checks.ensure_anon_key
-  apiKeyHeader:
-    type: apiKey
-    name: X-API-KEY
-    in: header
-    x-apikeyInfoFunc: decorators.access_checks.ensure_key
-  oauth2:
-    type: oauth2
-    x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
-    flows:
-      implicit:
-        authorizationUrl: http://localhost:8081/oauth/authorize
-        scopes:
-          apiKey: Unique identifier of the user accessing the service.
 servers:
   - url: http://0.0.0.0:8080/api/v2
     description: Test Server
@@ -320,12 +298,6 @@ paths:
       responses:
         "200":
           description: List of media
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "./bodies.yaml#/components/requestBodies/Media"
       x-swagger-router-controller: api.media.model
     post:
       security:
@@ -336,7 +308,7 @@ paths:
         - Media
       operationId: create_medium
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Media"
+        $ref: "./bodies.yaml#/components/requestBodies/Medium"
       responses:
         "200":
           description: Media attached
@@ -472,7 +444,7 @@ paths:
             type: string
             pattern: ^[a-zA-Z0-9-]+$
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Media"
+        $ref: "./bodies.yaml#/components/requestBodies/Medium"
       responses:
         "201":
           description: Return Media
@@ -1172,4 +1144,23 @@ paths:
         "404":
           description: User not found
       x-swagger-router-controller: api.user.custom
-
+components:
+  securitySchemes:
+    anonUser:
+      type: apiKey
+      name: X-ANON
+      in: header
+      x-apikeyInfoFunc: decorators.access_checks.ensure_anon_key
+    apiKeyHeader:
+      type: apiKey
+      name: X-API-KEY
+      in: header
+      x-apikeyInfoFunc: decorators.access_checks.ensure_key
+    oauth2:
+      type: oauth2
+      x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
+      flows:
+        implicit:
+          authorizationUrl: http://localhost:8081/oauth/authorize
+          scopes:
+            apiKey: Unique identifier of the user accessing the service.
