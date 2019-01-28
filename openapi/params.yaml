@@ -1,0 +1,12 @@
+openapi: 3.0.1
+info:
+  title: An include file to define sortable attributes
+  version: 1.0.0
+paths: {}
+components:
+  parameters:
+    sort:
+      name: sort
+      in: query
+      schema:
+        $ref: '#/components/schemas/sortType'

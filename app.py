@@ -21,7 +21,7 @@ class Server:
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
-        self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./swagger/")
+        self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./openapi/")
 
         env = DotEnv()
         env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
