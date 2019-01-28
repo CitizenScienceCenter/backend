@@ -9,35 +9,35 @@ components:
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#components/schemas/User'
+            $ref: './schemas.yaml#/components/schemas/User'
     Comment:
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#components/schemas/Comment'
+            $ref: './schemas.yaml#/components/schemas/Comment'
     Media:
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#components/schemas/Media'
+            $ref: './schemas.yaml#/components/schemas/Media'
     Activity:
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#components/schemas/Activity'
+            $ref: './schemas.yaml#/components/schemas/Activity'
     Submission:
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#components/schemas/Submission'
+            $ref: './schemas.yaml#/components/schemas/Submission'
     Project:
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#components/schemas/Project'
+            $ref: './schemas.yaml#/components/schemas/Project'
     Task:
       content:
         application/json:
           type: array
           items:
-            $ref: './schemas.yaml#components/schemas/Task'
+            $ref: './schemas.yaml#/components/schemas/Task'
