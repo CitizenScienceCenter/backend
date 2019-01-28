@@ -28,8 +28,8 @@ def get_activity(id=None):
     m, code = model.get_one(Model, id)
     return m.dump(), code
 
-def create_activity(activity):
-    m, code = model.post(Model, activity)
+def create_activity(body):
+    m, code = model.post(Model, body)
     return m.dump(), code
 
 

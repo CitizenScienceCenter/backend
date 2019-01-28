@@ -26,10 +26,10 @@ def get_project(id=None):
     return m.dump(), code
 
 
-def create_project(project):
+def create_project(body):
     user = utils.get_user(request, db_session)
-    project["owned_by"] = user.id
-    p = Model(**project)
+    body["owned_by"] = user.id
+    p = Model(**body)
     user.member_of.append(p)
     db_session.add(user)
     db_session.commit()

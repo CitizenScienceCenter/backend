@@ -23,12 +23,12 @@ def validate(key):
         return NoContent, 401
 
 
-def login(user):
+def login(body):
     logging.info(request)
-    q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
+    q = db_session().query(User).filter(User.email == body["email"]).one_or_none()
     logging.info(q)
     if q:
-        if pbkdf2_sha256.verify(user["pwd"], q.pwd):
+        if pbkdf2_sha256.verify(body["pwd"], q.pwd):
             del q.pwd
             return q.dump(), 200
         else:

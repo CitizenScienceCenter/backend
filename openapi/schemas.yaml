@@ -30,7 +30,6 @@ components:
     User:
       type: object
       required:
-        - username
         - pwd
       additionalProperties:
         $ref: '#/components/schemas/Base'

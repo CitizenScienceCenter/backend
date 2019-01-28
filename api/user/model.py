@@ -30,13 +30,13 @@ def get_user(id=None):
     return m.dump(), code
 
 
-def create_user(user):
-    user["api_key"] = uuid.uuid4()
-    user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
-    print(user)
-    if ("username" in user and len(user["username"]) == 0) or not "username" in user:
-        user["username"] = user["email"].split("@")[0]
-    created_user, code = model.post(Model, user)
+def create_user(body):
+    body["api_key"] = uuid.uuid4()
+    body["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(body["pwd"])
+    print(body)
+    if ("username" in body and len(body["username"]) == 0) or not "username" in body:
+        body["username"] = body["email"].split("@")[0]
+    created_user, code = model.post(Model, body)
     if isinstance(created_user, Model):
         if (created_user.info is not None and created_user.info['anonymous'] is False):
             user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}

@@ -1852,7 +1852,6 @@
                 "schema": {
                   "type": "object",
                   "required": [
-                    "username",
                     "pwd"
                   ],
                   "additionalProperties": {

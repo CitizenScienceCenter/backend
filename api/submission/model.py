@@ -27,8 +27,8 @@ def get_submission(id=None):
     return m.dump(), code
 
 
-def create_submission(submission):
-    m, code = model.post(Model, submission)
+def create_submission(body):
+    m, code = model.post(Model, body)
     return m.dump(), code
 
 

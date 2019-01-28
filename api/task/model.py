@@ -31,8 +31,8 @@ def get_task(id=None):
     return m.dump(), code
 
 
-def create_tasks(tasks):
-    for task in tasks:
+def create_tasks(body):
+    for task in body:
         model.post(Model, task)
     return NoContent, 201
 
