@@ -52,8 +52,8 @@ def create_user(body):
 
 
 @access_checks.ensure_owner(Model)
-def update_user(id, user):
-    m, code = model.put(Model, id, user)
+def update_user(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 
@@ -68,7 +68,7 @@ def delete_user(id):
         users = db_session.query(User).filter(User.member_of.any(Model.id==p.id)).all()
         for u in users:
             print(u.dump())
-            u.member_of.remove(project)
+            u.member_of.remove(p)
             db_session.add(u)
         db_session.commit()
         model.delete(Project, p.id)

@@ -32,8 +32,8 @@ def create_submission(body):
     return m.dump(), code
 
 
-def update_submission(id, submission):
-    m, code = model.put(Model, id, submission)
+def update_submission(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 

@@ -1,8 +1,0 @@
-parameters:
-  id:
-    name: id
-    description: The unique identifer for an Object (i.e. User, Task, Project, Submission etc)
-    in: path
-    type: string
-    required: true
-    pattern: "^[a-zA-Z0-9-]+$"

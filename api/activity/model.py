@@ -38,6 +38,6 @@ def delete_activity(id):
     # TODO delete tasks first
     return model.delete(Model, id)
 
-def update_activity(id, activity):
-    m, code = model.put(Model, id, activity)
+def update_activity(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code

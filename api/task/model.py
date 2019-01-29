@@ -37,8 +37,8 @@ def create_tasks(body):
     return NoContent, 201
 
 
-def update_task(id, task):
-    m, code = model.put(Model, id, task)
+def update_task(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 
@@ -46,7 +46,7 @@ def delete_task(id):
     return model.delete(Model, id)
 
 
-def delete_tasks(tasks):
-    for task in tasks:
+def delete_tasks(body):
+    for task in body:
         model.delete(Model, task)
     return NoContent, 200

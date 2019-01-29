@@ -37,8 +37,8 @@ def create_project(body):
     return p.dump(), 201
 
 
-def update_project(id, project):
-    m, code = model.put(Model, id, project)
+def update_project(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 
