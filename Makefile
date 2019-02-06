@@ -25,6 +25,8 @@ test:
 		if !(docker ps | grep testpg); then \
 		  docker run --name testpg -e POSTGRES_DB=testcs -e POSTGRES_USER=testing -e POSTGRES_PASSWORD=testing -p "5432:5432" -d postgres; fi
 		@ env/bin/py.test test
+		docker kill testpg
+		docker rm testpg
 
 
 .PHONY: start
