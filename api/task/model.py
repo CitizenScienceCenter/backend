@@ -28,7 +28,7 @@ def get_task_count(search_term=None):
 
 def get_task(id=None):
     m, code = model.get_one(Model, id)
-    return m.dump(), code
+    return m.dump() if m is not None else m, code
 
 
 def create_tasks(tasks):

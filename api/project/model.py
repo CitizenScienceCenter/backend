@@ -19,11 +19,11 @@ def get_projects(limit=100, search_term=None):
 
 def get_project_count(search_term=None):
     ms, code = model.get_count(Model, search_term)
-    return ms, code
+    return ms, code 
 
 def get_project(id=None):
     m, code = model.get_one(Model, id)
-    return m.dump(), code
+    return m.dump() if m is not None else m, code 
 
 
 def create_project(project):

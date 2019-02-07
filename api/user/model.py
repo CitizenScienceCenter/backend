@@ -27,7 +27,7 @@ def get_users(limit=100, search_term=None):
 @access_checks.ensure_owner(Model)
 def get_user(id=None):
     m, code = model.get_one(Model, id)
-    return m.dump(), code
+    return m.dump() if m is not None else m, code
 
 
 def create_user(user):

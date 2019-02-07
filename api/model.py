@@ -48,13 +48,13 @@ def get_count(model, search_term=None):
 def get_one(model, id=None):
     m = db_session().query(model).filter(model.id == id).one_or_none()
     db_session().close()
-    return m, 200 if m is not None else ("Not found", 404)
+    return (m, 200) if m is not None else (m, 404)
 
 
 def get_file(model, id=None):
     m = db_session().query(model).filter(model.id == id).one_or_none()
     db_session().close()
-    return send_file(m.path) if m is not None else ("Not found", 404)
+    return send_file(m.path) if m is not None else m, 404
 
 
 def post(model, object):
