@@ -21,8 +21,8 @@ class Server:
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
-        self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./swagger/")
-
+        self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./swagger")
+        # CORS(self.connexion_app.app, support_credentials=True)
         env = DotEnv()
         env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
         env.init_app(self.connexion_app.app, env_file=env_loc, verbose_mode=False)
@@ -36,9 +36,10 @@ class Server:
 
         @self.connexion_app.app.after_request
         def apply_cors(response):
+            response.headers["Content-Type"] = "application/json"
             response.headers["Access-Control-Allow-Origin"] = "*"
-            response.headers["Access-Control-Allow-Headers"] = "*"
-            response.headers["Access-Control-Allow-Methods"] = "GET, PUT, POST, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "x-api-key, Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token"
+            response.headers["Access-Control-Allow-Methods"] = "GET, PUT, POST, OPTIONS, DELETE"
             response.headers["Access-Control-Allow-Credentials"] = "true"
             return response
 
