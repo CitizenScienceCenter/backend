@@ -6,7 +6,6 @@ RUN echo $SW_ENV
 RUN swagger expand swagger/$SW_ENV > /expand/swagger_complete.yaml
 RUN swagger validate /expand/swagger_complete.yaml
 
-
 FROM python:3.6.6-stretch
 ENV PYTHONUNBUFFERED 1
 ARG CC_ENV

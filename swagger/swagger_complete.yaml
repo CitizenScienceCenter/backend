@@ -2141,7 +2141,7 @@
               "items": {
                 "type": "object",
                 "required": [
-                  "project_id",
+                  "activity_id",
                   "sequence",
                   "title",
                   "content",
@@ -2178,11 +2178,11 @@
                   }
                 ],
                 "properties": {
+                  "activity_id": {
+                    "type": "string"
+                  },
                   "content": {
                     "type": "object"
-                  },
-                  "project_id": {
-                    "type": "string"
                   },
                   "required": {
                     "type": "boolean"
@@ -2220,7 +2220,7 @@
               "items": {
                 "type": "object",
                 "required": [
-                  "project_id",
+                  "activity_id",
                   "sequence",
                   "title",
                   "content",
@@ -2257,11 +2257,11 @@
                   }
                 ],
                 "properties": {
+                  "activity_id": {
+                    "type": "string"
+                  },
                   "content": {
                     "type": "object"
-                  },
-                  "project_id": {
-                    "type": "string"
                   },
                   "required": {
                     "type": "boolean"
@@ -2283,7 +2283,7 @@
             "schema": {
               "type": "object",
               "required": [
-                "project_id",
+                "activity_id",
                 "sequence",
                 "title",
                 "content",
@@ -2320,11 +2320,11 @@
                 }
               ],
               "properties": {
+                "activity_id": {
+                  "type": "string"
+                },
                 "content": {
                   "type": "object"
-                },
-                "project_id": {
-                  "type": "string"
                 },
                 "required": {
                   "type": "boolean"
@@ -2430,7 +2430,7 @@
             "schema": {
               "type": "object",
               "required": [
-                "project_id",
+                "activity_id",
                 "sequence",
                 "title",
                 "content",
@@ -2467,11 +2467,11 @@
                 }
               ],
               "properties": {
+                "activity_id": {
+                  "type": "string"
+                },
                 "content": {
                   "type": "object"
-                },
-                "project_id": {
-                  "type": "string"
                 },
                 "required": {
                   "type": "boolean"
@@ -2517,7 +2517,7 @@
             "schema": {
               "type": "object",
               "required": [
-                "project_id",
+                "activity_id",
                 "sequence",
                 "title",
                 "content",
@@ -2554,11 +2554,11 @@
                 }
               ],
               "properties": {
+                "activity_id": {
+                  "type": "string"
+                },
                 "content": {
                   "type": "object"
-                },
-                "project_id": {
-                  "type": "string"
                 },
                 "required": {
                   "type": "boolean"
