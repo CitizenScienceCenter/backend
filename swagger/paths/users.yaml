@@ -170,6 +170,9 @@ paths:
       x-swagger-router-controller: api.user.model
       operationId: create_user
       parameters:
+        - name: from_anon
+          in: query
+          type: string
         - name: user
           in: body
           schema:

@@ -30,13 +30,17 @@ def get_user(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_user(user):
+def create_user(user, from_anon=None):
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     print(user)
     if ("username" in user and len(user["username"]) == 0) or not "username" in user:
         user["username"] = user["email"].split("@")[0]
     created_user, code = model.post(Model, user)
+    if from_anon is not None:
+        db_session.execute('update submissions set user_id={1} where user_id={0}'.format(from_anon, created_user.id))
+        db_session().query(User).filter(User.id == from_anon).delete()
+        db_session.commit()
     if isinstance(created_user, Model):
         if (created_user.info is not None and created_user.info['anonymous'] is False):
             user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
