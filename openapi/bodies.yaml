@@ -8,6 +8,7 @@ components:
     User:
       content:
         application/json:
+          x-body-name: user
           schema:
             $ref: './schemas.yaml#/components/schemas/User'
     Comment:

@@ -15,7 +15,7 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    env_file: ${ENVFILE}
+    env_file: .env
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     environment:
@@ -27,7 +27,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     command: bash -c "./pgsql_healthcheck.sh && python app.py"
-    env_file: ${ENVFILE}
+    env_file: .env
     volumes:
       - .:/code
     ports:
