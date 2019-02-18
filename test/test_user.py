@@ -4,13 +4,29 @@ import pytest
 
 from app import Server
 from test import t_con, utils
-
+from datetime import datetime
+import hashlib
+import time
 
 @pytest.fixture(scope="module")
 def client():
     s = Server()
     with s.connexion_app.app.test_client() as c:
         yield c
+
+@pytest.fixture(scope="module")
+def anon_user(client):
+    # now = str(time.time()).encode('utf-8')
+    uid = '_anon {}'.format('dfjkshfuihvuiehfnijvrifbvrf') # TODO add extra details to avoid clash OR delegate to server?
+    pwd = 'sbdshf783yfh4ub47iwhiu9heiu'
+    u = {
+        'username': uid,
+        'pwd': pwd,
+        'confirmed': False
+    }
+    return client.post(
+        "/api/v2/users/register", json=u
+    )
 
 
 @pytest.mark.first
@@ -30,7 +46,15 @@ def test_login(client):
     user = json.loads(lg.data)
     assert 'pwd' not in user
 
-
+def test_convert_anonymous(client, anon_user):
+    anon = json.loads(anon_user.data)
+    lg = client.post(
+        "/api/v2/users/register?from_anon={}".format(anon['id']), json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'}
+    )
+    assert lg.status_code == 201
+    #TODO assert anon user does not exist
+    #TODO assert new user exists
+    #TODO assert user submissions match
 
 @pytest.mark.run(order=3)
 def test_login_fail(client):
