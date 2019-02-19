@@ -14,4 +14,6 @@ WORKDIR /code
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 ADD . /code/
+RUN rm -rf /code/__pycache__
+RUN rm -rf /code/test/__pycache__
 COPY --from=0 /expand/swagger_complete.yaml /code/swagger/swagger_complete.yaml
