@@ -26,6 +26,8 @@ test:
 		if !(docker ps | grep testpg); then \
 		  docker run --name testpg -e POSTGRES_DB=testcs -e POSTGRES_USER=testing -e POSTGRES_PASSWORD=testing -p "5432:5432" -d postgres; fi
 		sleep 5
+		@ python3 -m virtualenv env
+		@ env/bin/pip install -r requirements.txt
 		@ env/bin/py.test test
 		docker rm -f testpg
 
