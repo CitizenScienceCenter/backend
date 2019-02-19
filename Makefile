@@ -25,7 +25,6 @@ test:
 		ln -sf envs/test.env .env
 		docker-compose -f docker-compose.test.yml up --build
 
-
 .PHONY: start
 start:
 		git secret reveal -f
