@@ -39,9 +39,11 @@ def create_user(user):
     created_user, code = model.post(Model, user)
     if 'anonymous' not in user['info'] and 'x-api-key' in request.headers:
         from_anon = request.headers['X-API-KEY']
-        db_session.execute('update submissions set user_id={1} where user_id={0}'.format(from_anon, created_user.id))
-        db_session().query(User).filter(User.id == from_anon).delete()
-        db_session.commit()
+        anon_user = db_session().query(model).filter(Model.api_key == from_anon).one_or_none()
+        if anon_user is not None and 'anonymous' in anon_user['info'] and anon_user['info']['anonymous']:
+            db_session.execute('update submissions set user_id={1} where user_id={0}'.format(anon_user.id, created_user.id))
+            db_session().query(User).filter(User.id == anon_user.id).delete()
+            db_session.commit()
     if isinstance(created_user, Model):
         if (created_user.info is not None and created_user.info['anonymous'] is False):
             user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
