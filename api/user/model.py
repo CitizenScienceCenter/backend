@@ -30,14 +30,15 @@ def get_user(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_user(user, from_anon=None):
+def create_user(user):
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     print(user)
     if ("username" in user and len(user["username"]) == 0) or not "username" in user:
         user["username"] = user["email"].split("@")[0]
     created_user, code = model.post(Model, user)
-    if from_anon is not None:
+    if 'anonymous' not in user['info'] and 'x-api-key' in request.headers:
+        from_anon = request.headers['X-API-KEY']
         db_session.execute('update submissions set user_id={1} where user_id={0}'.format(from_anon, created_user.id))
         db_session().query(User).filter(User.id == from_anon).delete()
         db_session.commit()
