@@ -39,6 +39,7 @@ class Server:
             response.headers["Content-Type"] = "application/json"
             response.headers["Access-Control-Allow-Origin"] = "*"
             response.headers["Access-Control-Allow-Headers"] = "x-api-key, Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token"
+            response.headers["Access-Control-Request-Headers"] = "*"
             response.headers["Access-Control-Allow-Methods"] = "GET, PUT, POST, OPTIONS, DELETE"
             response.headers["Access-Control-Allow-Credentials"] = "true"
             return response

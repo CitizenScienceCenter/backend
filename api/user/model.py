@@ -37,7 +37,7 @@ def create_user(user):
     if ("username" in user and len(user["username"]) == 0) or not "username" in user:
         user["username"] = user["email"].split("@")[0]
     created_user, code = model.post(Model, user)
-    if 'anonymous' not in user['info'] and 'x-api-key' in request.headers:
+    if 'info' in user and 'anonymous' not in user['info'] and 'x-api-key' in request.headers:
         from_anon = request.headers['X-API-KEY']
         anon_user = db_session().query(model).filter(Model.api_key == from_anon).one_or_none()
         if anon_user is not None and 'anonymous' in anon_user['info'] and anon_user['info']['anonymous']:

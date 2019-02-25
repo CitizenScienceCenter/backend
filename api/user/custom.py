@@ -73,7 +73,7 @@ def reset(email):
         )
         msg = emaillib.message.EmailMessage()
         msg.set_content(message)
-        msg["Subject"] = "Password Reset for Citizen Science Wenker Project"
+        msg["Subject"] = "Password Reset for Citizen Science Project"
         msg["From"] = conf["SMTP_USER"]
         msg["To"] = user.email or None
         try:
@@ -107,7 +107,6 @@ def verify_reset(reset):
     print(reset)
     try:
         token = ts.unsign(reset["token"], 2000)
-        # TODO update reset.pwd
         user = db_session().query(User).filter(User.id == reset["id"]).one_or_none()
         user.pwd = pbkdf2_sha256.encrypt(reset["pwd"], rounds=200000, salt_size=16)
         db_session().commit()

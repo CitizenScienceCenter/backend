@@ -49,7 +49,7 @@ def test_login(client):
 def test_convert_anonymous(client, anon_user):
     anon = json.loads(anon_user.data)
     lg = client.post(
-        "/api/v2/users/register?from_anon={}".format(anon['id']), json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'}
+        "/api/v2/users/register", json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'}
     )
     assert lg.status_code == 201
     #TODO assert anon user does not exist

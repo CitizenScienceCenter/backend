@@ -10,7 +10,7 @@ chardet>=3.0.4
 click>=6.7
 clickclick>=1.2.2
 cmarkgfm>=0.4.2
-connexion>=2.0.2
+connexion>=2.2.0
 docutils>=0.14
 dominate>=2.3.4
 envparse>=0.2.0
@@ -25,7 +25,7 @@ idna>=2.6
 inflection>=0.3.1
 itsdangerous>=0.24
 Jinja2>=2.10
-jsonschema>=2.6.0
+jsonschema==2.6.0
 JTOS>=0.8.2
 Mako>=1.0.7
 MarkupSafe>=1.0
