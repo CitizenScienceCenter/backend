@@ -9,6 +9,7 @@ from db import orm_handler, User, utils, Submission
 from decorators import access_checks
 import json, smtplib
 import email as emaillib
+from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 
 db_session = orm_handler.db_session
@@ -25,8 +26,12 @@ def validate(key):
 
 def login(user):
     logging.info(request)
-    q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
-    logging.info(q)
+    q = None
+    if 'email' in user:
+        q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
+        logging.info(q)
+    elif 'username' in user:
+        q = db_session().query(User).filter(User.username == user["username"]).one_or_none()
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
             del q.pwd
@@ -68,20 +73,21 @@ def reset(email):
         tk = ts.sign(user.id)
         print(user)
         reset = "{}/reset/{}".format(conf["HOST"], tk.decode("utf-8"))
-        message = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(
+        text = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(
             reset
         )
-        msg = emaillib.message.EmailMessage()
-        msg.set_content(message)
+        msg = message.EmailMessage()
+        msg.set_content(text)
         msg["Subject"] = "Password Reset for Citizen Science Project"
         msg["From"] = conf["SMTP_USER"]
-        msg["To"] = user.email or None
+        msg["To"] = user.email
         try:
             s = smtplib.SMTP(conf["SMTP_ADDR"], conf["SMTP_PORT"])
             s.login(conf["SMTP_USER"], conf["SMTP_PASS"])
             s.sendmail(conf["SMTP_USER"], [user.email], msg.as_string())
             s.quit()
         except Exception as e:
+            print("ERROR RESETTING", e)
             return e, 503
         return NoContent, 200
     else:
