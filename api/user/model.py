@@ -33,15 +33,15 @@ def get_user(id=None):
 def create_user(user):
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
-    print(user)
     if ("username" in user and len(user["username"]) == 0) or not "username" in user:
         user["username"] = user["email"].split("@")[0]
     created_user, code = model.post(Model, user)
-    if 'info' in user and 'anonymous' not in user['info'] and 'x-api-key' in request.headers:
-        from_anon = request.headers['X-API-KEY']
-        anon_user = db_session().query(model).filter(Model.api_key == from_anon).one_or_none()
-        if anon_user is not None and 'anonymous' in anon_user['info'] and anon_user['info']['anonymous']:
-            db_session.execute('update submissions set user_id={1} where user_id={0}'.format(anon_user.id, created_user.id))
+    if 'X-Api-Key' in request.headers and request.headers['X-Api-Key'] is not None:
+        from_anon = request.headers['X-Api-Key']
+        anon_user = db_session().query(User).filter(User.api_key == from_anon).one_or_none()
+        if anon_user:
+            print('deleting user')
+            db_session.execute("update submissions set user_id='{1}' where user_id='{0}'".format(anon_user.id, created_user.id))
             db_session().query(User).filter(User.id == anon_user.id).delete()
             db_session.commit()
     if isinstance(created_user, Model):
@@ -66,7 +66,6 @@ def update_user(id, user):
 
 @access_checks.ensure_owner(Model)
 def delete_user(id):
-    print(id)
     user = utils.get_user(request, db_session)
     user_projects = db_session.query(Project).filter(Project.owned_by == id).all()
     for p in user_projects:

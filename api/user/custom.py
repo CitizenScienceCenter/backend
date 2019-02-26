@@ -25,8 +25,12 @@ def validate(key):
 
 def login(user):
     logging.info(request)
-    q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
-    logging.info(q)
+    q = None
+    if 'email' in user:
+        q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
+        logging.info(q)
+    elif 'username' in user:
+        q = db_session().query(User).filter(User.username == user["username"]).one_or_none()
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
             del q.pwd
@@ -82,6 +86,7 @@ def reset(email):
             s.sendmail(smtp_user, [user.email], msg.as_string())
             s.quit()
         except Exception as e:
+            print("ERROR RESETTING", e)
             return e, 503
         return NoContent, 200
     else:

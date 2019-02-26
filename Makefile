@@ -23,7 +23,7 @@ clean:
 test:
 		# docker rm -f testpg
 		ln -sf envs/test.env .env
-		docker-compose -f docker-compose.test.yml up --build --force-recreate
+		docker-compose -f docker-compose.test.yml up --build
 
 .PHONY: start
 start:

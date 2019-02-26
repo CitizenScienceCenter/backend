@@ -24,9 +24,15 @@ def client():
     with s.connexion_app.app.test_client() as c:
         yield c
 
+@pytest.fixture(scope="module")
+def register(client):
+    lg = client.post(
+        "/api/v2/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+    )
+    assert lg.status_code == 201 or lg.status_code == 409
 
 @pytest.fixture(scope="module")
-def user(client):
+def user(client, register):
     return utils.login(client, t_con.TEST_USER, t_con.TEST_PWD)
 
 
@@ -104,3 +110,4 @@ class TestActivities:
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert gd.status_code == 200
+
