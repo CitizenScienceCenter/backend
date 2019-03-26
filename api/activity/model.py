@@ -26,7 +26,7 @@ def get_activity_count(search_term=None):
 
 def get_activity(id=None):
     m, code = model.get_one(Model, id)
-    return m.dump(), code
+    return m.dump() if m is not None else m, code
 
 def create_activity(body):
     m, code = model.post(Model, body)

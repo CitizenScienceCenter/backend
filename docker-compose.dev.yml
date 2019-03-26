@@ -25,7 +25,7 @@ services:
   cccs-connexion-dev:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: .
     command: bash -c "./pgsql_healthcheck.sh && python app.py"
     env_file: .env
     volumes:
