@@ -5,7 +5,7 @@ def login(client, username, password):
     u = client.post('/api/v2/users/login', json={
         "email": username,
         "pwd": password
-    }, follow_redirects=True)
+    })
     assert u.status_code == 200
     u = json.loads(u.get_data())
     assert 'api_key' in u

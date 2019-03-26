@@ -28,9 +28,11 @@ def anonymous_user(client):
             'anonymous': True
         }
     }
-    return client.post(
+    reg = client.post(
         "/api/v2/users/register", json=u
     )
+    assert reg.status_code == 201 or reg.status_code == 409
+
 
 @pytest.fixture(scope="module")
 def login_anonymous(client, anonymous_user):
@@ -53,7 +55,7 @@ def test_convert_anonymous_user(client, login_anonymous):
 @pytest.mark.fourth
 def test_anonymous_fail(client):
     lg = client.post(
-        "/api/v2/users/login", json={"username": anon_name, "pwd": anon_pwd},
+        "/api/v2/users/login", json={"username": anon_name, "pwd": anon_pwd}
     )
     assert lg.status_code == 404
 

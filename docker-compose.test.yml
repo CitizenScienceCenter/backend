@@ -17,6 +17,6 @@ services:
       context: .
       args:
         SW_ENV: ${SW_ENV}
-    command: pytest test
+    command: pytest test/test_user_management.py
     depends_on:
       - db
