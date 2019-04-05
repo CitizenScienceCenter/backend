@@ -16,8 +16,6 @@ services:
     ports:
       - "5432:5432"
     env_file: ${ENVFILE}
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_USER: ${PG_USER}
