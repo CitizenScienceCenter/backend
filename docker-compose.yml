@@ -13,7 +13,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=${PG_PASSWORD}
       - POSTGRES_USER=${PG_USER}
-      - POSTGRES_DB=cs
+      - POSTGRES_DB=${PG_DB}
   swagger-ui:
     image: swaggerapi/swagger-ui:latest
     restart: always
@@ -35,7 +35,7 @@ services:
     build:
       context: .
       args:
-        SW_ENV: ${SW_ENV}
+        SWAGGER_ENV: ${SWAGGER_ENV}
     command:  uwsgi --http :${CC_PORT} --wsgi-file uwsgi.py --master --processes 4 --threads 2 --stats :9191
     volumes:
       - ~/dev/upload:/code/static/upload

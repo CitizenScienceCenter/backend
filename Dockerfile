@@ -1,9 +1,9 @@
 FROM quay.io/goswagger/swagger
-ARG SW_ENV
 WORKDIR /expand/
+ARG SWAGGER_ENV
 COPY . .
-RUN echo $SW_ENV
-RUN swagger expand swagger/$SW_ENV > /expand/swagger_complete.yaml
+RUN echo ${SWAGGER_ENV}
+RUN swagger expand swagger/${SWAGGER_ENV} > /expand/swagger_complete.yaml
 RUN swagger validate /expand/swagger_complete.yaml
 
 FROM python:3.6.6-stretch

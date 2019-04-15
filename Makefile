@@ -1,18 +1,10 @@
--include .env
+include .env
 export
-
-export ENVFILE=.env
 
 .PHONY: all
 all:
 		clean
 		start
-
-.PHONY: activate
-activate:
-		git secret reveal -f
-		-rm .env
-		ln -s envs/${ENVIRON}.env .env
 
 .PHONY: clean
 clean:
@@ -22,7 +14,7 @@ clean:
 .PHONY: test
 test:
 		# docker rm -f testpg
-		ln -sf envs/test.env .env
+		echo ${SW_ENV}
 		docker-compose -f docker-compose.test.yml up --build
 
 .PHONY: start
