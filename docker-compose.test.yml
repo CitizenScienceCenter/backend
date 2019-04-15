@@ -1,7 +1,7 @@
 version: '3.2'
 
 services:
-  db:
+  testdb:
     build:
       context: .
       dockerfile: scripts/pg/Dockerfile
@@ -19,4 +19,4 @@ services:
         SWAGGER_ENV: ${SWAGGER_ENV}
     command: pytest test
     depends_on:
-      - db
+      - testdb
