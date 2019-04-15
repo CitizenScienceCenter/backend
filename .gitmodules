@@ -1,3 +1,0 @@
-[submodule "db/JTOS"]
-	path = db/JTOS
-	url = "https://github.com/encima/jtos.git"
