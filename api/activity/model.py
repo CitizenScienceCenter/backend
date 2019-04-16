@@ -39,5 +39,5 @@ def delete_activity(id):
     return model.delete(Model, id)
 
 def update_activity(id, activity):
-    m, code = model.put(Model, id, activity)
+    m, code = model.put(Model, id, request.get_json())
     return m.dump(), code

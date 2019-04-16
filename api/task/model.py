@@ -38,7 +38,7 @@ def create_tasks(tasks):
 
 
 def update_task(id, task):
-    m, code = model.put(Model, id, task)
+    m, code = model.put(Model, id, request.get_json())
     return m.dump(), code
 
 

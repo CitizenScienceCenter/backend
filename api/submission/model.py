@@ -33,7 +33,7 @@ def create_submission(submission):
 
 
 def update_submission(id, submission):
-    m, code = model.put(Model, id, submission)
+    m, code = model.put(Model, id, request.get_json()
     return m.dump(), code
 
 

@@ -38,7 +38,7 @@ def create_project(project):
 
 
 def update_project(id, project):
-    m, code = model.put(Model, id, project)
+    m, code = model.put(Model, id, request.get_json())
     return m.dump(), code
 
 

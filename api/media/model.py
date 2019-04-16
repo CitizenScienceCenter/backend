@@ -27,7 +27,7 @@ def create_medium(media):
     return m.dump(), code
 
 def update_medium(id, media):
-    m, code = model.put(Model, id, media)
+    m, code = model.put(Model, id, request.get_json())
     return m.dump(), code
 
 
