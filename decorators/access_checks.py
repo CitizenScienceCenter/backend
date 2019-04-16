@@ -57,15 +57,15 @@ class ensure_owner(object):
                 owned_id = None
                 if model is Project:
                     query_field = model.owned_by
-                    user = (
+                    owner = (
                         db_session.query(User)
                         .filter(User.api_key == key)
                         .filter(User.member_of.any(id=model_id))
                         .one_or_none()
                     )
-                    if user is None:
+                    if owner is None:
                         return NoContent, 401
-                    owned_id = user.id
+                    owned_id = owner.id
                 elif model is Activity:
                     return func(*args, **kwargs)
                     # query_field = model.part_of
@@ -86,10 +86,10 @@ class ensure_owner(object):
                     #     return NoContent, 404
                 elif model is User:
                     query_field = model.id
-                    user = db_session.query(User).filter(User.api_key == key).one_or_none()
-                    if user is None:
+                    owner = db_session.query(User).filter(User.api_key == key).one_or_none()
+                    if owner is None:
                         return "Requesting user was not found", 404
-                    owned_id = user.id
+                    owned_id = owner.id
                 else:
                     query_field = model.user_id
                 if owned_id is not None:

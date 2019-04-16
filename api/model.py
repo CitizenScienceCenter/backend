@@ -71,7 +71,6 @@ def post(model, object):
 
 
 def put(model, id, object):
-    print(object)
     p = db_session().query(model).filter(model.id == id).one_or_none()
     print(p.dump())
     if "id" in object:
