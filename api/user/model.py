@@ -46,7 +46,7 @@ def create_user(body):
             db_session.execute("update submissions set user_id='{1}' where user_id='{0}'".format(anon_user.id, created_user.id))
             db_session().query(User).filter(User.id == anon_user.id).delete()
             db_session.commit()
-    if isinstance(created_user, Model):
+    if code == 201:
         if (created_user.info is not None and created_user.info['anonymous'] is False):
             user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
             p = Project(**user_project)
