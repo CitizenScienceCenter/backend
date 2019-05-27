@@ -27,11 +27,15 @@ def validate(key):
 def login(body):
     logging.info(request)
     q = None
+    user = body
+    print(body)
     if 'email' in user:
         q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
         logging.info(q)
     elif 'username' in user:
         q = db_session().query(User).filter(User.username == user["username"]).one_or_none()
+    else:
+        return {'msg': 'Incorrect keys provided'}, 500
     if q:
         if pbkdf2_sha256.verify(body["pwd"], q.pwd):
             del q.pwd
@@ -39,7 +43,7 @@ def login(body):
         else:
             return NoContent, 401
     else:
-        return NoContent, 404
+        return {'msg': 'User not found'}, 404
 
 
 def logout():

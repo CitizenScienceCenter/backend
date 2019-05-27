@@ -30,11 +30,13 @@ def get_user(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_user(user):
+def create_user(body):
+    user = body
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
-    if ("username" in user and len(user["username"]) == 0) or not "username" in user:
+    if ("username" in user and len(user["username"]) == 0) or not "username" in user and "email" in user:
         user["username"] = user["email"].split("@")[0]
+    print(user)
     created_user, code = model.post(Model, user)
     if 'X-Api-Key' in request.headers and request.headers['X-Api-Key'] is not None:
         from_anon = request.headers['X-Api-Key']
