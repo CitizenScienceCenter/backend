@@ -15,4 +15,5 @@ script:
   - pytest test/
 notifications:
   webhooks: https://chat.citizenscience.ch/hooks/HyKJmkFFsxjNTx2ce/RkjhJoNPEXLgnCbpKnkDL4iodkZhiCdRxGKaM8mu79mAcmRx
+  webhooks: https://hooks.citizenscience.ch/hooks/redeploy-openapi?token=SI6nhAHR5nXCoe
 
