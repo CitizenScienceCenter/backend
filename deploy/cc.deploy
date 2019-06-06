@@ -1,4 +1,4 @@
-export NAME=backend-staging
+export NAME=api-staging
 export IMG=backend
 export NS=c3s-staging
 export PORT=8080
