@@ -17,7 +17,7 @@ services:
       context: .
       args:
         SW_ENV: ${SW_ENV}
-    command:  uwsgi --http :${CC_PORT} --wsgi-file app.py --master --processes 4 --threads 2 --stats :9191 
+    command: /bin/bash -c "sleep 5; uwsgi --http :${CC_PORT} --wsgi-file app.py --master --processes 4 --threads 2 --stats :9191"
     environment: 
       CC_ENV: ${CC_ENV}
       SW_ENV: ${SW_ENV}
