@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: scripts/pg/Dockerfile
     restart: always
-    ports:
-      - "5432:5432"
+    #    ports:
+    # - "5432:5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     environment:
@@ -28,7 +28,7 @@ services:
     image: graphile/postgraphile
     ports:
       - "7000:5000"
-    command: postgraphile --connection 'postgresql://pybossa:tester@db/cs?sslmode=disable' --host 0.0.0.0 --port 5000 --schema public -a -j
+    command: postgraphile --connection 'postgresql://pybossa:tester@db/cs?sslmode=disable' --host 0.0.0.0 --port 5000 --schema public  -a -j
     depends_on:
       - db
   cccs-connexion:

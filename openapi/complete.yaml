@@ -5,8 +5,8 @@ info:
 servers:
   - url: 'http://0.0.0.0:8080/api/v2'
     description: Test Server
-  - url: 'https://wenker.citizenscience.ch/api/v2'
-    description: Wenker Project Site
+  - url: 'https://api-staging.citizenscience.ch/api/v2'
+    description: Staging API Server
   - url: 'https://api.citizenscience.ch/api/v2'
     description: Production API Server
 paths:
