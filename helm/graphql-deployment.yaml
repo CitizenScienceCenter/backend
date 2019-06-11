@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: graphql
+  name: graphql
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: graphql
+    spec:
+      containers:
+      - args:
+        - postgraphile
+        - --connection
+        - postgresql://pybossa:tester@db/cs?sslmode=disable
+        - --host
+        - 0.0.0.0
+        - --port
+        - "5000"
+        - --schema
+        - public
+        - -a
+        - -j
+        image: graphile/postgraphile
+        name: graphql
+        ports:
+        - containerPort: 5000
+        resources: {}
+      restartPolicy: Always
+status: {}

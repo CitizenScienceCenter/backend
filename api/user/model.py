@@ -30,11 +30,13 @@ def get_user(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_user(user):
+def create_user(body):
+    user = body
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
-    if ("username" in user and len(user["username"]) == 0) or not "username" in user:
+    if ("username" in user and len(user["username"]) == 0) or not "username" in user and "email" in user:
         user["username"] = user["email"].split("@")[0]
+    print(user)
     created_user, code = model.post(Model, user)
     if 'X-Api-Key' in request.headers and request.headers['X-Api-Key'] is not None:
         from_anon = request.headers['X-Api-Key']
@@ -44,7 +46,7 @@ def create_user(user):
             db_session.execute("update submissions set user_id='{1}' where user_id='{0}'".format(anon_user.id, created_user.id))
             db_session().query(User).filter(User.id == anon_user.id).delete()
             db_session.commit()
-    if isinstance(created_user, Model):
+    if code == 201:
         if (created_user.info is not None and created_user.info['anonymous'] is False):
             user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
             p = Project(**user_project)
@@ -59,8 +61,8 @@ def create_user(user):
 
 
 @access_checks.ensure_owner(Model)
-def update_user(id, user):
-    m, code = model.put(Model, id, request.get_json())
+def update_user(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 

@@ -26,10 +26,10 @@ def get_project(id=None):
     return m.dump() if m is not None else m, code 
 
 
-def create_project(project):
+def create_project(body):
     user = utils.get_user(request, db_session)
-    project["owned_by"] = user.id
-    p = Model(**project)
+    body["owned_by"] = user.id
+    p = Model(**body)
     user.member_of.append(p)
     db_session.add(user)
     db_session.commit()
@@ -37,8 +37,9 @@ def create_project(project):
     return p.dump(), 201
 
 
-def update_project(id, project):
-    m, code = model.put(Model, id, request.get_json())
+
+def update_project(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 

@@ -12,13 +12,13 @@ import time
 anon_name = '_anon{}'.format('dfjkshfuihvuiehfnijvrifbvrf')
 anon_pwd = 'sbdshf783yfh4ub47iwhiu9heiu' 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def client():
     s = Server()
     with s.connexion_app.app.test_client() as c:
         yield c
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def anonymous_user(client):
     u = {
         'username': anon_name,
@@ -28,11 +28,13 @@ def anonymous_user(client):
             'anonymous': True
         }
     }
-    return client.post(
+    reg = client.post(
         "/api/v2/users/register", json=u
     )
+    assert reg.status_code == 201 or reg.status_code == 409
 
-@pytest.fixture(scope="module")
+
+@pytest.fixture(scope="session")
 def login_anonymous(client, anonymous_user):
     lg = client.post(
         "/api/v2/users/login", json={"username": anon_name, "pwd": anon_pwd}
@@ -40,24 +42,26 @@ def login_anonymous(client, anonymous_user):
     assert lg.status_code == 200
     user = json.loads(lg.data)
     assert 'pwd' not in user
-    return user
-
-@pytest.mark.third
-def test_convert_anonymous_user(client, login_anonymous):
     lg = client.post(
         "/api/v2/users/register", json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'},
-        headers=[("X-API-KEY", login_anonymous['api_key'])],
+        headers=[("X-API-KEY", user['api_key'])],
     )
-    assert lg.status_code == 201
+    assert lg.status_code == 201 or lg.status_code == 409
+    return user
 
-@pytest.mark.fourth
+@pytest.mark.first
+def test_convert_anonymous_user(client, login_anonymous):
+    assert True
+
+
+@pytest.mark.second
 def test_anonymous_fail(client):
     lg = client.post(
-        "/api/v2/users/login", json={"username": anon_name, "pwd": anon_pwd},
+        "/api/v2/users/login", json={"username": anon_name, "pwd": anon_pwd}
     )
     assert lg.status_code == 404
 
-@pytest.mark.fifth
+@pytest.mark.third
 def test_login_user(client):
     lg = client.post(
         "/api/v2/users/login", json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'}

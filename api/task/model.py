@@ -31,14 +31,14 @@ def get_task(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_tasks(tasks):
-    for task in tasks:
+def create_tasks(body):
+    for task in body:
         model.post(Model, task)
     return NoContent, 201
 
 
-def update_task(id, task):
-    m, code = model.put(Model, id, request.get_json())
+def update_task(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 
@@ -46,7 +46,7 @@ def delete_task(id):
     return model.delete(Model, id)
 
 
-def delete_tasks(tasks):
-    for task in tasks:
+def delete_tasks(body):
+    for task in body:
         model.delete(Model, task)
     return NoContent, 200
