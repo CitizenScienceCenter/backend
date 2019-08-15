@@ -46,7 +46,9 @@ paths:
         201:
           description: Task created
           schema:
-            $ref: './types.yaml#/definitions/Task'
+            type: array
+            items:
+             $ref: './types.yaml#/definitions/Task'
     delete:
       security:
       - apiKeyHeader: []

@@ -32,9 +32,12 @@ def get_task(id=None):
 
 
 def create_tasks(tasks):
+    res = []
     for task in tasks:
-        model.post(Model, task)
-    return NoContent, 201
+        t, code = model.post(Model, task)
+        print(t.dump())
+        res.append(t.dump())
+    return res, 201
 
 
 def update_task(id, task):
