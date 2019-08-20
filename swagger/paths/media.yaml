@@ -110,6 +110,8 @@ paths:
       responses:
         200:
           description: Media attached
+          schema:
+            $ref: './types.yaml#/definitions/Media' 
     get:
       security:
         - apiKeyHeader: []
