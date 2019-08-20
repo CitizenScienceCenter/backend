@@ -31,11 +31,13 @@ def get_task(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_tasks(body):
-    for task in body:
-        model.post(Model, task)
-    return NoContent, 201
-
+def create_tasks(tasks):
+    res = []
+    for task in tasks:
+        t, code = model.post(Model, task)
+        print(t.dump())
+        res.append(t.dump())
+    return res, 201
 
 def update_task(id, body):
     m, code = model.put(Model, id, body)

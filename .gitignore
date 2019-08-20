@@ -140,3 +140,4 @@ envs/local.env
 envs/prod.env
 envs/uzh.env
 envs/wenker.env
+envs/prod_extern.env
