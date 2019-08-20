@@ -1,0 +1,138 @@
+paths:
+  media_source_id:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Media]
+      x-swagger-router-controller: api.media.custom
+      operationId: get_for_source
+      summary: Query media for a specific task or project
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+      responses:
+        200:
+          description: Return Media
+          schema:
+            type: array
+            items: 
+              $ref: './types.yaml#/definitions/Media'
+        404:
+          description: Media does not exist
+    delete:
+      security:
+         - apiKeyHeader: []
+      tags: [Media]  
+      x-swagger-router-controller: api.media.model
+      operationId: delete_medium
+      summary: Delete all media files related to  source
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+      responses:
+        200:
+          description: Media deleted
+        404:
+          description: Media does not exist
+  media_upload:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      description: "Add a new media attachment"      
+      x-swagger-router-controller: api.media.custom
+      operationId: upload
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: attachment
+          in: formData
+          description: The file to be uploaded
+          type: file
+          required: true
+        - name: id
+          in: formData
+          type: string
+          required: false
+      responses:
+        200:
+          description: Media attached
+  media_id:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Media]
+      x-swagger-router-controller: api.media.model
+      operationId: get_medium
+      summary: Get a single file
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+      responses:
+        200:
+          description: Return Media
+          schema:
+            type: file
+        404:
+          description: Media does not exist
+    put:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      x-swagger-router-controller: api.media.model
+      operationId: update_medium
+      summary: Put a single file
+      parameters:
+        - $ref: './params.yaml#/parameters/id'
+        - name: media
+          in: body
+          schema:
+            $ref: './types.yaml#/definitions/Media'
+      responses:
+        201:
+          description: Return Media
+          schema:
+            $ref: './types.yaml#/definitions/Media' 
+        404:
+          description: Media does not exist
+  media:
+    post:
+      security:
+        - apiKeyHeader: []
+      tags: [Media]
+      description: "The media details (for files already on the server or remotely hosted)"
+      x-swagger-router-controller: api.media.model
+      operationId: create_medium
+      parameters:
+      - name: media
+        in: body
+        schema:
+          $ref: './types.yaml#/definitions/Media'
+      responses:
+        200:
+          description: Media attached
+          schema:
+            $ref: './types.yaml#/definitions/Media' 
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags: [Media]
+      description: "Get a list of media"
+      x-swagger-router-controller: api.media.model
+      operationId: get_media
+      parameters:
+        - name: search_term
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          default: 20
+      responses:
+        200:
+          description: List of media
+          schema:
+            type: array
+            items: 
+              $ref: './types.yaml#/definitions/Media'
