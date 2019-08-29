@@ -18,7 +18,7 @@ def get_all(model, limit=25, search_term=None):
         try:
             st = prison.loads(search_term)
             q_stmt = js.parse_object(st)
-            print(q_stmt)
+            print("SQL: ", q_stmt)
             res = db_session().execute(q_stmt)
             result_set = res.fetchall()
             records = result_set
@@ -28,7 +28,7 @@ def get_all(model, limit=25, search_term=None):
             return [p for p in records][:limit], 200
         except Exception as e:
             # TODO handle parsing error
-            print(e)
+            print("Search failed", e)
             return e
     q = db_session().query(model).all()
     #db_session().close()

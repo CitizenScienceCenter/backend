@@ -16,13 +16,10 @@ Model = Task
 
 def get_tasks(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
-    ms = list(ms)
-    print(ms[0])
-    try:
-    #if hasattr(ms, '__len__') and len(ms) > 0 and isinstance(ms[0], Task):
+    if len(ms) > 0 and isinstance(ms[0], Task):
+        return [m.dump() for m in ms][:limit], code
+    else:
         return [dict(m) for m in ms][:limit], code
-    except TypeError:
-        return ms, code
 
 def get_task_count(search_term=None):
     ms, code = model.get_count(Model, search_term)

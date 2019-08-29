@@ -28,12 +28,12 @@ def ensure_model(func):
             search = prison.loads(request.args["search_term"])
             allowed_table = True
             for t in search["select"]["tables"]:
-                if t.lower() not in db_tables:
+                if t.lower().split(" ")[0] not in db_tables:
                     allowed_table = False
                     break
             print(allowed_table)
             if not allowed_table:
-                return NoContent, 401
+                return [], 401
             return func(*args, **kwargs)
         else:
             return func(*args, **kwargs)

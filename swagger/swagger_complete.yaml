@@ -14,7 +14,7 @@
     "title": "CCCS",
     "version": "0.1"
   },
-  "host": "0.0.0.0:8080",
+  "host": "0.0.0.0:9000",
   "basePath": "/api/v2",
   "paths": {
     "/activities": {

@@ -21,11 +21,12 @@ class Server:
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
-        self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./openapi")
+        self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./swagger")
         # CORS(self.connexion_app.app, support_credentials=True)
         env = DotEnv()
         env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
         env.init_app(self.connexion_app.app, env_file=env_loc, verbose_mode=False)
+        # print(self.connexion_app.app.config)
 
         self.connexion_app.add_api(self.connexion_app.app.config["SWAGGER_FILE"], options={'swagger_ui': True})
 
