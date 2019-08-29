@@ -74,6 +74,8 @@ paths:
       responses:
         200:
           description: Login successful
+          schema:
+            {$ref: './types.yaml#/definitions/User'}
         401:
           description: Incorrect login details
         404:
