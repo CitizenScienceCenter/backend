@@ -4,9 +4,9 @@ from functools import wraps
 from db import *
 import prison
 
-from flask_sqlalchemy_session import current_session as db_session
+# from flask_sqlalchemy_session import current_session as db_session
 
-# db_session = orm_handler.db_session()
+db_session = orm_handler.db_session
 db_tables = orm_handler.Base.metadata.tables.keys()
 
 
