@@ -18,7 +18,7 @@ import os
 
 Base = declarative_base(cls=CSBase)
 db_instance = None
-db_session = None
+# db_session = db_init()
 
 def db_init():
     global db_instance
@@ -37,6 +37,6 @@ def db_init():
         Base.metadata.drop_all(engine)
     Base.metadata.create_all(bind=engine)
     db_session = session
-    # return session
+    return session
 
-# db_session = db_init()
+db_session = db_init()
