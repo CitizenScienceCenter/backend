@@ -23,15 +23,13 @@ def get_all(model, limit=25, search_term=None):
             result_set = res.fetchall()
             records = result_set
             # records = [model(**r) for r in result_set]
-            for r in records:
-                print(r)
             return [p for p in records][:limit], 200
         except Exception as e:
             # TODO handle parsing error
             print("Search failed", e)
             return e
     q = db_session().query(model).all()
-    #db_session().close()
+    db_session().close()
     return q, 200
 
 def get_count(model, search_term=None):
@@ -49,13 +47,13 @@ def get_count(model, search_term=None):
 
 def get_one(model, id=None):
     m = db_session().query(model).filter(model.id == id).one_or_none()
-    #db_session().close()
+    db_session().close()
     return (m, 200) if m is not None else (m, 404)
 
 
 def get_file(model, id=None):
     m = db_session().query(model).filter(model.id == id).one_or_none()
-    #db_session().close()
+    db_session().close()
     return send_file(m.path) if m is not None else m, 404
 
 
@@ -87,7 +85,7 @@ def put(model, id, object):
         db_session.add(p)
     db_session().commit()
     print(p.id)
-    #db_session().close()
+    db_session().close()
     return p, (200 if p is not None else 201)
 
 
