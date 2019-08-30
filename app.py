@@ -45,9 +45,9 @@ class Server:
             response.headers["Access-Control-Allow-Credentials"] = "true"
             return response
 
-        @self.connexion_app.app.teardown_appcontext
-        def shutdown_session(exception=None):
-            orm_handler.db_session().remove()
+        # @self.connexion_app.app.teardown_appcontext
+        # def shutdown_session(exception=None):
+        #     orm_handler.db_session().remove()
 
     def run(self):
         if self.connexion_app.app.config["CC_ENV"] in ["dev", "local", "test", "docker"]:

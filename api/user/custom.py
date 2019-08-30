@@ -16,7 +16,7 @@ ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
 
 
 def validate(key):
-    q = db_session().query(User).filter(User.api_key == key).one_or_none()
+    q = db_session.query(User).filter(User.api_key == key).one_or_none()
     if q:
         return q.dump(), 201
     else:
@@ -29,10 +29,10 @@ def login(user):
     # user = body
     # print(body)
     if 'email' in user:
-        q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
+        q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
         logging.info(q)
     elif 'username' in user:
-        q = db_session().query(User).filter(User.username == user["username"]).one_or_none()
+        q = db_session.query(User).filter(User.username == user["username"]).one_or_none()
     else:
         return {'msg': 'Incorrect keys provided'}, 500
     if q:
@@ -53,7 +53,7 @@ def logout():
 
 def auth(user):
     # TODO create oauth token here and add to table. Just send api key for now
-    q = db_session().query(User).filter(User.email == user["email"]).one_or_none()
+    q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
             session["user"] = q.dump()
@@ -67,7 +67,7 @@ def auth(user):
 def reset(email):
     conf = current_app.config
     user = (
-        db_session().query(User)
+        db_session.query(User)
         .filter(User.email != None)
         .filter(User.email == email)
         .one_or_none()
@@ -98,7 +98,7 @@ def reset(email):
 
 
 def get_subs(id=None):
-    user = db_session().query(User).filter(User.id == id).one_or_none()
+    user = db_session.query(User).filter(User.id == id).one_or_none()
     if user:
         submissions = (
             db_session.query(Submission)
@@ -116,9 +116,9 @@ def verify_reset(reset):
     print(reset)
     try:
         token = ts.unsign(reset["token"], 2000)
-        user = db_session().query(User).filter(User.id == reset["id"]).one_or_none()
+        user = db_session.query(User).filter(User.id == reset["id"]).one_or_none()
         user.pwd = pbkdf2_sha256.encrypt(reset["pwd"], rounds=200000, salt_size=16)
-        db_session().commit()
+        db_session.commit()
         return True, 200
     except Exception as e:
         print(e)

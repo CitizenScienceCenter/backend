@@ -33,9 +33,9 @@ def db_session():
     # )
     session_factory = sessionmaker(bind=engine)
     
-    Base.query = db_session.query_property()
+    Base.query = session_factory.query_property()
     if not persist:
         Base.metadata.drop_all(engine)
     Base.metadata.create_all(bind=engine)
-    db_instance = db_session
+    db_instance = session_factory
     return db_instance
