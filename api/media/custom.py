@@ -9,12 +9,12 @@ import uuid
 from flask import send_file
 import fleep
 from pathlib import Path
-
-db_session = orm_handler.db_session
+from flask_sqlalchemy_session import current_session as db_session
+# db_session = orm_handler.db_session
 
 
 def get_for_source(id=None, limit=20):
-    m = db_session().query(Media).filter(Media.source_id == id)
+    m = db_session.query(Media).filter(Media.source_id == id)
     return [p.dump() for p in m][:limit]
 
 def upload(attachment, id=None):
@@ -30,7 +30,7 @@ def upload(attachment, id=None):
     print(info.type)
     m = Media(id, path, filename, info.type[0])
     # name = os.path.basename(path)
-    db_session().add(m)
-    db_session().commit()
+    db_session.add(m)
+    db_session.commit()
     print(m.id)
     return m.dump(), 201

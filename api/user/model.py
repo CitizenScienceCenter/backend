@@ -12,8 +12,8 @@ import email as emaillib
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from api import model
 from api.project import model as ProjectAPI
-
-db_session = orm_handler.db_session()
+from flask_sqlalchemy_session import current_session as db_session
+# db_session = orm_handler.db_session()
 
 Model = User
 

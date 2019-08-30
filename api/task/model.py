@@ -9,8 +9,8 @@ import sqlalchemy
 import logging
 from sqlalchemy.dialects import postgresql
 from api import model
-
-db_session = orm_handler.db_session()
+from flask_sqlalchemy_session import current_session as db_session
+# db_session = orm_handler.db_session()
 
 Model = Task
 
