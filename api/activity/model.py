@@ -28,8 +28,8 @@ def get_activity(id=None):
     m, code = model.get_one(Model, id)
     return m.dump() if m is not None else m, code
 
-def create_activity(body):
-    m, code = model.post(Model, body)
+def create_activity(activity):
+    m, code = model.post(Model, activity)
     return m.dump(), code
 
 
@@ -38,6 +38,6 @@ def delete_activity(id):
     # TODO delete tasks first
     return model.delete(Model, id)
 
-def update_activity(id, body):
-    m, code = model.put(Model, id, body)
+def update_activity(id, activity):
+    m, code = model.put(Model, id, activity)
     return m.dump(), code

@@ -61,8 +61,8 @@ def create_user(user):
 
 
 @access_checks.ensure_owner(Model)
-def update_user(id, body):
-    m, code = model.put(Model, id, body)
+def update_user(id, user):
+    m, code = model.put(Model, id, user)
     return m.dump(), code
 
 

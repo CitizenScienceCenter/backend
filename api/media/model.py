@@ -22,12 +22,12 @@ def get_medium(id=None):
     return model.get_file(Model, id)
 
 
-def create_medium(body):
-    m, code = model.post(Model, body)
+def create_medium(medium):
+    m, code = model.post(Model, media)
     return m.dump(), code
 
-def update_medium(id, body):
-    m, code = model.put(Model, id, body)
+def update_medium(id, medium):
+    m, code = model.put(Model, id, media)
     return m.dump(), code
 
 
