@@ -11,6 +11,7 @@ db_tables = orm_handler.Base.metadata.tables.keys()
 def ensure_key(token, required_scopes=None):
         key = token
         user_key = db_session.query(User).filter(User.api_key == key).one_or_none()
+        db_session.close()
         if user_key is not None:
             return dict(sub=user_key.username)
         else:
@@ -18,8 +19,6 @@ def ensure_key(token, required_scopes=None):
 
 def ensure_anon_key(token, required_scopes=None):
     return ensure_key(token, required_scopes)
-
-
 
 def ensure_model(func):
     @wraps(func)
@@ -64,7 +63,7 @@ class ensure_owner(object):
                         .one_or_none()
                     )
                     if owner is None:
-                        return NoContent, 401
+                        abort(401)
                     owned_id = owner.id
                 elif model is Activity:
                     return func(*args, **kwargs)
@@ -88,7 +87,7 @@ class ensure_owner(object):
                     query_field = model.id
                     owner = db_session.query(User).filter(User.api_key == key).one_or_none()
                     if owner is None:
-                        return "Requesting user was not found", 404
+                        abort(404)
                     owned_id = owner.id
                 else:
                     query_field = model.user_id
@@ -102,10 +101,10 @@ class ensure_owner(object):
                     if obj is not None:
                         return func(*args, **kwargs)
                     else:
-                        return NoContent, 401
+                        abort(401)
                 else:
-                    return NoContent, 401
+                    abort(401)
             else:
-                return NoContent, 401
+                abort(401)
 
         return decorated_function
