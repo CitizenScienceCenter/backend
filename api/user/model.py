@@ -30,8 +30,8 @@ def get_user(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_user(body):
-    user = body
+def create_user(user):
+    #user = body
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     if ("username" in user and len(user["username"]) == 0) or not "username" in user and "email" in user:

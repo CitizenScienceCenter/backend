@@ -6,7 +6,6 @@
     "application/json"
   ],
   "schemes": [
-    "http",
     "https"
   ],
   "swagger": "2.0",
@@ -14,7 +13,7 @@
     "title": "CCCS",
     "version": "0.1"
   },
-  "host": "0.0.0.0:9000",
+  "host": "api.citizenscience.ch",
   "basePath": "/api/v2",
   "paths": {
     "/activities": {
