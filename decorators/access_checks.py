@@ -1,4 +1,4 @@
-from flask import session, request, g
+from flask import session, request, g, abort
 from connexion import NoContent
 from functools import wraps
 from db import *
@@ -33,7 +33,7 @@ def ensure_model(func):
                     break
             print(allowed_table)
             if not allowed_table:
-                return [], 401
+                abort(401)
             return func(*args, **kwargs)
         else:
             return func(*args, **kwargs)

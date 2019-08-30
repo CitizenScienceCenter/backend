@@ -44,7 +44,7 @@ def get_count(model, search_term=None):
         del count_query['offset']
     count_stmt = js.parse_object(count_query)
     count = db_session().execute(count_stmt).fetchone()
-    #db_session().close()
+    db_session().close()
     return count[0], 200
 
 def get_one(model, id=None):
