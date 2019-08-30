@@ -8,8 +8,8 @@ from flask import session, request
 from db import orm_handler, OToken
 from decorators import access_checks
 
-# db_session = orm_handler.db_session
-from flask_sqlalchemy_session import current_session as db_session
+db_session = orm_handler.db_session
+# from flask_sqlalchemy_session import current_session as db_session
 
 
 def generate(token):

@@ -10,8 +10,8 @@ from decorators import access_checks
 import json, smtplib
 from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
-from flask_sqlalchemy_session import current_session as db_session
-# db_session = orm_handler.db_session
+# from flask_sqlalchemy_session import current_session as db_session
+db_session = orm_handler.db_session
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
 
 

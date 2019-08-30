@@ -35,7 +35,7 @@ class Server:
         self.debug = bool(self.connexion_app.app.config["DEBUG"]) or False
 
         self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()
-
+        orm_handler.db_init()
         @self.connexion_app.app.after_request
         def apply_cors(response):
             response.headers["Content-Type"] = "application/json"
@@ -46,9 +46,9 @@ class Server:
             response.headers["Access-Control-Allow-Credentials"] = "true"
             return response
 
-        # @self.connexion_app.app.teardown_appcontext
-        # def shutdown_session(exception=None):
-        #     orm_handler.db_session().remove()
+        @self.connexion_app.app.teardown_appcontext
+        def shutdown_session(exception=None):
+            orm_handler.db_session.remove()
 
     def run(self):
         if self.connexion_app.app.config["CC_ENV"] in ["dev", "local", "test", "docker"]:

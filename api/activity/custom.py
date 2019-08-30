@@ -5,8 +5,8 @@ from sqlalchemy.orm import lazyload, joinedload
 from db import orm_handler, Project, User, Submission, Task, utils
 from decorators import access_checks
 from flask import request
-from flask_sqlalchemy_session import current_session as db_session
-# db_session = orm_handler.db_session
+# from flask_sqlalchemy_session import current_session as db_session
+db_session = orm_handler.db_session
 
 
 def activity_stats(id=None):

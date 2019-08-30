@@ -9,8 +9,8 @@ import uuid
 from flask import send_file
 import fleep
 from pathlib import Path
-from flask_sqlalchemy_session import current_session as db_session
-# db_session = orm_handler.db_session
+# from flask_sqlalchemy_session import current_session as db_session
+db_session = orm_handler.db_session
 
 
 def get_for_source(id=None, limit=20):

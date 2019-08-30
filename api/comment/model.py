@@ -6,7 +6,7 @@ from flask import request
 import logging
 from api import model
 
-# db_session = orm_handler.db_session()
+# db_session = orm_handler.db_session
 
 Model = Comment
 

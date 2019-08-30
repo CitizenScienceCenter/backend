@@ -9,9 +9,9 @@ from sqlalchemy.exc import IntegrityError
 from db import orm_handler
 from decorators import access_checks
 
-from flask_sqlalchemy_session import current_session as db_session
+# from flask_sqlalchemy_session import current_session as db_session
 
-# db_session = orm_handler.db_session
+db_session = orm_handler.db_session
 js = jtos.JTOS()
 
 @access_checks.ensure_model
