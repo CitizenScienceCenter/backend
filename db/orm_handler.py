@@ -34,7 +34,7 @@ def db_session():
     # )
     
     session_factory = sessionmaker(bind=engine)
-    session = flask_scoped_session(session_factory, current_app)
+    current_app.session = flask_scoped_session(session_factory, current_app)
     Base.query = session_factory.query_property()
     if not persist:
         Base.metadata.drop_all(engine)
