@@ -11,6 +11,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask import Flask, current_app
 
+session = flask_scoped_session(session_factory, app)
 
 import datetime
 from db.cs_base import CSBase
@@ -31,8 +32,9 @@ def db_session():
     # db_session = scoped_session(
     #     sessionmaker(autocommit=False, autoflush=False, bind=engine)
     # )
-    session_factory = sessionmaker(bind=engine)
     
+    session_factory = sessionmaker(bind=engine)
+    session = flask_scoped_session(session_factory, current_app)
     Base.query = session_factory.query_property()
     if not persist:
         Base.metadata.drop_all(engine)
