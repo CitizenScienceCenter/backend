@@ -1,6 +1,5 @@
-import connexion
 from connexion import NoContent
-from db import orm_handler, Task, Submission, Media, utils
+from db import orm_handler, Task, Submission, Media
 from decorators import access_checks
 from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import joinedload
@@ -9,7 +8,6 @@ import sqlalchemy
 import logging
 from sqlalchemy.dialects import postgresql
 from api import model
-from flask_sqlalchemy_session import current_session as db_session
 # db_session = orm_handler.db_session()
 
 Model = Task
@@ -35,7 +33,6 @@ def create_tasks(tasks):
     res = []
     for task in tasks:
         t, code = model.post(Model, task)
-        print(t.dump())
         res.append(t.dump())
     return res, 201
 

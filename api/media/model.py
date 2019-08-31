@@ -2,8 +2,6 @@ import connexion
 from connexion import NoContent
 from db import orm_handler, utils, Media
 from decorators import access_checks
-from flask import request
-import logging
 from api import model
 
 # db_session = orm_handler.db_session()
@@ -27,9 +25,9 @@ def create_medium(medium):
     return m.dump(), code
 
 def update_medium(id, medium):
-    m, code = model.put(Model, id, media)
+    m, code = model.put(Model, mid, media)
     return m.dump(), code
 
 
 def delete_medium(id):
-    return model.delete(Model, id)
+    return model.delete(Model, mid)

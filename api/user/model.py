@@ -1,8 +1,6 @@
 import connexion
-import logging
 import uuid
 from datetime import datetime
-from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
 from flask import session, request, current_app
 from db import orm_handler, User, utils, Submission, Project
@@ -11,7 +9,6 @@ import json, smtplib
 import email as emaillib
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from api import model
-from api.project import model as ProjectAPI
 # from flask_sqlalchemy_session import current_session as db_session
 db_session = orm_handler.db_session
 

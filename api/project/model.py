@@ -1,4 +1,3 @@
-import connexion
 from connexion import NoContent
 from db import orm_handler, Comment, utils, Activity, User, Project
 from decorators import access_checks

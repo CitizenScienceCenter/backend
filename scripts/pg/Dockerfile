@@ -1,4 +1,4 @@
-FROM postgres
+FROM postgres:11.5-alpine
 
 ENV PG_USER $PG_USER
 

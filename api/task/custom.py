@@ -1,7 +1,6 @@
 import connexion
 from connexion import NoContent
 from db import orm_handler, Task, Submission, Media, utils
-from decorators import access_checks
 from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import joinedload
 from flask import request
@@ -49,7 +48,7 @@ def delete_tasks(tasks):
     return NoContent, 200
 
 
-def get_random(id, search):
+def get_random(pid, search):
     user = utils.get_user(request, db_session)
     task = (
         db_session.query(Task, Media)

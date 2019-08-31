@@ -99,7 +99,7 @@ class TestActivities:
         assert pd.status_code == 401
 
     @pytest.mark.run(order=17)
-    def test_delete_activity(self, client, user, project, activity):
+    def test_delete_activity_and_project(self, client, user, project, activity):
         pd = client.delete(
             "/api/v2/activities/{}".format(json.loads(activity.data)["id"]),
             headers=[("X-API-KEY", user["api_key"])],

@@ -1,13 +1,10 @@
-import connexion
 import logging
-import uuid
 from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
 from flask import session, request, current_app
 from db import orm_handler, User, utils, Submission
-from decorators import access_checks
-import json, smtplib
+import smtplib
 from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 # from flask_sqlalchemy_session import current_session as db_session

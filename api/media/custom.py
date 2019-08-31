@@ -1,9 +1,7 @@
 import connexion
 import logging
-import os
 from connexion import NoContent
 from db import orm_handler, Media
-from decorators import access_checks
 from werkzeug.utils import secure_filename
 import uuid
 from flask import send_file

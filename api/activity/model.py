@@ -1,7 +1,5 @@
 import connexion
-import logging
-from connexion import NoContent
-from sqlalchemy.orm import lazyload, joinedload
+from sqlalchemy.orm import lazyload
 from db import orm_handler, Activity
 from decorators import access_checks
 from flask import request

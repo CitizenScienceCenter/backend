@@ -1,8 +1,6 @@
 import connexion
-import logging
-from connexion import NoContent
 from sqlalchemy.orm import lazyload, joinedload
-from db import orm_handler, Project, User, Submission, Task, utils
+from db import orm_handler, Project, User, Submission, Task
 from decorators import access_checks
 from flask import request
 # from flask_sqlalchemy_session import current_session as db_session

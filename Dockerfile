@@ -4,9 +4,9 @@ ARG CC_ENV
 ARG OUTPUT_SWAGGER
 RUN mkdir /code
 WORKDIR /code
-ADD requirements.txt .
+COPY requirements.txt .
 RUN pip3 install -r requirements.txt
-ADD . /code/
+COPY . /code/
 RUN rm -rf /code/__pycache__
 RUN rm -rf /code/test/__pycache__
 # COPY --from=0 /swagger/swagger_complete.yaml /code/swagger/swagger_complete.yaml

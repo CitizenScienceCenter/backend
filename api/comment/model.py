@@ -1,7 +1,5 @@
 import connexion
-from connexion import NoContent
 from db import orm_handler, Comment, utils
-from decorators import access_checks
 from flask import request
 import logging
 from api import model
@@ -18,8 +16,8 @@ def get_comments(limit=100, search_term=None):
         return [dict(m) for m in ms][:limit], code
 
 
-def get_comment(id=None):
-    m, code = model.get_one(Model, id)
+def get_comment(cid=None):
+    m, code = model.get_one(Model, cid)
     return m.dump() if m is not None else m, code
 
 def create_comment(comment):

@@ -5,11 +5,10 @@ import logging
 import uuid
 import configparser
 import connexion
-from connexion import NoContent
 from connexion.resolver import RestyResolver
 
-from flask import session, request, g, render_template
-from flask_cors import CORS
+from flask import session, request, g
+#from flask_cors import CORS
 from flask_dotenv import DotEnv
 
 
@@ -36,6 +35,7 @@ class Server:
 
         self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()
         orm_handler.db_init()
+
         @self.connexion_app.app.after_request
         def apply_cors(response):
             response.headers["Content-Type"] = "application/json"

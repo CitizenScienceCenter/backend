@@ -1,10 +1,6 @@
-import connexion
-from connexion import NoContent
-from db import orm_handler, Submission, utils
+from db import orm_handler, Submission
 from decorators import access_checks
 from flask import request
-import logging
-import json
 from api import model
 # from flask_sqlalchemy_session import current_session as db_session
 # db_session = orm_handler.db_session()
