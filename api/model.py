@@ -2,7 +2,7 @@ import logging
 
 import prison
 from connexion import NoContent
-from flask import send_file
+from flask import send_file, abort
 from jtos import jtos
 from sqlalchemy.exc import IntegrityError
 
@@ -29,7 +29,7 @@ def get_all(model, limit=25, search_term=None):
         except Exception as e:
             # TODO handle parsing error
             print("Search failed", e)
-            return e
+            abort(500)
     q = db_session.query(model).all()
     # db_session().close()
     return q, 200
@@ -69,7 +69,7 @@ def post(model, object):
         return p, 201
     except IntegrityError as ie:
         print(ie)
-        return {"msg": "Resource already exists", "ok": False}, 409
+        abort(409)
 
 
 def put(model, id, object):
@@ -99,4 +99,4 @@ def delete(model, id):
         db_session.commit()
         return d.dump(), 200
     else:
-        return NoContent, 404
+        abort(404)
