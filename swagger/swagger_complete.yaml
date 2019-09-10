@@ -3157,7 +3157,7 @@
             "required": true
           },
           {
-            "name": "user",
+            "name": "updated_user",
             "in": "body",
             "schema": {
               "type": "object",
