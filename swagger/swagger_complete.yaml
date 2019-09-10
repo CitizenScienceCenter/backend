@@ -3408,7 +3408,7 @@
       "type": "apiKey",
       "name": "X-API-KEY",
       "in": "header",
-      "x-apikeyInfoFunc": "decorators.access_checks.ensure_key"
+     "x-apikeyInfoFunc": "decorators.access_checks.ensure_key"
     },
     "oauth2": {
       "type": "oauth2",

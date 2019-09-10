@@ -11,6 +11,7 @@ db_tables = orm_handler.Base.metadata.tables.keys()
 
 
 def ensure_key(token, required_scopes=None):
+<<<<<<< HEAD
     key = token
     user_key = db_session.query(User).filter(User.api_key==key).one_or_none()
     print(dir(user_key))
@@ -18,6 +19,16 @@ def ensure_key(token, required_scopes=None):
         return dict(sub=user_key.username)
     else:
         return None
+=======
+    return {'sub': 'admins'}
+       # key = token
+       # user_key = db_session.query(User).filter(User.api_key==key).one_or_none()
+       # print(dir(user_key))
+       # if user_key is not None:
+       #     return dict(sub=user_key.username)
+       # else:
+       #     return None
+>>>>>>> feature/scoped-sessions
 
 def ensure_anon_key(token, required_scopes=None):
     return ensure_key(token, required_scopes)
