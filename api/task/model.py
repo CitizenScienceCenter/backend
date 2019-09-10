@@ -29,22 +29,23 @@ def get_task(id=None):
     return m.dump() if m is not None else m, code
 
 
-def create_tasks(tasks):
+def create_tasks(body):
+    tasks = body
     res = []
     for task in tasks:
         t, code = model.post(Model, task)
         res.append(t.dump())
     return res, 201
 
-def update_task(id, task):
-    m, code = model.put(Model, id, task)
+def update_task(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 
 def delete_task(id):
     return model.delete(Model, id)
 
-
+# TODO check type expected
 def delete_tasks(tasks):
     for task in tasks:
         model.delete(Model, task)

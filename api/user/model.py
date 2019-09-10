@@ -14,6 +14,7 @@ db_session = orm_handler.db_session
 
 Model = User
 
+# @access_checks.ensure_model(Model)
 def get_users(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
     if len(ms) > 0 and isinstance(ms[0], User):
@@ -24,11 +25,13 @@ def get_users(limit=100, search_term=None):
 @access_checks.ensure_owner(Model)
 def get_user(id=None):
     m, code = model.get_one(Model, id)
-    return m.dump() if m is not None else m, code
+    user = m.dump()
+    del user['pwd']
+    return user if m is not None else m, code
 
 
-def create_user(user):
-    #user = body
+def create_user(body):
+    user = body
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     if ("username" in user and len(user["username"]) == 0) or not "username" in user and "email" in user:
@@ -58,8 +61,8 @@ def create_user(user):
 
 
 @access_checks.ensure_owner(Model)
-def update_user(id, updated_user):
-    m, code = model.put(Model, id, updated_user)
+def update_user(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 

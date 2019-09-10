@@ -20,10 +20,10 @@ def validate(key):
         return NoContent, 401
 
 
-def login(user):
+def login(body):
     logging.info(request)
     q = None
-    # user = body
+    user = body
     # print(body)
     if 'email' in user:
         q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
@@ -48,7 +48,8 @@ def logout():
     return 200
 
 
-def auth(user):
+def auth(body):
+    user = body
     # TODO create oauth token here and add to table. Just send api key for now
     q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
     if q:

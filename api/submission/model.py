@@ -23,13 +23,13 @@ def get_submission(id=None):
     return m.dump(), code
 
 
-def create_submission(submission):
-    m, code = model.post(Model, submission)
+def create_submission(body):
+    m, code = model.post(Model, body)
     return m.dump(), code
 
 
-def update_submission(id, submission):
-    m, code = model.put(Model, id, submission)
+def update_submission(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 

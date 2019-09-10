@@ -20,13 +20,12 @@ def get_comment(cid=None):
     m, code = model.get_one(Model, cid)
     return m.dump() if m is not None else m, code
 
-def create_comment(comment):
-    logging.info("Creating Comment ")
-    m, code = model.post(Model, comment)
+def create_comment(body):
+    m, code = model.post(Model, body)
     return m.dump(), code
 
-def update_comment(id, comment):
-    m, code = model.put(Model, id, comment)
+def update_comment(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 def delete_comment(id):

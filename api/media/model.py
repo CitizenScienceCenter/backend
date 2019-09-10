@@ -20,14 +20,14 @@ def get_medium(id=None):
     return model.get_file(Model, id)
 
 
-def create_medium(medium):
-    m, code = model.post(Model, media)
+def create_medium(body):
+    m, code = model.post(Model, body)
     return m.dump(), code
 
-def update_medium(id, medium):
-    m, code = model.put(Model, mid, media)
+def update_medium(id, body):
+    m, code = model.put(Model, id, body)
     return m.dump(), code
 
 
 def delete_medium(id):
-    return model.delete(Model, mid)
+    return model.delete(Model, id)
