@@ -18,6 +18,7 @@ js = jtos.JTOS()
 def get_all(model, limit=25, search_term=None):
     if search_term:
         try:
+            print(search_term)
             st = prison.loads(search_term)
             q_stmt = js.parse_object(st)
             print("SQL: ", q_stmt)

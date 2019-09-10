@@ -29,7 +29,7 @@ inflection==0.3.1
 itsdangerous==0.24
 Jinja2==2.10
 jsonschema==2.6.0
-JTOS==0.8.2
+JTOS==0.8.3
 livereload==2.6.0
 Mako==1.0.7
 Markdown==3.0.1

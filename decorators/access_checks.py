@@ -11,7 +11,7 @@ db_tables = orm_handler.Base.metadata.tables.keys()
 
 
 def ensure_key(token, required_scopes=None):
-    return {'sub': 'admin'}
+    return {'sub': 'admins'}
        # key = token
        # user_key = db_session.query(User).filter(User.api_key==key).one_or_none()
        # print(dir(user_key))

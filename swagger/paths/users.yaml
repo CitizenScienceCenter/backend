@@ -137,7 +137,7 @@ paths:
       summary: Update user details (change password, add details etc)
       parameters:
         - {$ref: './params.yaml#/parameters/id'}
-        - name: user
+        - name: updated_user
           in: body
           schema:
             {$ref: './types.yaml#/definitions/User'}
