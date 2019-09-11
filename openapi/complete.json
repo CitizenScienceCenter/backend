@@ -1,1 +1,2531 @@
-{"components":{"securitySchemes":{"anonUser":{"in":"header","name":"X-ANON","type":"apiKey","x-apikeyInfoFunc":"decorators.access_checks.ensure_anon_key"},"apiKeyHeader":{"in":"header","name":"X-API-KEY","type":"apiKey","x-apikeyInfoFunc":"decorators.access_checks.ensure_key"},"oauth2":{"flows":{"implicit":{"authorizationUrl":"http://localhost:8081/oauth/authorize","scopes":{"apiKey":"Unique identifier of the user accessing the service."}}},"type":"oauth2","x-tokenInfoUrl":"http://localhost:8081/api/v1/users/validate"}}},"info":{"title":"CCCS","version":"0.2.1"},"openapi":"3.0.0","paths":{"/activities":{"get":{"operationId":"get_activities","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}},{"in":"query","name":"limit","schema":{"default":20,"minimum":0,"type":"integer"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"description":{"type":"string"},"name":{"type":"string"},"part_of":{"description":"The ID of the project that this activity is part of","type":"string"},"platform":{"enum":["Desktop","Mobile","Both"],"type":"string"}},"required":["name","description","platform","part_of"],"type":"object"},"type":"array"}}},"description":"Return Activities"}},"summary":"Get all Activities","tags":["Activities"],"x-openapi-router-controller":"api.activity.model"},"post":{"operationId":"create_activity","requestBody":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"description":{"type":"string"},"name":{"type":"string"},"part_of":{"description":"The ID of the project that this activity is part of","type":"string"},"platform":{"enum":["Desktop","Mobile","Both"],"type":"string"}},"required":["name","description","platform","part_of"],"type":"object"}}}},"responses":{"201":{"description":"New Activity created"},"409":{"description":"Activity already exists"}},"security":[{"apiKeyHeader":[]}],"summary":"Post a activity","tags":["Activities"],"x-openapi-router-controller":"api.activity.model"}},"/activities/count":{"get":{"operationId":"get_activity_count","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}}],"responses":{"200":{"description":"Row count"}},"security":[{"apiKeyHeader":[]}],"summary":"Get row count of query","tags":["Activities"],"x-openapi-router-controller":"api.activity.model"}},"/activities/{id}":{"delete":{"operationId":"delete_activity","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"204":{"description":"Activity was deleted"},"404":{"description":"Activity does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Remove an Activity","tags":["Activities"],"x-openapi-router-controller":"api.activity.model"},"get":{"operationId":"get_activity","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"description":"Return Activity"},"404":{"description":"Activity does not exist"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Get a single activity","tags":["Activities"],"x-openapi-router-controller":"api.activity.model"},"put":{"operationId":"update_activity","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"requestBody":{"$ref":"#/paths/~1activities/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/Activity"},"responses":{"200":{"description":"Activity modified"},"201":{"description":"New Activity created"}},"security":[{"apiKeyHeader":[]}],"summary":"Modify/Create a Activity","tags":["Activities"],"x-openapi-router-controller":"api.activity.model"}},"/comments":{"get":{"operationId":"get_comments","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}},{"in":"query","name":"limit","schema":{"default":20,"minimum":0,"type":"integer"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"content":{"type":"object"},"parent":{"type":"string"},"source_id":{"description":"The task or project (or anything with an ID) it is related to","type":"string"},"user_id":{"type":"string"}},"required":["source_id","content","user_id"],"type":"object"},"type":"array"}}},"description":"List of comments"}},"security":[{"apiKeyHeader":[]}],"summary":"Get a single comment","tags":["Comments"],"x-openapi-router-controller":"api.comment.model"},"post":{"operationId":"create_comment","requestBody":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"content":{"type":"object"},"parent":{"type":"string"},"source_id":{"description":"The task or project (or anything with an ID) it is related to","type":"string"},"user_id":{"type":"string"}},"required":["source_id","content","user_id"],"type":"object"}}}},"responses":{"201":{"content":{"application/json":{"schema":{"$ref":"#/paths/~1comments/get/responses/200/content/application~1json/schema/items","x-miro":"./schemas.yaml#/components/schemas/Comment"}}},"description":"Comment created"},"409":{"description":"Comment already exists"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Post a comment","tags":["Comments"],"x-openapi-router-controller":"api.comment.model"}},"/comments/{id}":{"delete":{"operationId":"delete_comment","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"204":{"description":"Comment was deleted"},"404":{"description":"Comment does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Remove a Comment","tags":["Comments"],"x-openapi-router-controller":"api.comment.model"},"get":{"operationId":"get_comment","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"$ref":"#/paths/~1comments/get/responses/200/content/application~1json/schema/items","x-miro":"./schemas.yaml#/components/schemas/Comment"}}},"description":"Return comment"},"404":{"description":"Comment does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Get a single comment","tags":["Comments"],"x-openapi-router-controller":"api.comment.model"},"put":{"operationId":"update_comment","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"requestBody":{"$ref":"#/paths/~1comments/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/Comment"},"responses":{"200":{"description":"Comment modified"},"201":{"description":"New Comment created"}},"security":[{"apiKeyHeader":[]}],"summary":"Modify/Create a Comment","tags":["Comments"],"x-openapi-router-controller":"api.comment.model"}},"/media":{"get":{"description":"Get a list of media","operationId":"get_media","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}},{"in":"query","name":"limit","schema":{"default":20,"minimum":0,"type":"integer"}}],"responses":{"200":{"description":"List of media"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"tags":["Media"],"x-openapi-router-controller":"api.media.model"},"post":{"description":"The media details (for files already on the server or remotely hosted)","operationId":"create_medium","requestBody":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"filetype":{"type":"string"},"name":{"description":"Name of file","type":"string"},"path":{"description":"Local or remote path","type":"string"},"source_id":{"description":"The task or project or user it is related to","type":"string"}},"required":["source_id","path","name"],"type":"object"}}}},"responses":{"200":{"description":"Media attached"}},"security":[{"apiKeyHeader":[]}],"tags":["Media"],"x-openapi-router-controller":"api.media.model"}},"/media/source/{id}":{"delete":{"operationId":"delete_medium","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"description":"Media deleted"},"404":{"description":"Media does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Delete all media files related to  source","tags":["Media"],"x-openapi-router-controller":"api.media.model"},"get":{"operationId":"get_for_source","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"filetype":{"type":"string"},"name":{"description":"Name of file","type":"string"},"path":{"description":"Local or remote path","type":"string"},"source_id":{"description":"The task or project or user it is related to","type":"string"}},"required":["source_id","path","name"],"type":"object"},"type":"array"}}},"description":"Return Media"},"404":{"description":"Media does not exist"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Query media for a specific task or project","tags":["Media"],"x-openapi-router-controller":"api.media.custom"}},"/media/upload":{"post":{"description":"Add a new media attachment","operationId":"upload","requestBody":{"content":{"multipart/form-data":{"schema":{"properties":{"attachment":{"description":"The file to be uploaded","format":"binary","type":"string"},"id":{"type":"string"}},"required":["attachment"],"type":"object"}}}},"responses":{"200":{"description":"Media attached"}},"security":[{"apiKeyHeader":[]}],"tags":["Media"],"x-openapi-router-controller":"api.media.custom"}},"/media/{id}":{"get":{"operationId":"get_medium","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"format":"binary","type":"string"}}},"description":"Return Media"},"404":{"description":"Media does not exist"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Get a single file","tags":["Media"],"x-openapi-router-controller":"api.media.model"},"put":{"operationId":"update_medium","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"requestBody":{"$ref":"#/paths/~1media/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/Medium"},"responses":{"201":{"content":{"application/json":{"schema":{"$ref":"#/paths/~1media~1source~1%7Bid%7D/get/responses/200/content/application~1json/schema/items","x-miro":"./schemas.yaml#/components/schemas/Media"}}},"description":"Return Media"},"404":{"description":"Media does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Put a single file","tags":["Media"],"x-openapi-router-controller":"api.media.model"}},"/projects":{"get":{"operationId":"get_projects","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}},{"in":"query","name":"limit","schema":{"default":20,"minimum":0,"type":"integer"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"description":{"type":"string"},"name":{"type":"string"},"owned_by":{"description":"The ID of the user that this project is owned by","type":"string"}},"required":["name","description"],"type":"object"},"type":"array"}}},"description":"Return projects"}},"summary":"Get all projects","tags":["Projects"],"x-openapi-router-controller":"api.project.model"},"post":{"operationId":"create_project","requestBody":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"description":{"type":"string"},"name":{"type":"string"},"owned_by":{"description":"The ID of the user that this project is owned by","type":"string"}},"required":["name","description"],"type":"object"}}}},"responses":{"201":{"description":"New project created"},"409":{"description":"Project already exists"}},"security":[{"apiKeyHeader":[]}],"summary":"Post a project","tags":["Projects"],"x-openapi-router-controller":"api.project.model"}},"/projects/count":{"get":{"operationId":"get_project_count","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}}],"responses":{"200":{"description":"Row count"}},"security":[{"apiKeyHeader":[]}],"summary":"Get row count of query","tags":["Projects"],"x-openapi-router-controller":"api.project.model"}},"/projects/{id}":{"delete":{"operationId":"delete_project","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"204":{"description":"Project was deleted"},"404":{"description":"Project does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Remove a project","tags":["Projects"],"x-openapi-router-controller":"api.project.model"},"get":{"operationId":"get_project","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"description":"Return project"},"404":{"description":"Project does not exist"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Get a single project","tags":["Projects"],"x-openapi-router-controller":"api.project.model"},"put":{"operationId":"update_project","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"requestBody":{"$ref":"#/paths/~1projects/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/Project"},"responses":{"200":{"description":"Project modified"},"201":{"description":"New project created"}},"security":[{"apiKeyHeader":[]}],"summary":"Modify/Create a project","tags":["Projects"],"x-openapi-router-controller":"api.project.model"}},"/submission/{id}":{"delete":{"operationId":"delete_submission","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"204":{"description":"Submission was deleted"},"404":{"description":"Submission does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Remove a submission","tags":["Submissions"],"x-openapi-router-controller":"api.submission.model"},"get":{"operationId":"get_submission","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"content":{"type":"object"},"task_id":{"type":"string"},"user_id":{"type":"string"}},"required":["task_id","user_id"],"type":"object"}}},"description":"Return submission"},"404":{"description":"Submission does not exist"}},"security":[{"apiKeyHeader":[]}],"summary":"Get a single submission","tags":["Submissions"],"x-openapi-router-controller":"api.submission.model"},"put":{"operationId":"update_submission","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"requestBody":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"content":{"type":"object"},"task_id":{"type":"string"},"user_id":{"type":"string"}},"required":["task_id","user_id"],"type":"object"}}}},"responses":{"200":{"description":"Submission modified"},"201":{"description":"New submission created"}},"security":[{"apiKeyHeader":[]}],"summary":"Modify/Create a submission","tags":["Submissions"],"x-openapi-router-controller":"api.submission.model"}},"/submissions":{"get":{"operationId":"get_submissions","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}},{"in":"query","name":"limit","schema":{"default":20,"minimum":0,"type":"integer"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"$ref":"#/paths/~1submission~1%7Bid%7D/get/responses/200/content/application~1json/schema","x-miro":"./schemas.yaml#/components/schemas/Submission"},"type":"array"}}},"description":"List of submissions"}},"security":[{"apiKeyHeader":[]}],"summary":"Get a single submission","tags":["Submissions"],"x-openapi-router-controller":"api.submission.model"},"post":{"operationId":"create_submission","requestBody":{"$ref":"#/paths/~1submission~1%7Bid%7D/put/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/Submission"},"responses":{"201":{"content":{"application/json":{"schema":{"$ref":"#/paths/~1submission~1%7Bid%7D/get/responses/200/content/application~1json/schema","x-miro":"./schemas.yaml#/components/schemas/Submission"}}},"description":"Submission created"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Post a submission","tags":["Submissions"],"x-openapi-router-controller":"api.submission.model"}},"/submissions/count":{"get":{"operationId":"get_submission_count","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}}],"responses":{"200":{"description":"Row count"}},"security":[{"apiKeyHeader":[]}],"summary":"Get row count of query","tags":["Submissions"],"x-openapi-router-controller":"api.submission.model"}},"/tasks":{"delete":{"operationId":"delete_tasks","requestBody":{"content":{"application/json":{"schema":{"items":{"type":"string"},"type":"array"}}}},"responses":{"204":{"description":"Tasks were deleted"}},"security":[{"apiKeyHeader":[]}],"summary":"Delete an array of tasks","tags":["Tasks"],"x-openapi-router-controller":"api.task.custom"},"get":{"operationId":"get_tasks","parameters":[{"in":"query","name":"offset","schema":{"default":0,"type":"number"}},{"in":"query","name":"search_term","schema":{"type":"string"}},{"in":"query","name":"limit","schema":{"default":20,"minimum":0,"type":"integer"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"activity_id":{"type":"string"},"content":{"type":"object"},"required":{"type":"boolean"},"sequence":{"type":"integer"},"title":{"type":"string"}},"required":["activity_id","sequence","title","content","required"],"type":"object"},"type":"array"}}},"description":"List of tasks"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Get a list of tasks","tags":["Tasks"],"x-openapi-router-controller":"api.task.model"},"post":{"operationId":"create_tasks","requestBody":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"activity_id":{"type":"string"},"content":{"type":"object"},"required":{"type":"boolean"},"sequence":{"type":"integer"},"title":{"type":"string"}},"required":["activity_id","sequence","title","content","required"],"type":"object"}}}},"responses":{"201":{"content":{"application/json":{"schema":{"items":{"$ref":"#/paths/~1tasks/get/responses/200/content/application~1json/schema/items","x-miro":"./schemas.yaml#/components/schemas/Task"},"type":"array"}}},"description":"Task created"}},"security":[{"apiKeyHeader":[]}],"summary":"Post an array of tasks","tags":["Tasks"],"x-openapi-router-controller":"api.task.model"}},"/tasks/count":{"get":{"operationId":"get_task_count","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}}],"responses":{"200":{"description":"Row count"}},"security":[{"apiKeyHeader":[]}],"summary":"Get row count of query","tags":["Tasks"],"x-openapi-router-controller":"api.task.model"}},"/tasks/{id}":{"delete":{"operationId":"delete_task","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"204":{"description":"Task was deleted"}},"security":[{"apiKeyHeader":[]}],"summary":"Delete a single tasks","tags":["Tasks"],"x-openapi-router-controller":"api.task.model"},"get":{"operationId":"get_task","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"$ref":"#/paths/~1tasks/get/responses/200/content/application~1json/schema/items","x-miro":"./schemas.yaml#/components/schemas/Task"}}},"description":"Return task"},"404":{"description":"Task does not exist"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Get a single task","tags":["Tasks"],"x-openapi-router-controller":"api.task.model"},"put":{"operationId":"update_task","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"requestBody":{"$ref":"#/paths/~1tasks/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/Task"},"responses":{"201":{"description":"New task created"}},"security":[{"apiKeyHeader":[]}],"summary":"Modify/Create a task","tags":["Tasks"],"x-openapi-router-controller":"api.task.model"}},"/users":{"get":{"operationId":"get_users","parameters":[{"in":"query","name":"search_term","schema":{"type":"string"}},{"in":"query","name":"limit","schema":{"default":20,"minimum":0,"type":"integer"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"api_key":{"type":"string"},"email":{"format":"email","type":"string"},"pwd":{"type":"string"},"username":{"type":"string"}},"required":["pwd"],"type":"object"},"type":"array"}}},"description":"Return all users"}},"security":[{"oauth2":[]}],"tags":["Users"],"x-openapi-router-controller":"api.user.model"}},"/users/authorize":{"post":{"operationId":"generate","requestBody":{"content":{"application/json":{"schema":{"allOf":[{"properties":{"created_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"},"id":{"maxLength":100,"readOnly":true,"type":"string"},"info":{"description":"A JSON field to extend a model with extra info","type":"object"},"updated_at":{"description":"Creation time","example":"2015-07-07T15:49:51.230+02:00","format":"date-time","readOnly":true,"type":"string"}},"type":"object"}],"properties":{"api_key":{"type":"string"},"email":{"format":"email","type":"string"},"pwd":{"type":"string"},"username":{"type":"string"}},"required":["pwd"],"type":"object"},"x-body-name":"user"}}},"responses":{"200":{"description":"Token created"}},"summary":"Post auth for token response","tags":["Users"],"x-openapi-router-controller":"api.otoken"}},"/users/login":{"post":{"operationId":"login","requestBody":{"$ref":"#/paths/~1users~1authorize/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/User"},"responses":{"200":{"description":"Login successful"},"401":{"description":"Incorrect login details"},"404":{"description":"User not found"}},"summary":"Allow a user to login","tags":["Users"],"x-openapi-router-controller":"api.user.custom"}},"/users/register":{"post":{"operationId":"create_user","requestBody":{"$ref":"#/paths/~1users~1authorize/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/User"},"responses":{"201":{"description":"Created user"},"409":{"description":"User exists"}},"summary":"Registration end point for a user account","tags":["Users"],"x-openapi-router-controller":"api.user.model"}},"/users/reset":{"get":{"operationId":"reset","parameters":[{"in":"query","name":"email","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Password reset"}},"summary":"Reset user password","tags":["Users"],"x-openapi-router-controller":"api.user.custom"},"post":{"operationId":"verify_reset","requestBody":{"$ref":"#/paths/~1users~1authorize/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/User"},"responses":{"200":{"description":"Verified and reset"},"401":{"description":"Unauthorised user"}},"summary":"Verify password reset token","tags":["Users"],"x-openapi-router-controller":"api.user.custom"}},"/users/validate":{"get":{"operationId":"validate","parameters":[{"in":"query","name":"key","schema":{"type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Token info object"}},"summary":"OAuth2 token info","tags":["Users"],"x-openapi-router-controller":"api.user.custom"}},"/users/{id}":{"delete":{"operationId":"delete_user","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"description":"User deleted"},"401":{"description":"Not authorised"},"404":{"description":"User not found"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Delete user (only allowed by the user themselves)","tags":["Users"],"x-openapi-router-controller":"api.user.model"},"get":{"operationId":"get_user","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"$ref":"#/paths/~1users/get/responses/200/content/application~1json/schema/items","x-miro":"./schemas.yaml#/components/schemas/User"},"type":"array"}}},"description":"Return users"},"404":{"description":"User not found"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Get all users (or those matching an ID)","tags":["Users"],"x-openapi-router-controller":"api.user.model"},"put":{"operationId":"update_user","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"requestBody":{"$ref":"#/paths/~1users~1authorize/post/requestBody","x-miro":"./bodies.yaml#/components/requestBodies/User"},"responses":{"200":{"content":{"application/json":{"schema":{"$ref":"#/paths/~1users/get/responses/200/content/application~1json/schema/items","x-miro":"./schemas.yaml#/components/schemas/User"}}},"description":"User updated"},"404":{"description":"User not found"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Update user details (change password, add details etc)","tags":["Users"],"x-openapi-router-controller":"api.user.model"}},"/users/{id}/submissions":{"get":{"operationId":"get_subs","parameters":[{"description":"The unique identifer for an Object (i.e. User, Task, Project, Submission etc)","in":"path","name":"id","required":true,"schema":{"pattern":"^[a-zA-Z0-9-]+$","type":"string"}}],"responses":{"200":{"content":{"application/json":{"schema":{"items":{"$ref":"#/paths/~1submission~1%7Bid%7D/get/responses/200/content/application~1json/schema","x-miro":"./schemas.yaml#/components/schemas/Submission"},"type":"array"}}},"description":"Return submissions"},"404":{"description":"User not found"}},"security":[{"apiKeyHeader":[]},{"anonUser":[]}],"summary":"Get all submissions for a user (or those matching an ID)","tags":["Users"],"x-openapi-router-controller":"api.user.custom"}}},"servers":[{"description":"Test Server","url":"http://0.0.0.0:8080/api/v2"},{"description":"Wenker Project Site","url":"https://wenker.citizenscience.ch/api/v2"},{"description":"Production API Server","url":"https://api.citizenscience.ch/api/v2"}]}
+{
+    "components": {
+        "securitySchemes": {
+            "anonUser": {
+                "in": "header",
+                "name": "X-ANON",
+                "type": "apiKey",
+                "x-apikeyInfoFunc": "decorators.access_checks.ensure_anon_key"
+            },
+            "apiKeyHeader": {
+                "in": "header",
+                "name": "X-API-KEY",
+                "type": "apiKey",
+                "x-apikeyInfoFunc": "decorators.access_checks.ensure_key"
+            },
+            "oauth2": {
+                "flows": {
+                    "implicit": {
+                        "authorizationUrl": "http://localhost:8081/oauth/authorize",
+                        "scopes": {
+                            "apiKey": "Unique identifier of the user accessing the service."
+                        }
+                    }
+                },
+                "type": "oauth2",
+                "x-tokenInfoUrl": "http://localhost:8081/api/v1/users/validate"
+            }
+        }
+    },
+    "info": {
+        "title": "CCCS",
+        "version": "0.2.1"
+    },
+    "openapi": "3.0.0",
+    "paths": {
+        "/activities": {
+            "get": {
+                "operationId": "get_activities",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "properties": {
+                                                    "created_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "maxLength": 100,
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "info": {
+                                                        "description": "A JSON field to extend a model with extra info",
+                                                        "type": "object"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "properties": {
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "part_of": {
+                                                "description": "The ID of the project that this activity is part of",
+                                                "type": "string"
+                                            },
+                                            "platform": {
+                                                "enum": [
+                                                    "Desktop",
+                                                    "Mobile",
+                                                    "Both"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "description",
+                                            "platform",
+                                            "part_of"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Return Activities"
+                    }
+                },
+                "summary": "Get all Activities",
+                "tags": [
+                    "Activities"
+                ],
+                "x-openapi-router-controller": "api.activity.model"
+            },
+            "post": {
+                "operationId": "create_activity",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "created_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "maxLength": 100,
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "info": {
+                                                "description": "A JSON field to extend a model with extra info",
+                                                "type": "object"
+                                            },
+                                            "updated_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "properties": {
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "part_of": {
+                                        "description": "The ID of the project that this activity is part of",
+                                        "type": "string"
+                                    },
+                                    "platform": {
+                                        "enum": [
+                                            "Desktop",
+                                            "Mobile",
+                                            "Both"
+                                        ],
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "platform",
+                                    "part_of"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "New Activity created"
+                    },
+                    "409": {
+                        "description": "Activity already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Post a activity",
+                "tags": [
+                    "Activities"
+                ],
+                "x-openapi-router-controller": "api.activity.model"
+            }
+        },
+        "/activities/count": {
+            "get": {
+                "operationId": "get_activity_count",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Row count"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get row count of query",
+                "tags": [
+                    "Activities"
+                ],
+                "x-openapi-router-controller": "api.activity.model"
+            }
+        },
+        "/activities/{id}": {
+            "delete": {
+                "operationId": "delete_activity",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Activity was deleted"
+                    },
+                    "404": {
+                        "description": "Activity does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Remove an Activity",
+                "tags": [
+                    "Activities"
+                ],
+                "x-openapi-router-controller": "api.activity.model"
+            },
+            "get": {
+                "operationId": "get_activity",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return Activity"
+                    },
+                    "404": {
+                        "description": "Activity does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Get a single activity",
+                "tags": [
+                    "Activities"
+                ],
+                "x-openapi-router-controller": "api.activity.model"
+            },
+            "put": {
+                "operationId": "update_activity",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/paths/~1activities/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/Activity"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Activity modified"
+                    },
+                    "201": {
+                        "description": "New Activity created"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Modify/Create a Activity",
+                "tags": [
+                    "Activities"
+                ],
+                "x-openapi-router-controller": "api.activity.model"
+            }
+        },
+        "/comments": {
+            "get": {
+                "operationId": "get_comments",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "properties": {
+                                                    "created_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "maxLength": 100,
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "info": {
+                                                        "description": "A JSON field to extend a model with extra info",
+                                                        "type": "object"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "properties": {
+                                            "content": {
+                                                "type": "object"
+                                            },
+                                            "parent": {
+                                                "type": "string"
+                                            },
+                                            "source_id": {
+                                                "description": "The task or project (or anything with an ID) it is related to",
+                                                "type": "string"
+                                            },
+                                            "user_id": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "source_id",
+                                            "content",
+                                            "user_id"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "List of comments"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get a single comment",
+                "tags": [
+                    "Comments"
+                ],
+                "x-openapi-router-controller": "api.comment.model"
+            },
+            "post": {
+                "operationId": "create_comment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "created_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "maxLength": 100,
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "info": {
+                                                "description": "A JSON field to extend a model with extra info",
+                                                "type": "object"
+                                            },
+                                            "updated_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "object"
+                                    },
+                                    "parent": {
+                                        "type": "string"
+                                    },
+                                    "source_id": {
+                                        "description": "The task or project (or anything with an ID) it is related to",
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "source_id",
+                                    "content",
+                                    "user_id"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1comments/get/responses/200/content/application~1json/schema/items",
+                                    "x-miro": "./schemas.yaml#/components/schemas/Comment"
+                                }
+                            }
+                        },
+                        "description": "Comment created"
+                    },
+                    "409": {
+                        "description": "Comment already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Post a comment",
+                "tags": [
+                    "Comments"
+                ],
+                "x-openapi-router-controller": "api.comment.model"
+            }
+        },
+        "/comments/{id}": {
+            "delete": {
+                "operationId": "delete_comment",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Comment was deleted"
+                    },
+                    "404": {
+                        "description": "Comment does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Remove a Comment",
+                "tags": [
+                    "Comments"
+                ],
+                "x-openapi-router-controller": "api.comment.model"
+            },
+            "get": {
+                "operationId": "get_comment",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1comments/get/responses/200/content/application~1json/schema/items",
+                                    "x-miro": "./schemas.yaml#/components/schemas/Comment"
+                                }
+                            }
+                        },
+                        "description": "Return comment"
+                    },
+                    "404": {
+                        "description": "Comment does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get a single comment",
+                "tags": [
+                    "Comments"
+                ],
+                "x-openapi-router-controller": "api.comment.model"
+            },
+            "put": {
+                "operationId": "update_comment",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/paths/~1comments/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/Comment"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comment modified"
+                    },
+                    "201": {
+                        "description": "New Comment created"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Modify/Create a Comment",
+                "tags": [
+                    "Comments"
+                ],
+                "x-openapi-router-controller": "api.comment.model"
+            }
+        },
+        "/media": {
+            "get": {
+                "description": "Get a list of media",
+                "operationId": "get_media",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of media"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "tags": [
+                    "Media"
+                ],
+                "x-openapi-router-controller": "api.media.model"
+            },
+            "post": {
+                "description": "The media details (for files already on the server or remotely hosted)",
+                "operationId": "create_medium",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "created_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "maxLength": 100,
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "info": {
+                                                "description": "A JSON field to extend a model with extra info",
+                                                "type": "object"
+                                            },
+                                            "updated_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "properties": {
+                                    "filetype": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "description": "Name of file",
+                                        "type": "string"
+                                    },
+                                    "path": {
+                                        "description": "Local or remote path",
+                                        "type": "string"
+                                    },
+                                    "source_id": {
+                                        "description": "The task or project or user it is related to",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "source_id",
+                                    "path",
+                                    "name"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Media attached"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "tags": [
+                    "Media"
+                ],
+                "x-openapi-router-controller": "api.media.model"
+            }
+        },
+        "/media/source/{id}": {
+            "delete": {
+                "operationId": "delete_medium",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Media deleted"
+                    },
+                    "404": {
+                        "description": "Media does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Delete all media files related to  source",
+                "tags": [
+                    "Media"
+                ],
+                "x-openapi-router-controller": "api.media.model"
+            },
+            "get": {
+                "operationId": "get_for_source",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "properties": {
+                                                    "created_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "maxLength": 100,
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "info": {
+                                                        "description": "A JSON field to extend a model with extra info",
+                                                        "type": "object"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "properties": {
+                                            "filetype": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "description": "Name of file",
+                                                "type": "string"
+                                            },
+                                            "path": {
+                                                "description": "Local or remote path",
+                                                "type": "string"
+                                            },
+                                            "source_id": {
+                                                "description": "The task or project or user it is related to",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "source_id",
+                                            "path",
+                                            "name"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Return Media"
+                    },
+                    "404": {
+                        "description": "Media does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Query media for a specific task or project",
+                "tags": [
+                    "Media"
+                ],
+                "x-openapi-router-controller": "api.media.custom"
+            }
+        },
+        "/media/upload": {
+            "post": {
+                "description": "Add a new media attachment",
+                "operationId": "upload",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "attachment": {
+                                        "description": "The file to be uploaded",
+                                        "format": "binary",
+                                        "type": "string"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "attachment"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Media attached"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "tags": [
+                    "Media"
+                ],
+                "x-openapi-router-controller": "api.media.custom"
+            }
+        },
+        "/media/{id}": {
+            "get": {
+                "operationId": "get_medium",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "format": "binary",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Return Media"
+                    },
+                    "404": {
+                        "description": "Media does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Get a single file",
+                "tags": [
+                    "Media"
+                ],
+                "x-openapi-router-controller": "api.media.model"
+            },
+            "put": {
+                "operationId": "update_medium",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/paths/~1media/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/Medium"
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1media~1source~1%7Bid%7D/get/responses/200/content/application~1json/schema/items",
+                                    "x-miro": "./schemas.yaml#/components/schemas/Media"
+                                }
+                            }
+                        },
+                        "description": "Return Media"
+                    },
+                    "404": {
+                        "description": "Media does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Put a single file",
+                "tags": [
+                    "Media"
+                ],
+                "x-openapi-router-controller": "api.media.model"
+            }
+        },
+        "/projects": {
+            "get": {
+                "operationId": "get_projects",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "properties": {
+                                                    "created_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "maxLength": 100,
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "info": {
+                                                        "description": "A JSON field to extend a model with extra info",
+                                                        "type": "object"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "properties": {
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "owned_by": {
+                                                "description": "The ID of the user that this project is owned by",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "description"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Return projects"
+                    }
+                },
+                "summary": "Get all projects",
+                "tags": [
+                    "Projects"
+                ],
+                "x-openapi-router-controller": "api.project.model"
+            },
+            "post": {
+                "operationId": "create_project",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "created_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "maxLength": 100,
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "info": {
+                                                "description": "A JSON field to extend a model with extra info",
+                                                "type": "object"
+                                            },
+                                            "updated_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "properties": {
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "owned_by": {
+                                        "description": "The ID of the user that this project is owned by",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "description"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "New project created"
+                    },
+                    "409": {
+                        "description": "Project already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Post a project",
+                "tags": [
+                    "Projects"
+                ],
+                "x-openapi-router-controller": "api.project.model"
+            }
+        },
+        "/projects/count": {
+            "get": {
+                "operationId": "get_project_count",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Row count"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get row count of query",
+                "tags": [
+                    "Projects"
+                ],
+                "x-openapi-router-controller": "api.project.model"
+            }
+        },
+        "/projects/{id}": {
+            "delete": {
+                "operationId": "delete_project",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Project was deleted"
+                    },
+                    "404": {
+                        "description": "Project does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Remove a project",
+                "tags": [
+                    "Projects"
+                ],
+                "x-openapi-router-controller": "api.project.model"
+            },
+            "get": {
+                "operationId": "get_project",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return project"
+                    },
+                    "404": {
+                        "description": "Project does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Get a single project",
+                "tags": [
+                    "Projects"
+                ],
+                "x-openapi-router-controller": "api.project.model"
+            },
+            "put": {
+                "operationId": "update_project",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/paths/~1projects/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/Project"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Project modified"
+                    },
+                    "201": {
+                        "description": "New project created"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Modify/Create a project",
+                "tags": [
+                    "Projects"
+                ],
+                "x-openapi-router-controller": "api.project.model"
+            }
+        },
+        "/submission/{id}": {
+            "delete": {
+                "operationId": "delete_submission",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Submission was deleted"
+                    },
+                    "404": {
+                        "description": "Submission does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Remove a submission",
+                "tags": [
+                    "Submissions"
+                ],
+                "x-openapi-router-controller": "api.submission.model"
+            },
+            "get": {
+                "operationId": "get_submission",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "properties": {
+                                                "created_at": {
+                                                    "description": "Creation time",
+                                                    "example": "2015-07-07T15:49:51.230+02:00",
+                                                    "format": "date-time",
+                                                    "readOnly": true,
+                                                    "type": "string"
+                                                },
+                                                "id": {
+                                                    "maxLength": 100,
+                                                    "readOnly": true,
+                                                    "type": "string"
+                                                },
+                                                "info": {
+                                                    "description": "A JSON field to extend a model with extra info",
+                                                    "type": "object"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Creation time",
+                                                    "example": "2015-07-07T15:49:51.230+02:00",
+                                                    "format": "date-time",
+                                                    "readOnly": true,
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ],
+                                    "properties": {
+                                        "content": {
+                                            "type": "object"
+                                        },
+                                        "task_id": {
+                                            "type": "string"
+                                        },
+                                        "user_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "task_id",
+                                        "user_id"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Return submission"
+                    },
+                    "404": {
+                        "description": "Submission does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get a single submission",
+                "tags": [
+                    "Submissions"
+                ],
+                "x-openapi-router-controller": "api.submission.model"
+            },
+            "put": {
+                "operationId": "update_submission",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "created_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "maxLength": 100,
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "info": {
+                                                "description": "A JSON field to extend a model with extra info",
+                                                "type": "object"
+                                            },
+                                            "updated_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "type": "object"
+                                    },
+                                    "task_id": {
+                                        "type": "string"
+                                    },
+                                    "user_id": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "task_id",
+                                    "user_id"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Submission modified"
+                    },
+                    "201": {
+                        "description": "New submission created"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Modify/Create a submission",
+                "tags": [
+                    "Submissions"
+                ],
+                "x-openapi-router-controller": "api.submission.model"
+            }
+        },
+        "/submissions": {
+            "get": {
+                "operationId": "get_submissions",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/paths/~1submission~1%7Bid%7D/get/responses/200/content/application~1json/schema",
+                                        "x-miro": "./schemas.yaml#/components/schemas/Submission"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "List of submissions"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get a single submission",
+                "tags": [
+                    "Submissions"
+                ],
+                "x-openapi-router-controller": "api.submission.model"
+            },
+            "post": {
+                "operationId": "create_submission",
+                "requestBody": {
+                    "$ref": "#/paths/~1submission~1%7Bid%7D/put/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/Submission"
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1submission~1%7Bid%7D/get/responses/200/content/application~1json/schema",
+                                    "x-miro": "./schemas.yaml#/components/schemas/Submission"
+                                }
+                            }
+                        },
+                        "description": "Submission created"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Post a submission",
+                "tags": [
+                    "Submissions"
+                ],
+                "x-openapi-router-controller": "api.submission.model"
+            }
+        },
+        "/submissions/count": {
+            "get": {
+                "operationId": "get_submission_count",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Row count"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get row count of query",
+                "tags": [
+                    "Submissions"
+                ],
+                "x-openapi-router-controller": "api.submission.model"
+            }
+        },
+        "/tasks": {
+            "delete": {
+                "operationId": "delete_tasks",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "type": "array"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Tasks were deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Delete an array of tasks",
+                "tags": [
+                    "Tasks"
+                ],
+                "x-openapi-router-controller": "api.task.custom"
+            },
+            "get": {
+                "operationId": "get_tasks",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "schema": {
+                            "default": 0,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "properties": {
+                                                    "created_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "maxLength": 100,
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "info": {
+                                                        "description": "A JSON field to extend a model with extra info",
+                                                        "type": "object"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "properties": {
+                                            "activity_id": {
+                                                "type": "string"
+                                            },
+                                            "content": {
+                                                "type": "object"
+                                            },
+                                            "required": {
+                                                "type": "boolean"
+                                            },
+                                            "sequence": {
+                                                "type": "integer"
+                                            },
+                                            "title": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "activity_id",
+                                            "sequence",
+                                            "title",
+                                            "content",
+                                            "required"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "List of tasks"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Get a list of tasks",
+                "tags": [
+                    "Tasks"
+                ],
+                "x-openapi-router-controller": "api.task.model"
+            },
+            "post": {
+                "operationId": "create_tasks",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "created_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "maxLength": 100,
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "info": {
+                                                "description": "A JSON field to extend a model with extra info",
+                                                "type": "object"
+                                            },
+                                            "updated_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "properties": {
+                                    "activity_id": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "object"
+                                    },
+                                    "required": {
+                                        "type": "boolean"
+                                    },
+                                    "sequence": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "activity_id",
+                                    "sequence",
+                                    "title",
+                                    "content",
+                                    "required"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/paths/~1tasks/get/responses/200/content/application~1json/schema/items",
+                                        "x-miro": "./schemas.yaml#/components/schemas/Task"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Task created"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Post an array of tasks",
+                "tags": [
+                    "Tasks"
+                ],
+                "x-openapi-router-controller": "api.task.model"
+            }
+        },
+        "/tasks/count": {
+            "get": {
+                "operationId": "get_task_count",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Row count"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Get row count of query",
+                "tags": [
+                    "Tasks"
+                ],
+                "x-openapi-router-controller": "api.task.model"
+            }
+        },
+        "/tasks/{id}": {
+            "delete": {
+                "operationId": "delete_task",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Task was deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Delete a single tasks",
+                "tags": [
+                    "Tasks"
+                ],
+                "x-openapi-router-controller": "api.task.model"
+            },
+            "get": {
+                "operationId": "get_task",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1tasks/get/responses/200/content/application~1json/schema/items",
+                                    "x-miro": "./schemas.yaml#/components/schemas/Task"
+                                }
+                            }
+                        },
+                        "description": "Return task"
+                    },
+                    "404": {
+                        "description": "Task does not exist"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Get a single task",
+                "tags": [
+                    "Tasks"
+                ],
+                "x-openapi-router-controller": "api.task.model"
+            },
+            "put": {
+                "operationId": "update_task",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/paths/~1tasks/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/Task"
+                },
+                "responses": {
+                    "201": {
+                        "description": "New task created"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    }
+                ],
+                "summary": "Modify/Create a task",
+                "tags": [
+                    "Tasks"
+                ],
+                "x-openapi-router-controller": "api.task.model"
+            }
+        },
+        "/users": {
+            "get": {
+                "operationId": "get_users",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search_term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "default": 20,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "properties": {
+                                                    "created_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "maxLength": 100,
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    },
+                                                    "info": {
+                                                        "description": "A JSON field to extend a model with extra info",
+                                                        "type": "object"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Creation time",
+                                                        "example": "2015-07-07T15:49:51.230+02:00",
+                                                        "format": "date-time",
+                                                        "readOnly": true,
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ],
+                                        "properties": {
+                                            "api_key": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "format": "email",
+                                                "type": "string"
+                                            },
+                                            "pwd": {
+                                                "type": "string"
+                                            },
+                                            "username": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "pwd"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Return all users"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.model"
+            }
+        },
+        "/users/authorize": {
+            "post": {
+                "operationId": "generate",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "created_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "maxLength": 100,
+                                                "readOnly": true,
+                                                "type": "string"
+                                            },
+                                            "info": {
+                                                "description": "A JSON field to extend a model with extra info",
+                                                "type": "object"
+                                            },
+                                            "updated_at": {
+                                                "description": "Creation time",
+                                                "example": "2015-07-07T15:49:51.230+02:00",
+                                                "format": "date-time",
+                                                "readOnly": true,
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                ],
+                                "properties": {
+                                    "api_key": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "format": "email",
+                                        "type": "string"
+                                    },
+                                    "pwd": {
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "pwd"
+                                ],
+                                "type": "object"
+                            },
+                            "x-body-name": "user"
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token created"
+                    }
+                },
+                "summary": "Post auth for token response",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.otoken"
+            }
+        },
+        "/users/login": {
+            "post": {
+                "operationId": "login",
+                "requestBody": {
+                    "$ref": "#/paths/~1users~1authorize/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/User"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "401": {
+                        "description": "Incorrect login details"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "summary": "Allow a user to login",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.custom"
+            }
+        },
+        "/users/register": {
+            "post": {
+                "operationId": "create_user",
+                "requestBody": {
+                    "$ref": "#/paths/~1users~1authorize/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/User"
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created user"
+                    },
+                    "409": {
+                        "description": "User exists"
+                    }
+                },
+                "summary": "Registration end point for a user account",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.model"
+            }
+        },
+        "/users/reset": {
+            "get": {
+                "operationId": "reset",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "email",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password reset"
+                    }
+                },
+                "summary": "Reset user password",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.custom"
+            },
+            "post": {
+                "operationId": "verify_reset",
+                "requestBody": {
+                    "$ref": "#/paths/~1users~1authorize/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/User"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verified and reset"
+                    },
+                    "401": {
+                        "description": "Unauthorised user"
+                    }
+                },
+                "summary": "Verify password reset token",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.custom"
+            }
+        },
+        "/users/validate": {
+            "get": {
+                "operationId": "validate",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "key",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "description": "Token info object"
+                    }
+                },
+                "summary": "OAuth2 token info",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.custom"
+            }
+        },
+        "/users/{id}": {
+            "delete": {
+                "operationId": "delete_user",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted"
+                    },
+                    "401": {
+                        "description": "Not authorised"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Delete user (only allowed by the user themselves)",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.model"
+            },
+            "get": {
+                "operationId": "get_user",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/paths/~1users/get/responses/200/content/application~1json/schema/items",
+                                        "x-miro": "./schemas.yaml#/components/schemas/User"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Return users"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Get all users (or those matching an ID)",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.model"
+            },
+            "put": {
+                "operationId": "update_user",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/paths/~1users~1authorize/post/requestBody",
+                    "x-miro": "./bodies.yaml#/components/requestBodies/User"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/paths/~1users/get/responses/200/content/application~1json/schema/items",
+                                    "x-miro": "./schemas.yaml#/components/schemas/User"
+                                }
+                            }
+                        },
+                        "description": "User updated"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Update user details (change password, add details etc)",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.model"
+            }
+        },
+        "/users/{id}/submissions": {
+            "get": {
+                "operationId": "get_subs",
+                "parameters": [
+                    {
+                        "description": "The unique identifer for an Object (i.e. User, Task, Project, Submission etc)",
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "pattern": "^[a-zA-Z0-9-]+$",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/paths/~1submission~1%7Bid%7D/get/responses/200/content/application~1json/schema",
+                                        "x-miro": "./schemas.yaml#/components/schemas/Submission"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "Return submissions"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyHeader": []
+                    },
+                    {
+                        "anonUser": []
+                    }
+                ],
+                "summary": "Get all submissions for a user (or those matching an ID)",
+                "tags": [
+                    "Users"
+                ],
+                "x-openapi-router-controller": "api.user.custom"
+            }
+        }
+    },
+    "servers": [
+        {
+            "description": "Test Server",
+            "url": "http://0.0.0.0:8080/api/v2"
+        },
+        {
+            "description": "Wenker Project Site",
+            "url": "https://wenker.citizenscience.ch/api/v2"
+        },
+        {
+            "description": "Production API Server",
+            "url": "https://api.citizenscience.ch/api/v2"
+        }
+    ]
+}

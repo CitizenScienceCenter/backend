@@ -29,7 +29,7 @@ class Server:
         env.init_app(self.connexion_app.app, env_file=env_loc, verbose_mode=False)
         # print(self.connexion_app.app.config)
 
-        self.connexion_app.add_api(self.connexion_app.app.config["SWAGGER_FILE"], options={'swagger_ui': True})
+        self.connexion_app.add_api(self.connexion_app.app.config["SWAGGER_FILE"], options={'swagger_ui': False})
 
         self.port = int(self.connexion_app.app.config['CC_PORT']) or 8080
         self.debug = bool(self.connexion_app.app.config["DEBUG"]) or False
@@ -57,9 +57,9 @@ class Server:
             response.headers["Access-Control-Allow-Credentials"] = "true"
             return response
 
-        @self.connexion_app.app.teardown_appcontext
-        def shutdown_session(exception=None):
-            orm_handler.db_session.remove()
+        # @self.connexion_app.app.teardown_appcontext
+        # def shutdown_session(exception=None):
+        #     orm_handler.db_session.remove()
 
     def run(self):
         if self.connexion_app.app.config["CC_ENV"] in ["dev", "local", "test", "docker"]:

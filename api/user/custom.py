@@ -8,10 +8,12 @@ import smtplib
 from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 # from flask_sqlalchemy_session import current_session as db_session
-db_session = orm_handler.db_session
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
+from pony.flask import db_session
 
 
+
+@db_session
 def validate(key):
     q = db_session.query(User).filter(User.api_key == key).one_or_none()
     if q:
@@ -19,7 +21,7 @@ def validate(key):
     else:
         return NoContent, 401
 
-
+@db_session
 def login(body):
     logging.info(request)
     q = None
@@ -47,7 +49,7 @@ def logout():
     del session["user"]
     return 200
 
-
+@db_session
 def auth(body):
     user = body
     # TODO create oauth token here and add to table. Just send api key for now
@@ -61,7 +63,7 @@ def auth(body):
     else:
         return NoContent, 404
 
-
+@db_session
 def reset(email):
     conf = current_app.config
     user = (
@@ -94,7 +96,7 @@ def reset(email):
     else:
         return NoContent, 401
 
-
+@db_session
 def get_subs(id=None):
     user = db_session.query(User).filter(User.id == id).one_or_none()
     if user:
@@ -109,7 +111,7 @@ def get_subs(id=None):
     else:
         return NoContent, 401
 
-
+@db_session
 def verify_reset(reset):
     print(reset)
     try:

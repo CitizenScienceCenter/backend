@@ -3,20 +3,23 @@ import uuid
 from datetime import datetime
 from passlib.hash import pbkdf2_sha256
 from flask import session, request, current_app
-from db import orm_handler, User, utils, Submission, Project
 from decorators import access_checks
 import json, smtplib
 import email as emaillib
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from api import model
 # from flask_sqlalchemy_session import current_session as db_session
-db_session = orm_handler.db_session
+from pony.flask import db_session
+from db import *
 
 Model = User
 
 # @access_checks.ensure_model(Model)
+@db_session
 def get_users(limit=100, search_term=None):
     ms, code =  model.get_all(Model, limit, search_term)
+    u = User.select()
+    print(u)
     if len(ms) > 0 and isinstance(ms[0], User):
         return [m.dump() for m in ms][:limit], code
     else:
@@ -29,34 +32,44 @@ def get_user(id=None):
     del user['pwd']
     return user if m is not None else m, code
 
-
+@db_session
 def create_user(body):
     user = body
+    print(body)
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     if ("username" in user and len(user["username"]) == 0) or not "username" in user and "email" in user:
         user["username"] = user["email"].split("@")[0]
-    print(user)
-    created_user, code = model.post(Model, user)
-    if 'X-Api-Key' in request.headers and request.headers['X-Api-Key'] is not None:
-        from_anon = request.headers['X-Api-Key']
-        anon_user = db_session.query(User).filter(User.api_key == from_anon).one_or_none()
-        if anon_user:
-            print('deleting user')
-            db_session.execute("update submissions set user_id='{1}' where user_id='{0}'".format(anon_user.id, created_user.id))
-            db_session.query(User).filter(User.id == anon_user.id).delete()
-            db_session.commit()
-    if code == 201:
-        if (created_user.info is not None and created_user.info['anonymous'] is False):
-            user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
-            p = Project(**user_project)
-            created_user.member_of.append(p)
-            db_session.add(created_user)
-            db_session.commit()
-            db_session.refresh(created_user)
-        return created_user.dump(), code
+
+    u = User.get(username=user['username'], email=user['email'])
+    if u is not None:
+        return {'msg': 'User exists', 'code': 409}, 409
     else:
-        return created_user, 409
+        try:
+            u = User(**user)
+            return {'msg': 'User created', 'user': u.to_dict()}, 200    
+        except:
+            return {'msg': 'Username or email already exists', 'code': 409}, 409
+    # created_user, code = model.post(Model, user)
+    # if 'X-Api-Key' in request.headers and request.headers['X-Api-Key'] is not None:
+    #     from_anon = request.headers['X-Api-Key']
+    #     anon = User.select(lambda u: u.api_key == from_anon).first()
+    #     if anon:
+    #         print('deleting user')
+    #         db_session.execute("update submissions set user_id='{1}' where user_id='{0}'".format(anon_user.id, created_user.id))
+    #         User.select(lambda u: u.id == anon_user.id).delete()
+    #         db_session.commit()
+    # if code == 201:
+    #     if (created_user.info is not None and created_user.info['anonymous'] is False):
+    #         user_project = {'name': created_user.username, 'description': 'Default space for {}'.format(created_user.username), 'active': True, 'owned_by': created_user.id}
+    #         p = Project(**user_project)
+    #         created_user.member_of.append(p)
+    #         db_session.add(created_user)
+    #         db_session.commit()
+    #         db_session.refresh(created_user)
+    #     return created_user.dump(), code
+    # else:
+    #     return created_user, 409
 
 
 
@@ -67,6 +80,7 @@ def update_user(id, body):
 
 
 @access_checks.ensure_owner(Model)
+@db_session
 def delete_user(id):
     user = utils.get_user(request, db_session)
     user_projects = db_session.query(Project).filter(Project.owned_by == id).all()

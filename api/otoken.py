@@ -10,9 +10,6 @@ from decorators import access_checks
 
 from pony.flask import db_session
 
-# db_session = orm_handler.db_session
-# from flask_sqlalchemy_session import current_session as db_session
-
 @db_session
 def generate(token):
     o_token = OToken(**token)

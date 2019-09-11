@@ -11,10 +11,11 @@ from decorators import access_checks
 
 # from flask_sqlalchemy_session import current_session as db_session
 
-db_session = orm_handler.db_session
+from pony.flask import db_session
 js = jtos.JTOS()
 
 @access_checks.ensure_model
+@db_session
 def get_all(model, limit=25, search_term=None):
     if search_term:
         try:
@@ -35,6 +36,7 @@ def get_all(model, limit=25, search_term=None):
     # db_session().close()
     return q, 200
 
+@db_session
 def get_count(model, search_term=None):
     st = prison.loads(search_term)
     count_query = st.copy()
@@ -48,18 +50,19 @@ def get_count(model, search_term=None):
     # db_session().close()
     return count[0], 200
 
+@db_session
 def get_one(model, id=None):
     m = db_session.query(model).filter(model.id == id).one_or_none()
     # db_session().close()
     return (m, 200) if m is not None else (m, 404)
 
-
+@db_session
 def get_file(model, id=None):
     m = db_session.query(model).filter(model.id == id).one_or_none()
     # db_session().close()
     return send_file(m.path) if m is not None else m, 404
 
-
+@db_session
 def post(model, object):
     p = model(**object)
     print(p)
@@ -72,7 +75,7 @@ def post(model, object):
         print(ie)
         abort(409)
 
-
+@db_session
 def put(model, id, object):
     p = db_session.query(model).filter(model.id == id).one_or_none()
     print(p.dump())
@@ -91,7 +94,7 @@ def put(model, id, object):
     # db_session().close()
     return p, (200 if p is not None else 201)
 
-
+@db_session
 def delete(model, id):
     d = db_session.query(model).filter(model.id == id).one_or_none()
     if d is not None:
