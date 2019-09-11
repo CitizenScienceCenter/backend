@@ -6,10 +6,8 @@ import prison
 
 # from flask_sqlalchemy_session import current_session as db_session
 
-db_session = orm_handler.db_session
-db_tables = orm_handler.Base.metadata.tables.keys()
 
-
+@db_session
 def ensure_key(token, required_scopes=None):
     key = token
     user_key = db_session.query(User).filter(User.api_key==key).one_or_none()
@@ -19,9 +17,11 @@ def ensure_key(token, required_scopes=None):
     else:
         return None
 
+@db_session
 def ensure_anon_key(token, required_scopes=None):
     return ensure_key(token, required_scopes)
 
+@db_session
 def ensure_model(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
@@ -41,7 +41,7 @@ def ensure_model(func):
 
     return decorated_function
 
-
+@db_session
 class ensure_owner(object):
     def __init__(self, model):
         self.model = model

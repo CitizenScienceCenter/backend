@@ -11,10 +11,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from flask import Flask, current_app
 
+from pony.orm import *
+
 import datetime
 from db.cs_base import CSBase
 from dotenv import load_dotenv
 import os
+
+
 
 Base = declarative_base(cls=CSBase)
 load_dotenv()
