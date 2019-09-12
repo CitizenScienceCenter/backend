@@ -11,6 +11,12 @@ components:
           x-body-name: user
           schema:
             $ref: './schemas.yaml#/components/schemas/User'
+    UserUpdate:
+      content:
+        application/json:
+          x-body-name: user
+          schema:
+            $ref: './schemas.yaml#/components/schemas/UserUpdate'
     Comment:
       content:
         application/json:

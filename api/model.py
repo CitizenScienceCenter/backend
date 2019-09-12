@@ -5,7 +5,7 @@ from connexion import NoContent
 from flask import send_file, abort
 from jtos import jtos
 from sqlalchemy.exc import IntegrityError
-
+from pony.orm import *
 from db import orm_handler
 from decorators import access_checks
 
@@ -77,22 +77,17 @@ def post(model, object):
 
 @db_session
 def put(model, id, object):
-    p = db_session.query(model).filter(model.id == id).one_or_none()
-    print(p.dump())
+    try:
+        p = model[id]
+    except core.ObjectNotFound as o:
+        return {'msg': 'Requested object not found', 'code': 404}, 404
     if "id" in object:
         del object["id"]
-    if p is not None:
-        logging.info("Updating %s %s..", model, id)
-        for k in object.keys():
-            setattr(p, k, object[k])
-    else:
-        logging.info("Creating object %s..", id)
-        p = model(**object)
-        db_session.add(p)
-    db_session.commit()
-    print(p.id)
-    # db_session().close()
-    return p, (200 if p is not None else 201)
+    logging.info("Updating %s %s..", model, id)
+    for k in object.keys():
+        setattr(p, k, object[k])
+    commit()
+    return {'msg': 'User updated', 'code': 200, 'user': p.to_dict(exclude='pwd')}, 200
 
 @db_session
 def delete(model, id):

@@ -1549,7 +1549,7 @@ paths:
             pattern: '^[a-zA-Z0-9-]+$'
       requestBody:
         $ref: '#/paths/~1users~1authorize/post/requestBody'
-        x-miro: './bodies.yaml#/components/requestBodies/User'
+        x-miro: './bodies.yaml#/components/requestBodies/UserUpdate'
       responses:
         '200':
           description: User updated

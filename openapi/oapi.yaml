@@ -1074,7 +1074,7 @@ paths:
             type: string
             pattern: ^[a-zA-Z0-9-]+$
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/User"
+        $ref: "./bodies.yaml#/components/requestBodies/UserUpdate"
       responses:
         "200":
           description: User updated

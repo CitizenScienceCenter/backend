@@ -2184,9 +2184,6 @@
                                         "type": "string"
                                     }
                                 },
-                                "required": [
-                                    "pwd"
-                                ],
                                 "type": "object"
                             },
                             "x-body-name": "user"
@@ -2389,7 +2386,7 @@
                                 "schema": {
                                     "items": {
                                         "$ref": "#/paths/~1users/get/responses/200/content/application~1json/schema/items",
-                                        "x-miro": "./schemas.yaml#/components/schemas/User"
+                                        // "x-miro": "./schemas.yaml#/components/schemas/User"
                                     },
                                     "type": "array"
                                 }
@@ -2431,7 +2428,7 @@
                 ],
                 "requestBody": {
                     "$ref": "#/paths/~1users~1authorize/post/requestBody",
-                    "x-miro": "./bodies.yaml#/components/requestBodies/User"
+                    // "x-miro": "./bodies.yaml#/components/requestBodies/UserUpdate"
                 },
                 "responses": {
                     "200": {
@@ -2439,7 +2436,7 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/paths/~1users/get/responses/200/content/application~1json/schema/items",
-                                    "x-miro": "./schemas.yaml#/components/schemas/User"
+                                    // "x-miro": "./schemas.yaml#/components/schemas/User"
                                 }
                             }
                         },

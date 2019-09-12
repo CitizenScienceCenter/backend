@@ -43,6 +43,20 @@ components:
           type: string
         api_key:
           type: string
+    UserUpdate:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        pwd:
+          type: string
+        api_key:
+          type: string
     Media:
       type: object
       allOf:

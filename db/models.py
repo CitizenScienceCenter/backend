@@ -17,6 +17,7 @@ class User(db.Entity):
     projects = Set('Project')
     submissions = Set('Submission')
     tokens = Set('OToken')
+    comments = Set('Comment')
 
 class OToken(db.Entity):
     _table_ = 'oauth_tokens'
@@ -88,6 +89,7 @@ class Comment(db.Entity):
     parent = Optional('Comment')
     children = Set('Comment')
     text = Required(str)
+    user_id = Required(User)
 
 class Media(db.Entity):
     _table_ = 'media'

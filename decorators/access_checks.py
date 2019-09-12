@@ -3,6 +3,7 @@ from connexion import NoContent
 from functools import wraps
 from db import *
 import prison
+import uuid
 
 # from flask_sqlalchemy_session import current_session as db_session
 
@@ -41,6 +42,45 @@ def ensure_model(func):
             return func(*args, **kwargs)
 
     return decorated_function
+
+# @db_session
+# def ensure_user(func):
+#     @wraps(func)
+#     def decorated(*args, **kwargs):
+#         print(request)
+#         if 'X-Api-Key' in request.headers:
+#             key = uuid.UUID(flask.request.headers['X-Api-Key'])
+#             u = User.select(lambda u: u.api_key == key).first()
+#             if u is not None:
+#                 return func(*args, **kwargs)
+#             else:
+#                 abort(404)
+#         else:
+#             abort(401)
+#     return decorated
+
+@db_session
+class ensure_user(object):
+    def __init__(self, model):
+        self.model = model
+
+    def __call__(self, func):
+        @wraps(func)
+        def decorated_function(*args, **kwargs):
+            print(request.path)
+            user_id = int(request.path.split('/')[-1])
+            if 'X-Api-Key' in request.headers:
+                key = uuid.UUID(request.headers['X-Api-Key'])
+                u = None
+                try:
+                    u = User[user_id]
+                    if u.api_key == key:
+                        return func(*args, **kwargs)
+                    else:
+                        abort(401)
+                except core.ObjectNotFound:
+                    abort(404)
+        return decorated_function
 
 @db_session
 class ensure_owner(object):
@@ -88,23 +128,24 @@ class ensure_owner(object):
                     #     return NoContent, 404
                 elif model is User:
                     query_field = model.id
-                    owner = db_session.query(User).filter(User.api_key == key).one_or_none()
+                    key = uuid.UUID(key)
+                    owner = User.select(lambda u: u.api_key == key).first()
                     if owner is None:
                         abort(404)
                     owned_id = owner.id
                 else:
                     query_field = model.user_id
                 if owned_id is not None:
-                    obj = (
-                        db_session.query(model)
-                        .filter(query_field == owned_id)
-                        .filter(model.id == model_id)
-                        .one_or_none()
-                    )
-                    if obj is not None:
-                        return func(*args, **kwargs)
-                    else:
-                        abort(401)
+                    # obj = (
+                    #     db_session.query(model)
+                    #     .filter(query_field == owned_id)
+                    #     .filter(model.id == model_id)
+                    #     .one_or_none()
+                    # )
+                    # if obj is not None:
+                    return func(*args, **kwargs)
+                    # else:
+                    #     abort(401)
                 else:
                     abort(401)
             else:

@@ -1,6 +1,8 @@
 import connexion
-from db import orm_handler, Comment, utils
-from flask import request
+from db.models import Comment
+from db import utils
+from flask import request, abort
+from pony.orm import *
 import logging
 from api import model
 
@@ -9,20 +11,22 @@ from api import model
 Model = Comment
 
 def get_comments(limit=100, search_term=None):
-    ms, code = model.get_all(Model, limit, search_term)
-    if len(ms) > 0 and isinstance(ms[0], Comment):
-        return [m.dump() for m in ms][:limit], code
-    else:
-        return [dict(m) for m in ms][:limit], code
+    # TODO handle jtos here
+    c = Comments.search().limit(limit)
+    return [c.to_dict() for c in comments][:limit], 200
 
 
 def get_comment(cid=None):
-    m, code = model.get_one(Model, cid)
-    return m.dump() if m is not None else m, code
+    try:
+        c = Comment[id]
+    except core.ObjectNotFound:
+        abort(401)
+    return c.to_dict(), 200
 
 def create_comment(body):
-    m, code = model.post(Model, body)
-    return m.dump(), code
+    c = Comment(**body)
+    commit()
+    return c.to_dict(), 201
 
 def update_comment(id, body):
     m, code = model.put(Model, id, body)
