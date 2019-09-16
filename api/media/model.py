@@ -1,10 +1,9 @@
 import connexion
 from connexion import NoContent
-from db import orm_handler, utils, Media
+from db import utils, Media
 from decorators import access_checks
 from api import model
-
-# db_session = orm_handler.db_session()
+from pony.flask import db_session
 
 Model = Media
 

@@ -1,20 +1,18 @@
 import connexion
 from connexion import NoContent
-from db import orm_handler, Task, Submission, Media, utils
+from db import Task, Submission, Media, utils
 from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import joinedload
 from flask import request
 import sqlalchemy
 import logging
 from sqlalchemy.dialects import postgresql
-
-# from flask_sqlalchemy_session import current_session as db_session
-
-db_session = orm_handler.db_session
+from pony.flask import db_session
 
 
 def project_tasks(id, limit=20, offset=0):
     print(id, limit, offset)
+    tasks = Project[id]
     task = (
         db_session.query(Task)
         .filter(Task.project_id == id)
@@ -23,19 +21,6 @@ def project_tasks(id, limit=20, offset=0):
         .all()
     )
     return [p.dump() for p in task]
-
-
-def get_region(pid, region):
-    user = utils.get_user(request, db_session)
-    task = (
-        db_session.query(Task, Media)
-        .outerjoin(Submission, Task.id == Submission.task_id)
-        .join(Media, Media.source_id == Task.id)
-        .filter(Task.info["SchoolState"].astext == user.info["region"])
-        .filter(Submission.user_id != user.id)
-        .filter(Task.project_id == id)
-    )
-    return
 
 
 def delete_tasks(tasks):

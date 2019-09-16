@@ -1,14 +1,14 @@
 import connexion
 import logging
 from connexion import NoContent
-from db import orm_handler, Media
+from db import Media
 from werkzeug.utils import secure_filename
 import uuid
 from flask import send_file
 import fleep
 from pathlib import Path
-# from flask_sqlalchemy_session import current_session as db_session
-db_session = orm_handler.db_session
+
+from pony.flask import db_session
 
 
 def get_for_source(id=None, limit=20):

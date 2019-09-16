@@ -3,11 +3,11 @@ from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
 from flask import session, request, current_app
-from db import orm_handler, User, utils, Submission
+from db import User, utils, Submission
 import smtplib
 from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
-# from flask_sqlalchemy_session import current_session as db_session
+
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
 from pony.flask import db_session
 
@@ -98,7 +98,7 @@ def reset(email):
 
 @db_session
 def get_subs(id=None):
-    user = db_session.query(User).filter(User.id == id).one_or_none()
+    user = User[id].first()
     if user:
         submissions = (
             db_session.query(Submission)

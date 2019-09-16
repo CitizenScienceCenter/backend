@@ -6,35 +6,43 @@ from flask import send_file, abort
 from jtos import jtos
 from sqlalchemy.exc import IntegrityError
 from pony.orm import *
-from db import orm_handler
+from db import *
 from decorators import access_checks
 
-# from flask_sqlalchemy_session import current_session as db_session
+from middleware.response_handler import ResponseHandler
 
 from pony.flask import db_session
 js = jtos.JTOS()
 
-@access_checks.ensure_model
+
 @db_session
-def get_all(model, limit=25, search_term=None):
+def get_all(model, limit, offset, search_term=None):
+    r = ResponseHandler(200, '')
+    r.set_val('page', {
+        'limit': limit,
+        'offset': offset
+    })
     if search_term:
         try:
-            print(search_term)
             st = prison.loads(search_term)
+            if 'limit' not in st.keys():
+                st['limit'] = 20
+            if 'offset' not in st.keys():
+                st['offset'] = 0
             q_stmt = js.parse_object(st)
             print("SQL: ", q_stmt)
-            res = db_session.execute(q_stmt)
-            result_set = res.fetchall()
-            records = result_set
-            # records = [model(**r) for r in result_set]
-            return [p for p in records][:limit], 200
+            q = model.select_by_sql(q_stmt)
+            r.set_body(q)
         except Exception as e:
             # TODO handle parsing error
+            print(e)
             print("Search failed", e)
             abort(500)
-    q = db_session.query(model).all()
-    # db_session().close()
-    return q, 200
+    else:
+        q = select(a for a in model).limit(limit, offset=offset)
+        q = [o.to_dict() for o in q]
+        r.set_body(q)
+    return r
 
 @db_session
 def get_count(model, search_term=None):
@@ -47,55 +55,60 @@ def get_count(model, search_term=None):
         del count_query['offset']
     count_stmt = js.parse_object(count_query)
     count = db_session.execute(count_stmt).fetchone()
-    # db_session().close()
     return count[0], 200
 
 @db_session
 def get_one(model, id=None):
-    m = db_session.query(model).filter(model.id == id).one_or_none()
-    # db_session().close()
-    return (m, 200) if m is not None else (m, 404)
+    try:
+        m = model[id]
+    except core.ObjectNotFound:
+        abort(404)
+    return ResponseHandler(200, 'Object found', body=m.to_dict())
 
 @db_session
 def get_file(model, id=None):
-    m = db_session.query(model).filter(model.id == id).one_or_none()
-    # db_session().close()
+    m = model[id]
     return send_file(m.path) if m is not None else m, 404
 
 @db_session
 def post(model, object):
     p = model(**object)
-    print(p)
     try:
-        db_session.add(p)
-        db_session.commit()
-        print(p.id)
-        return p, 201
-    except IntegrityError as ie:
-        print(ie)
+        commit()
+        obj = model.__name__.lower()
+        # use model.__name__.lower() for class name
+        return ResponseHandler(201, '{} created'.format(obj), body=p.to_dict()), p
+    except core.TransactionIntegrityError as e:
+        print(e)
         abort(409)
+    except Exception as e:
+        print(e)
+        abort(500)
 
 @db_session
+@access_checks.ensure_owner
 def put(model, id, object):
     try:
         p = model[id]
     except core.ObjectNotFound as o:
-        return {'msg': 'Requested object not found', 'code': 404}, 404
+        abort(404)
+        # return {'msg': 'Requested object not found', 'code': 404}, 404
     if "id" in object:
         del object["id"]
     logging.info("Updating %s %s..", model, id)
     for k in object.keys():
         setattr(p, k, object[k])
     commit()
-    return {'msg': 'User updated', 'code': 200, 'user': p.to_dict(exclude='pwd')}, 200
+    obj = model.__name__.lower()
+    return ResponseHandler(201, '{} updated'.format(obj), body=p.to_dict()), p
 
 @db_session
+@access_checks.ensure_owner
 def delete(model, id):
-    d = db_session.query(model).filter(model.id == id).one_or_none()
-    if d is not None:
-        logging.info("Deleting %s %s..", model, id)
-        db_session.query(model).filter(model.id == id).delete()
-        db_session.commit()
-        return d.dump(), 200
-    else:
-        abort(404)
+    d = model[id].delete()
+    try:
+        commit()
+    except Exception as e:
+        abort(500)
+    obj = model.__name__.lower()
+    return ResponseHandler(200, '{} deleted'.format(obj))

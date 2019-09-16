@@ -3,7 +3,7 @@ info:
   title: CCCS
   version: 0.2.1
 servers:
-  - url: 'http://0.0.0.0:8080/api/v2'
+  - url: 'http://localhost:8080/api/v2'
     description: Test Server
   - url: 'https://api-staging.citizenscience.ch/api/v2'
     description: Staging API Server
@@ -27,6 +27,12 @@ paths:
             type: integer
             minimum: 0
             default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Return Activities
@@ -685,6 +691,12 @@ paths:
             type: integer
             minimum: 0
             default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Return projects

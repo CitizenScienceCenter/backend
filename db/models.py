@@ -4,8 +4,10 @@ from datetime import datetime
 
 db = Database()
 
+
 class User(db.Entity):
     _table_ = 'users'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
@@ -15,12 +17,14 @@ class User(db.Entity):
     api_key = Required(uuid.UUID, default=uuid.uuid4)
     confirmed = Required(bool, default=False)
     projects = Set('Project')
+    owned_projects = Set('Project')
     submissions = Set('Submission')
     tokens = Set('OToken')
     comments = Set('Comment')
 
 class OToken(db.Entity):
     _table_ = 'oauth_tokens'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
@@ -31,6 +35,7 @@ class OToken(db.Entity):
 
 class Project(db.Entity):
     _table_ = 'projects'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
@@ -38,12 +43,14 @@ class Project(db.Entity):
     description = Required(str)
     active = Required(bool, default=False)
     activities = Set('Activity')
+    owned_by = Required(User, reverse='owned_projects')
     members = Set(User)
     media = Set('Media')
     tokens = Set(OToken)
 
 class Activity(db.Entity):
     _table_ = 'activities'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
@@ -57,6 +64,7 @@ class Activity(db.Entity):
 
 class Task(db.Entity):
     _table_ = 'tasks'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
@@ -71,6 +79,7 @@ class Task(db.Entity):
 
 class Submission(db.Entity):
     _table_ = 'submissions'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
@@ -82,6 +91,7 @@ class Submission(db.Entity):
 
 class Comment(db.Entity):
     _table_ = 'comments'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
@@ -93,6 +103,7 @@ class Comment(db.Entity):
 
 class Media(db.Entity):
     _table_ = 'media'
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})

@@ -5,82 +5,45 @@ from db import *
 import prison
 import uuid
 
-# from flask_sqlalchemy_session import current_session as db_session
+db_tables = ['activities', 'users', 'projects', 'comments', 'submissions', 'media', 'tasks']
 
 
 @db_session
 def ensure_key(token, required_scopes=None):
-    return {'sub': 'admin'}
-    # key = token
-    # user_key = db_session.query(User).filter(User.api_key==key).one_or_none()
-    # print(dir(user_key))
-    # if user_key is not None:
-    #     return dict(sub=user_key.username)
-    # else:
-    #     return None
+    u = User.get(api_key=token)
+    if u is not None:
+        return {'sub': 'admin'}
+    else:
+        abort(401)
 
 @db_session
 def ensure_anon_key(token, required_scopes=None):
     return ensure_key(token, required_scopes)
 
 @db_session
-def ensure_model(func):
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        if "search_term" in request.args:
-            search = prison.loads(request.args["search_term"])
-            allowed_table = True
-            for t in search["select"]["tables"]:
-                if t.lower().split(" ")[0] not in db_tables:
-                    allowed_table = False
-                    break
-            print(allowed_table)
-            if not allowed_table:
-                abort(401)
-            return func(*args, **kwargs)
-        else:
-            return func(*args, **kwargs)
-
-    return decorated_function
-
-# @db_session
-# def ensure_user(func):
-#     @wraps(func)
-#     def decorated(*args, **kwargs):
-#         print(request)
-#         if 'X-Api-Key' in request.headers:
-#             key = uuid.UUID(flask.request.headers['X-Api-Key'])
-#             u = User.select(lambda u: u.api_key == key).first()
-#             if u is not None:
-#                 return func(*args, **kwargs)
-#             else:
-#                 abort(404)
-#         else:
-#             abort(401)
-#     return decorated
-
-@db_session
-class ensure_user(object):
+class ensure_model(object):
     def __init__(self, model):
         self.model = model
 
     def __call__(self, func):
         @wraps(func)
         def decorated_function(*args, **kwargs):
-            print(request.path)
-            user_id = int(request.path.split('/')[-1])
-            if 'X-Api-Key' in request.headers:
-                key = uuid.UUID(request.headers['X-Api-Key'])
-                u = None
-                try:
-                    u = User[user_id]
-                    if u.api_key == key:
-                        return func(*args, **kwargs)
-                    else:
-                        abort(401)
-                except core.ObjectNotFound:
-                    abort(404)
+            if "search_term" in request.args:
+                search = prison.loads(request.args["search_term"])
+                allowed_table = True
+                for t in search["select"]["tables"]:
+                    if t.lower().split(" ")[0] not in db_tables:
+                        allowed_table = False
+                        break
+                print(allowed_table)
+                if not allowed_table:
+                    abort(401)
+                return func(*args, **kwargs)
+            else:
+                return func(*args, **kwargs)
         return decorated_function
+
+
 
 @db_session
 class ensure_owner(object):
@@ -109,7 +72,9 @@ class ensure_owner(object):
                         abort(401)
                     owned_id = owner.id
                 elif model is Activity:
+                    print('ACTIVITY')
                     return func(*args, **kwargs)
+                    # return func(*args, **kwargs)
                     # query_field = model.part_of
                     # act = (
                     #     db_session.query(model)
@@ -129,9 +94,10 @@ class ensure_owner(object):
                 elif model is User:
                     query_field = model.id
                     key = uuid.UUID(key)
-                    owner = User.select(lambda u: u.api_key == key).first()
-                    if owner is None:
-                        abort(404)
+                    owner = User.get(api_key=key)
+                    requested = User.get(id=model_id)
+                    if owner is None or owner != requested:
+                        abort(401)
                     owned_id = owner.id
                 else:
                     query_field = model.user_id

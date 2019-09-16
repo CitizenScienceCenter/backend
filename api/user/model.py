@@ -12,6 +12,7 @@ from api import model
 from pony.flask import db_session
 from pony.orm import *
 from db import *
+from middleware.response_handler import ResponseHandler
 
 Model = User
 
@@ -19,14 +20,14 @@ allowed = ['username', 'pwd', 'email', 'info']
 
 # @access_checks.ensure_model(Model)
 @db_session
-def get_users(limit=100, search_term=None):
-    return None, 200
+def get_users(limit=100, search_term=None, offset=0):
+    return model.get_all(Model, limit, offset, search_term).send()
 
 @access_checks.ensure_owner(Model)
 def get_user(id=None):
     try:
         u = User[id]
-        return {'msg': 'User found', 'user': u}, 200
+        return ResponseHandler(200, 'User found', body=u.to_dict(exclude='pwd')).send()
     except core.ObjectNotFound:
         abort(404)
 
@@ -38,12 +39,8 @@ def create_user(body):
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     if ("username" in user and len(user["username"]) == 0) or not "username" in user and "email" in user:
         user["username"] = user["email"].split("@")[0]
-    u = User(**user)
-    try:
-        commit()
-        return {'msg': 'User created', 'user': u.to_dict(exclude='pwd')}, 201
-    except core.TransactionIntegrityError as e:
-        return {'msg': 'User already exists', 'code': 401}
+    res, u = model.post(User, user)
+    res.set_body(u.to_dict(exclude='pwd'))
     if 'X-Api-Key' in request.headers and request.headers['X-Api-Key'] is not None:
         from_anon = request.headers['X-Api-Key']
         anon = User.select(lambda u: u.api_key == from_anon).first()
@@ -53,8 +50,8 @@ def create_user(body):
                 s.user_id = u.id
             User.select(lambda u: u.id == anon_user.id).delete()
             db_session.commit()
+    return res.send()
 
-@access_checks.ensure_user(Model)
 def update_user(id, body):
     for k in body.keys():
         if k not in allowed:
@@ -62,14 +59,12 @@ def update_user(id, body):
     if 'pwd' in body:
         body["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(body["pwd"])
     
-    m, code = model.put(Model, id, body)
-    return m, code
+    res, u = model.put(Model, id, body)
+    res.set_body(u.to_dict(exclude='pwd'))
+    return res.send()
 
 
-@access_checks.ensure_user(Model)
 @db_session
 def delete_user(id):
     # user.relationship.clear() will empty all relations
-    user = User[id].delete()
-    commit()
-    return {}, 200
+    return model.delete(User, id).send()

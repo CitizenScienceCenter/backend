@@ -1,18 +1,15 @@
-from db import orm_handler, Submission
+from db import Submission
 from decorators import access_checks
 from flask import request
 from api import model
-# from flask_sqlalchemy_session import current_session as db_session
-# db_session = orm_handler.db_session()
+
+from pony.flask import db_session
 
 Model = Submission
 
-def get_submissions(limit=100, search_term=None):
-    ms, code =  model.get_all(Model, limit, search_term)
-    if len(ms) > 0 and isinstance(ms[0], Submission):
-        return [m.dump() for m in ms][:limit], code
-    else:
-        return [dict(m) for m in ms][:limit], code
+def get_submissions(limit, offset, search_term=None):
+    ms, code =  model.get_all(Model, limit, offset, search_term)
+    return [m.to_dict() for m in ms][:limit], code
 
 def get_submission_count(search_term=None):
     ms, code = model.get_count(Model, search_term)
@@ -31,7 +28,6 @@ def create_submission(body):
 def update_submission(id, body):
     m, code = model.put(Model, id, body)
     return m.dump(), code
-
 
 @access_checks.ensure_owner(Model)
 def delete_submission(id):

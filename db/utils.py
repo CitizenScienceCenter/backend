@@ -9,8 +9,10 @@ import uuid
 def get_user(request, db):
     if 'X-API-KEY' in request.headers:
         key = uuid.UUID(request.headers["X-API-KEY"])
-        try:
-            return User.select(lambda u: u.api_key == key).first()
-        except Exception:
+        u = User.get(api_key=key)
+        if u:
+            return u
+        else:
             abort(404)
+    abort(401)
         
