@@ -8,27 +8,25 @@ from pony.flask import db_session
 Model = Submission
 
 def get_submissions(limit, offset, search_term=None):
-    ms, code =  model.get_all(Model, limit, offset, search_term)
-    return [m.to_dict() for m in ms][:limit], code
+    return model.get_all(Model, limit, offset, search_term).send()
 
 def get_submission_count(search_term=None):
     ms, code = model.get_count(Model, search_term)
     return ms, code
 
 def get_submission(id=None):
-    m, code = model.get_one(Model, id)
-    return m.dump(), code
+    return model.get_one(Model, id).send()
 
 
 def create_submission(body):
-    m, code = model.post(Model, body)
-    return m.dump(), code
+    res, s = model.post(Model, body)
+    return res.send()
 
 
 def update_submission(id, body):
-    m, code = model.put(Model, id, body)
-    return m.dump(), code
+    res, s = model.put(Model, id, body)
+    return res.send()
 
 @access_checks.ensure_owner(Model)
 def delete_submission(id):
-    return model.delete(Model, id)
+    return model.delete(Model, id).send()

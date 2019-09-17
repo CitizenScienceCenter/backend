@@ -9,7 +9,7 @@ from connexion.resolver import RestyResolver
 from flask import session, request, g, render_template, Response
 from flask_cors import CORS
 
-from db import orm_handler
+from db import models
 
 from app import Server
 
@@ -48,7 +48,7 @@ def activity(client, user, project):
             "name": "Test Activity",
             "description": "Test Activity",
             "platform": "Both",
-            "part_of": project["id"],
+            "part_of": project['body']["id"],
         }
     print(act_dict)
     return client.post(
@@ -77,7 +77,7 @@ class TestActivities:
         )
         act = json.loads(lg.data)
         assert lg.status_code == 200
-        assert 'description' in act[0]
+        assert 'description' in act['body'][0]
         assert lg.status_code == 200
 
     @pytest.mark.run(order=15)
@@ -94,19 +94,19 @@ class TestActivities:
     @pytest.mark.run(order=18)
     def test_delete_activity(self, client, user, project, activity):
         pd = client.delete(
-            "/api/v2/activities/{}".format(json.loads(activity.data)["id"])
+            "/api/v2/activities/{}".format(json.loads(activity.data)['body']["id"])
         )
         assert pd.status_code == 401
 
     @pytest.mark.run(order=17)
     def test_delete_activity_and_project(self, client, user, project, activity):
         pd = client.delete(
-            "/api/v2/activities/{}".format(json.loads(activity.data)["id"]),
+            "/api/v2/activities/{}".format(json.loads(activity.data)['body']["id"]),
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert pd.status_code == 200
         gd = client.delete(
-            "/api/v2/projects/{}".format(project["id"]),
+            "/api/v2/projects/{}".format(project['body']["id"]),
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert gd.status_code == 200

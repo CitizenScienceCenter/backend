@@ -15,11 +15,7 @@ from pony.flask import db_session
 
 @db_session
 def validate(key):
-    q = db_session.query(User).filter(User.api_key == key).one_or_none()
-    if q:
-        return q.dump(), 201
-    else:
-        return NoContent, 401
+    return utils.get_user(request, db_session).to_dict(exclude='pwd')
 
 @db_session
 def login(body):
@@ -28,18 +24,17 @@ def login(body):
     user = body
     # print(body)
     if 'email' in user:
-        q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
+        q = User.get(email=user['email'])
         logging.info(q)
     elif 'username' in user:
-        q = db_session.query(User).filter(User.username == user["username"]).one_or_none()
+        q = User.get(username=user['username'])
     else:
         return {'msg': 'Incorrect keys provided'}, 500
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
-            del q.pwd
-            return q.dump(), 200
+            return q.to_dict(exclude='pwd'), 200
         else:
-            return NoContent, 401
+            abort(401)
     else:
         return {'msg': 'User not found'}, 404
 
@@ -66,15 +61,11 @@ def auth(body):
 @db_session
 def reset(email):
     conf = current_app.config
-    user = (
-        db_session.query(User)
-        .filter(User.email != None)
-        .filter(User.email == email)
-        .one_or_none()
-    )
+    user = utils.get_user(request, db_session)
+    # TODO handle domain
     if user:
         tk = ts.sign(user.id)
-        reset = "{}/reset/{}".format("https://snakes.citizenscience.ch", tk.decode("utf-8"))
+        reset = "{}/reset/{}".format("https://citizenscience.ch", tk.decode("utf-8"))
         text = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(
             reset
         )
@@ -99,17 +90,13 @@ def reset(email):
 @db_session
 def get_subs(id=None):
     user = User[id].first()
+    user = User.get(id=id)
     if user:
-        submissions = (
-            db_session.query(Submission)
-            .distinct(Submission.id)
-            .filter(Submission.user_id == id)
-            .all()
-        )
+        submissions = user.submissions
         # TODO paging
-        return [s.dump() for s in submissions]
+        return [s.to_dict() for s in submissions]
     else:
-        return NoContent, 401
+        abort(404)
 
 @db_session
 def verify_reset(reset):

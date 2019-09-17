@@ -11,27 +11,24 @@ Model = Activity
 
 
 def get_activities(limit, offset, search_term=None):
-    ms, code =  model.get_all(Model, limit, offset, search_term)
-    return [m.to_dict() for m in ms][:limit], code
+    return model.get_all(Model, limit, offset, search_term).send()
 
 def get_activity_count(search_term=None):
     ms, code = model.get_count(Model, search_term)
     return ms, code
 
 def get_activity(id=None):
-    a, code = model.get_one(Model, id)
-    return a, code
+    return model.get_one(Model, id).send()
 
 def create_activity(body):
-    a, code = model.post(Model, body)
-    return a.to_dict(), code
+    res, a = model.post(Model, body)
+    return res.send()
 
 @db_session
-@access_checks.ensure_owner(Model)
+@access_checks.ensure_owner(Activity)
 def delete_activity(id):
     # TODO delete tasks first
-    return model.delete(Model, id)
+    return model.delete(Model, id).send()
 
 def update_activity(id, body):
-    return model.put(Model, id, body)
-    return m.dump(), code
+    return model.put(Model, id, body).send()

@@ -45,76 +45,77 @@ class ensure_model(object):
 
 
 
-@db_session
 class ensure_owner(object):
     def __init__(self, model):
         self.model = model
 
     def __call__(self, func):
-        @wraps(func)
+
         def decorated_function(*args, **kwargs):
             print("owner access check")
-            if "X-API-KEY" in request.headers:
-                key = request.headers["X-API-KEY"]
-                model_id = request.view_args["id"]
-                model = self.model
-                query_field = None
-                owned_id = None
-                if model is Project:
-                    query_field = model.owned_by
-                    owner = (
-                        db_session.query(User)
-                        .filter(User.api_key == key)
-                        .filter(User.member_of.any(id=model_id))
-                        .one_or_none()
-                    )
-                    if owner is None:
-                        abort(401)
-                    owned_id = owner.id
-                elif model is Activity:
-                    print('ACTIVITY')
-                    return func(*args, **kwargs)
-                    # return func(*args, **kwargs)
-                    # query_field = model.part_of
-                    # act = (
-                    #     db_session.query(model)
-                    #     .filter(model.id == model_id)
-                    #     .one_or_none()
-                    # )
-                    # if act is not None:
-                    #     print(project.owned_by)
-                    #     account = db_session.query(User).all()
-                    #     print(account)
-                    #     if account:
-                    #         owned_id = project.owned_by
-                    #     else:
-                    #         return NoContent, 401
-                    # else:
-                    #     return NoContent, 404
-                elif model is User:
-                    query_field = model.id
-                    key = uuid.UUID(key)
-                    owner = User.get(api_key=key)
-                    requested = User.get(id=model_id)
-                    if owner is None or owner != requested:
-                        abort(401)
-                    owned_id = owner.id
-                else:
-                    query_field = model.user_id
-                if owned_id is not None:
-                    # obj = (
-                    #     db_session.query(model)
-                    #     .filter(query_field == owned_id)
-                    #     .filter(model.id == model_id)
-                    #     .one_or_none()
-                    # )
-                    # if obj is not None:
-                    return func(*args, **kwargs)
-                    # else:
-                    #     abort(401)
-                else:
-                    abort(401)
-            else:
-                abort(401)
-
+            # if "X-API-KEY" in request.headers:
+            #     key = request.headers["X-API-KEY"]
+            #     owner = User.get(api_key=key)
+            #     model_id = request.view_args["id"]
+            #     model = self.model
+            #     query_field = None
+            #     owned_id = None
+            print(args)
+            print(kwargs)
+            del kwargs['user']
+            del kwargs['token_info']
+            return func(*args, **kwargs)
+            #     with self.session:
+            #         if model is Project:
+            #             query_field = model.owned_by
+            #             p = Project.get(id=model_id, owned_by=owner.id)
+            #             if p is None:
+            #                 abort(401)
+            #             owned_id = owner.id
+            #         elif model is Activity:
+            #             print('ACTIVITY')
+            #             owned_id = owner.id
+            #             return func(*args)
+            #             # return func(*args, **kwargs)
+            #             # query_field = model.part_of
+            #             # act = (
+            #             #     db_session.query(model)
+            #             #     .filter(model.id == model_id)
+            #             #     .one_or_none()
+            #             # )
+            #             # if act is not None:
+            #             #     print(project.owned_by)
+            #             #     account = db_session.query(User).all()
+            #             #     print(account)
+            #             #     if account:
+            #             #         owned_id = project.owned_by
+            #             #     else:
+            #             #         return NoContent, 401
+            #             # else:
+            #             #     return NoContent, 404
+            #         elif model is User:
+            #             query_field = model.id
+            #             key = uuid.UUID(key)
+            #             requested = User.get(id=model_id)
+            #             if owner is None or owner != requested:
+            #                 abort(401)
+            #             owned_id = owner.id
+            #         else:
+            #             query_field = model.user_id
+            #         if owned_id is not None:
+            #             # obj = (
+            #             #     db_session.query(model)
+            #             #     .filter(query_field == owned_id)
+            #             #     .filter(model.id == model_id)
+            #             #     .one_or_none()
+            #             # )
+            #             # if obj is not None:
+            #             return func(*args)
+            #             # else:
+            #             #     abort(401)
+            #         else:
+            #             abort(401)
+            # else:
+            #     abort(401)
+            # return func(*args)
         return decorated_function

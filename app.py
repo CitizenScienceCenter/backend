@@ -33,15 +33,24 @@ class Server:
         self.port = int(self.connexion_app.app.config['CC_PORT']) or 8080
         self.debug = bool(self.connexion_app.app.config["DEBUG"]) or False
 
-        db.bind(
-            provider="postgres",
-            user='pybossa',
-            password='testing',
-            host='0.0.0.0',
-            database='cs',
-            sslmode='disable',
-        )
-        db.generate_mapping(create_tables=True)
+        self.config = self.connexion_app.app.config
+
+        try:
+            db.bind(
+                provider="postgres",
+                user=self.config['PG_USER'],
+                password=self.config['PG_PASSWORD'],
+                host='0.0.0.0',
+                database=self.config['PG_DB'],
+                sslmode='disable',
+            )
+        except:
+            pass
+        else:
+            try:
+                db.generate_mapping(create_tables=True)
+            except:
+                pass
 
         self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()
         Pony(self.connexion_app.app)

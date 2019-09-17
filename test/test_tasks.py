@@ -9,14 +9,22 @@ from connexion.resolver import RestyResolver
 from flask import session, request, g, render_template, Response
 from flask_cors import CORS
 
-from db import orm_handler
-
 from app import Server
 
 from test import t_con, utils
 
 import prison
 
+# def setup_module(module):
+#     try:
+#         db.bind('sqlite', ':memory:')
+#     except TypeError:
+#         pass
+#     else:
+#         db.generate_mapping(check_tables=False)
+
+#     db.drop_all_tables(with_all_data=True)
+#     db.create_tables()
 
 @pytest.fixture(scope="module")
 def client():
@@ -47,7 +55,7 @@ def activity(client, user, project):
             "name": "Test Activity",
             "description": "Test Activity",
             "platform": "Both",
-            "part_of": project["id"],
+            "part_of": project['body']["id"],
         }
     print(act_dict)
     return client.post(
@@ -73,6 +81,6 @@ class TestActivities:
     @pytest.mark.run(order=14)
     def test_delete_activity(self, client, user, project, activity):
         act = json.loads(activity.data)
-        lg = client.delete("/api/v2/activities/{}".format(act['id']), headers=[("X-API-KEY", user["api_key"])])
+        lg = client.delete("/api/v2/activities/{}".format(act['body']['id']), headers=[("X-API-KEY", user["api_key"])])
         assert lg.status_code == 200
     

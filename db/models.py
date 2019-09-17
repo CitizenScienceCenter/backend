@@ -12,7 +12,7 @@ class User(db.Entity):
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
     username = Required(str, unique=True)
-    email = Required(str, unique=True)
+    email = Optional(str, unique=True)
     pwd = Required(str)
     api_key = Required(uuid.UUID, default=uuid.uuid4)
     confirmed = Required(bool, default=False)

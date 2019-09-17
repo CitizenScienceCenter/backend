@@ -8,7 +8,6 @@ import json, smtplib
 import email as emaillib
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from api import model
-# from flask_sqlalchemy_session import current_session as db_session
 from pony.flask import db_session
 from pony.orm import *
 from db import *
@@ -18,7 +17,7 @@ Model = User
 
 allowed = ['username', 'pwd', 'email', 'info']
 
-# @access_checks.ensure_model(Model)
+@access_checks.ensure_model(Model)
 @db_session
 def get_users(limit=100, search_term=None, offset=0):
     return model.get_all(Model, limit, offset, search_term).send()

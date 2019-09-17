@@ -32,7 +32,6 @@ def get_all(model, limit, offset, search_term=None):
             q_stmt = js.parse_object(st)
             print("SQL: ", q_stmt)
             q = model.select_by_sql(q_stmt)
-            r.set_body(q)
         except Exception as e:
             # TODO handle parsing error
             print(e)
@@ -40,8 +39,8 @@ def get_all(model, limit, offset, search_term=None):
             abort(500)
     else:
         q = select(a for a in model).limit(limit, offset=offset)
-        q = [o.to_dict() for o in q]
-        r.set_body(q)
+    q = [o.to_dict() for o in q]
+    r.set_body(q)
     return r
 
 @db_session
@@ -86,13 +85,11 @@ def post(model, object):
         abort(500)
 
 @db_session
-@access_checks.ensure_owner
 def put(model, id, object):
     try:
         p = model[id]
     except core.ObjectNotFound as o:
         abort(404)
-        # return {'msg': 'Requested object not found', 'code': 404}, 404
     if "id" in object:
         del object["id"]
     logging.info("Updating %s %s..", model, id)
@@ -103,7 +100,6 @@ def put(model, id, object):
     return ResponseHandler(201, '{} updated'.format(obj), body=p.to_dict()), p
 
 @db_session
-@access_checks.ensure_owner
 def delete(model, id):
     d = model[id].delete()
     try:

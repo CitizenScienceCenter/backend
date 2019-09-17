@@ -36,8 +36,7 @@ def update_project(id, body):
     res, p = model.put(Model, id, body)
     return res.send()
 
-
-@access_checks.ensure_owner(Model)
 @db_session
+@access_checks.ensure_owner(Model)
 def delete_project(id):
     return model.delete(Model, id).send()
