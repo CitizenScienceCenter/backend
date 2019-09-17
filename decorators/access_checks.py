@@ -44,27 +44,40 @@ class ensure_model(object):
         return decorated_function
 
 
-
+@db_session
 class ensure_owner(object):
     def __init__(self, model):
         self.model = model
-
     def __call__(self, func):
-
+        @wraps(func)
         def decorated_function(*args, **kwargs):
             print("owner access check")
-            # if "X-API-KEY" in request.headers:
-            #     key = request.headers["X-API-KEY"]
-            #     owner = User.get(api_key=key)
-            #     model_id = request.view_args["id"]
-            #     model = self.model
-            #     query_field = None
-            #     owned_id = None
-            print(args)
-            print(kwargs)
-            del kwargs['user']
-            del kwargs['token_info']
-            return func(*args, **kwargs)
+            if "X-API-KEY" in request.headers:
+                key = request.headers["X-API-KEY"]
+                current = User.get(api_key=key)
+                if not current:
+                    abort(401)
+                model_id = request.view_args["id"]
+                model = self.model
+                owned_id = None
+                requested = None
+                if model is Project:
+                    requested = Project.get(owned_by=current.id, id=model_id)
+                elif model is Activity:
+                    Project.get(owned_by=current.id, id=model_id)
+                    a = Project.activities.get(lambda a: a.id==model_id)
+                    print(a)
+                elif model is User:
+                    key = uuid.UUID(key)
+                    requested = User.get(id=model_id)
+                elif model is Submission:
+                    requested = Submission.get(user_id=current.id, id=model_id)
+                elif model is Comment:
+                    requested = Comment.get(user_id=current.id, id=model_id)
+                if requested is None or current != requested:
+                    abort(401)
+                owned_id = current.id
+
             #     with self.session:
             #         if model is Project:
             #             query_field = model.owned_by
