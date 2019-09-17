@@ -48,6 +48,7 @@ class ensure_model(object):
 class ensure_owner(object):
     def __init__(self, model):
         self.model = model
+    @db_session
     def __call__(self, func):
         @wraps(func)
         def decorated_function(*args, **kwargs):
@@ -65,19 +66,22 @@ class ensure_owner(object):
                     requested = Project.get(owned_by=current.id, id=model_id)
                 elif model is Activity:
                     Project.get(owned_by=current.id, id=model_id)
-                    a = Project.activities.get(lambda a: a.id==model_id)
-                    print(a)
+                    # a = Project.activities.get(lambda a: a.id==model_id)
+                    # print(a)
+                    requested = User.get(id=current.id)
                 elif model is User:
                     key = uuid.UUID(key)
                     requested = User.get(id=model_id)
+                    if requested is None or current != requested:
+                        abort(401)
                 elif model is Submission:
                     requested = Submission.get(user_id=current.id, id=model_id)
                 elif model is Comment:
                     requested = Comment.get(user_id=current.id, id=model_id)
-                if requested is None or current != requested:
+                if requested is None:
                     abort(401)
-                owned_id = current.id
-
+                else:
+                    return func(*args, **kwargs)
             #     with self.session:
             #         if model is Project:
             #             query_field = model.owned_by

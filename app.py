@@ -44,8 +44,8 @@ class Server:
                 database=self.config['PG_DB'],
                 sslmode='disable',
             )
-        except:
-            pass
+        except Exception as e:
+            print(str(e))
         else:
             try:
                 db.generate_mapping(create_tables=True)

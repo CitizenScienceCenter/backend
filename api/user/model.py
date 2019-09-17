@@ -33,7 +33,6 @@ def get_user(id=None):
 @db_session
 def create_user(body):
     user = body
-    print(body)
     user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     if ("username" in user and len(user["username"]) == 0) or not "username" in user and "email" in user:
@@ -42,13 +41,14 @@ def create_user(body):
     res.set_body(u.to_dict(exclude='pwd'))
     if 'X-Api-Key' in request.headers and request.headers['X-Api-Key'] is not None:
         from_anon = request.headers['X-Api-Key']
-        anon = User.select(lambda u: u.api_key == from_anon).first()
+        anon = User.get(api_key=from_anon)
+        print(anon)
         if anon:
             print('deleting user')
-            for s in User.submissions:
+            for s in u.submissions:
                 s.user_id = u.id
-            User.select(lambda u: u.id == anon_user.id).delete()
-            db_session.commit()
+            User.get(id=anon.id).delete()
+            commit()
     return res.send()
 
 def update_user(id, body):

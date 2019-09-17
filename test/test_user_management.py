@@ -44,9 +44,9 @@ def login_anonymous(client, anonymous_user):
     assert 'pwd' not in user
     lg = client.post(
         "/api/v2/users/register", json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'},
-        headers=[("X-API-KEY", user['api_key'])],
+        headers=[("X-Api-Key", user['api_key'])],
     )
-    assert lg.status_code == 201 or lg.status_code == 409
+    assert lg.status_code == 201
     return user
 
 @pytest.mark.first

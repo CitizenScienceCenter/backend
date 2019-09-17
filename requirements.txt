@@ -14,8 +14,8 @@ connexion==2.3.0
 docutils==0.14
 dominate==2.3.4
 envparse==0.2.0
-Flask==1.0.2
-Flask-Cors==3.0.4
+Flask==1.1.1
+Flask-Cors==3.0.8
 Flask-DotEnv==0.1.1
 Flask-SQLAlchemy==2.4.0
 Flask-SQLAlchemy-Session==1.1
@@ -27,13 +27,13 @@ gunicorn==19.9.0
 idna==2.6
 inflection==0.3.1
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.10.1
 jsonschema==2.6.0
 JTOS==0.8.3
 livereload==2.6.0
 Mako==1.0.7
 Markdown==3.0.1
-MarkupSafe==1.0
+MarkupSafe==1.1.1
 minio==4.0.20
 mkdocs==1.0.4
 more-itertools==4.2.0
@@ -76,4 +76,4 @@ urllib3==1.24.1
 urwid==2.0.1
 uWSGI==2.0.17.1
 webencodings==0.5.1
-Werkzeug==0.14.1
+Werkzeug==0.15.6

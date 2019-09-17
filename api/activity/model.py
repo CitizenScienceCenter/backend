@@ -10,7 +10,7 @@ from pony.flask import db_session
 Model = Activity
 
 
-def get_activities(limit, offset, search_term=None):
+def get_activities(limit=20, offset=0, search_term=None):
     return model.get_all(Model, limit, offset, search_term).send()
 
 def get_activity_count(search_term=None):
