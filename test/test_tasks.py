@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 from app import Server
 
-from test import t_con, utils
+from test import t_con, utils, config
 
 import prison
 
@@ -35,7 +35,7 @@ def client():
 @pytest.fixture(scope="module")
 def register(client):
     lg = client.post(
-        "/api/v2/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+        f"{config.ROOT_URL}/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
     assert lg.status_code == 201 or lg.status_code == 409
 
@@ -59,7 +59,7 @@ def activity(client, user, project):
         }
     print(act_dict)
     return client.post(
-        "/api/v2/activities",
+        f"{config.ROOT_URL}/activities",
         json=act_dict,
         headers=[("X-API-KEY", user["api_key"])]
     )
@@ -71,7 +71,7 @@ def tasks(client, user, project, activity):
 class TestActivities:
     @pytest.mark.run(order=12)
     def test_get_activities(self, client, user):
-        lg = client.get("/api/v2/activities", headers=[("X-API-KEY", user["api_key"])])
+        lg = client.get(f"{config.ROOT_URL}/activities", headers=[("X-API-KEY", user["api_key"])])
         assert lg.status_code == 200
 
     @pytest.mark.run(order=13)
@@ -81,6 +81,6 @@ class TestActivities:
     @pytest.mark.run(order=14)
     def test_delete_activity(self, client, user, project, activity):
         act = json.loads(activity.data)
-        lg = client.delete("/api/v2/activities/{}".format(act['body']['id']), headers=[("X-API-KEY", user["api_key"])])
+        lg = client.delete(f"{config.ROOT_URL}/activities/{act['body']['id']}", headers=[("X-API-KEY", user["api_key"])])
         assert lg.status_code == 200
     

@@ -29,7 +29,7 @@ NOTE: This requires that port 5432 is available on your system. You can change t
 ### .env Contents
 
 ```env
-CC_ENV=local # environment variable
+ENV=local # environment variable
 CC_PORT=9000 
 SW_ENV=swagger.yaml # swagger file to build from
 DB_URI=postgresql://testing:testing@localhost/testcs?sslmode=disable

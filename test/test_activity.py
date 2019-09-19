@@ -13,7 +13,7 @@ from db import models
 
 from app import Server
 
-from test import t_con, utils
+from test import t_con, utils, config
 
 import prison
 
@@ -27,7 +27,7 @@ def client():
 @pytest.fixture(scope="module")
 def register(client):
     lg = client.post(
-        "/api/v2/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+        f"{config.ROOT_URL}/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
     assert lg.status_code == 201 or lg.status_code == 409
 
@@ -52,7 +52,7 @@ def activity(client, user, project):
         }
     print(act_dict)
     return client.post(
-        "/api/v2/activities",
+        f"{config.ROOT_URL}/activities",
         json=act_dict,
         headers=[("X-API-KEY", user["api_key"])]
     )
@@ -61,7 +61,7 @@ def activity(client, user, project):
 class TestActivities:
     @pytest.mark.run(order=12)
     def test_get_activities(self, client, user):
-        lg = client.get("/api/v2/activities", headers=[("X-API-KEY", user["api_key"])])
+        lg = client.get(f"{config.ROOT_URL}/activities", headers=[("X-API-KEY", user["api_key"])])
         assert lg.status_code == 200
 
     @pytest.mark.run(order=13)
@@ -72,7 +72,7 @@ class TestActivities:
     def test_query_activities(self, client, user):
         q_statement = "(select:(fields:!(id,name,description),orderBy:(id:desc),tables:!(activities)))"
         lg = client.get(
-            "/api/v2/activities?search_term={}".format(q_statement),
+            f"{config.ROOT_URL}/activities?search_term={q_statement}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         act = json.loads(lg.data)
@@ -93,20 +93,22 @@ class TestActivities:
 
     @pytest.mark.run(order=18)
     def test_delete_activity(self, client, user, project, activity):
+        act =json.loads(activity.data)
         pd = client.delete(
-            "/api/v2/activities/{}".format(json.loads(activity.data)['body']["id"])
+            f"{config.ROOT_URL}/activities/{act['body']['id']}"
         )
         assert pd.status_code == 401
 
     @pytest.mark.run(order=17)
     def test_delete_activity_and_project(self, client, user, project, activity):
+        act =json.loads(activity.data)
         pd = client.delete(
-            "/api/v2/activities/{}".format(json.loads(activity.data)['body']["id"]),
+            f"{config.ROOT_URL}/activities/{act['body']['id']}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert pd.status_code == 200
         gd = client.delete(
-            "/api/v2/projects/{}".format(project['body']["id"]),
+            f"{config.ROOT_URL}/projects/{project['body']['id']}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert gd.status_code == 200

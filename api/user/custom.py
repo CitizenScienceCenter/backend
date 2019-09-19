@@ -89,14 +89,9 @@ def reset(email):
 
 @db_session
 def get_subs(id=None):
-    user = User[id].first()
-    user = User.get(id=id)
-    if user:
-        submissions = user.submissions
-        # TODO paging
-        return [s.to_dict() for s in submissions]
-    else:
-        abort(404)
+    user = utils.get_user(request, db_session)
+    submissions = user.submissions
+    return [s.to_dict() for s in submissions]
 
 @db_session
 def verify_reset(reset):

@@ -14,7 +14,6 @@ from flask_dotenv import DotEnv
 from db.models import *
 from middleware.response_handler import ResponseHandler
 
-
 class Server:
     application = None
     app = None
@@ -35,22 +34,34 @@ class Server:
 
         self.config = self.connexion_app.app.config
 
-        try:
-            db.bind(
-                provider="postgres",
-                user=self.config['PG_USER'],
-                password=self.config['PG_PASSWORD'],
-                host='0.0.0.0',
-                database=self.config['PG_DB'],
-                sslmode='disable',
-            )
-        except Exception as e:
-            print(str(e))
+        if self.config['ENV'] == 'local' or self.config['ENV'] == 'test':
+            try:
+                db.bind('sqlite', ':memory:')
+            except BindingError:
+                pass
+            else:
+                db.generate_mapping(create_tables=True)
+
+            # db.drop_all_tables(with_all_data=True)
+            # db.create_tables()
         else:
             try:
-                db.generate_mapping(create_tables=True)
-            except:
+                db.bind(
+                    provider="postgres",
+                    user=self.config['PG_USER'],
+                    password=self.config['PG_PASSWORD'],
+                    host=self.config['PG_HOST'],
+                    database=self.config['PG_DB'],
+                    sslmode='disable',
+                )
+            except Exception as e:
+                print(str(e))
                 pass
+            else:
+                try:
+                    db.generate_mapping(create_tables=True)
+                except:
+                    pass
 
         self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()
         Pony(self.connexion_app.app)
@@ -82,7 +93,7 @@ class Server:
             return ResponseHandler(409, 'Internal server error', str(error), ok=False).send()
 
     def run(self):
-        if self.connexion_app.app.config["CC_ENV"] in ["dev", "local", "test", "docker"]:
+        if self.connexion_app.app.config["ENV"] in ["dev", "local", "test", "docker"]:
             print("Running in Debug Mode")
             self.connexion_app.run(port=self.port, debug=True, threaded=True)
         else:
