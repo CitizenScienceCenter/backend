@@ -29,6 +29,7 @@ def create_project(body):
     user = utils.get_user(request, db_session)
     project["owned_by"] = user.id
     res, p = model.post(Model, project)
+    print(p.to_dict())
     return res.send()
 
 

@@ -65,10 +65,13 @@ class ensure_owner(object):
                 if model is Project:
                     requested = Project.get(owned_by=current.id, id=model_id)
                 elif model is Activity:
-                    Project.get(owned_by=current.id, id=model_id)
-                    # a = Project.activities.get(lambda a: a.id==model_id)
-                    # print(a)
-                    requested = User.get(id=current.id)
+                    found = False                 
+                    for p in current.owned_projects:
+                        for a in p.activities:
+                            if str(a.id) == model_id:
+                                print("FOUND")
+                                return func(*args, **kwargs)
+                    abort(404)
                 elif model is User:
                     key = uuid.UUID(key)
                     requested = User.get(id=model_id)
@@ -82,57 +85,5 @@ class ensure_owner(object):
                     abort(401)
                 else:
                     return func(*args, **kwargs)
-            #     with self.session:
-            #         if model is Project:
-            #             query_field = model.owned_by
-            #             p = Project.get(id=model_id, owned_by=owner.id)
-            #             if p is None:
-            #                 abort(401)
-            #             owned_id = owner.id
-            #         elif model is Activity:
-            #             print('ACTIVITY')
-            #             owned_id = owner.id
-            #             return func(*args)
-            #             # return func(*args, **kwargs)
-            #             # query_field = model.part_of
-            #             # act = (
-            #             #     db_session.query(model)
-            #             #     .filter(model.id == model_id)
-            #             #     .one_or_none()
-            #             # )
-            #             # if act is not None:
-            #             #     print(project.owned_by)
-            #             #     account = db_session.query(User).all()
-            #             #     print(account)
-            #             #     if account:
-            #             #         owned_id = project.owned_by
-            #             #     else:
-            #             #         return NoContent, 401
-            #             # else:
-            #             #     return NoContent, 404
-            #         elif model is User:
-            #             query_field = model.id
-            #             key = uuid.UUID(key)
-            #             requested = User.get(id=model_id)
-            #             if owner is None or owner != requested:
-            #                 abort(401)
-            #             owned_id = owner.id
-            #         else:
-            #             query_field = model.user_id
-            #         if owned_id is not None:
-            #             # obj = (
-            #             #     db_session.query(model)
-            #             #     .filter(query_field == owned_id)
-            #             #     .filter(model.id == model_id)
-            #             #     .one_or_none()
-            #             # )
-            #             # if obj is not None:
-            #             return func(*args)
-            #             # else:
-            #             #     abort(401)
-            #         else:
-            #             abort(401)
-            # else:
-            #     abort(401)
-            # return func(*args)
+          
         return decorated_function
