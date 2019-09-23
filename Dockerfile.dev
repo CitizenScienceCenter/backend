@@ -1,9 +1,22 @@
-FROM python:3.6.6-stretch
+
+FROM node:8-alpine
+ENV SWAGGER_DIR openapi/
+ENV SWAGGER_SRC oapi.yaml
+ENV SWAGGER_FILE cc.yaml
+COPY $SWAGGER_DIR .
+RUN ls
+RUN npm i -g speccy
+RUN speccy resolve $SWAGGERDIR$SWAGGER_SRC > $SWAGGER_FILE
+
+FROM python:3.7-alpine
 ENV PYTHONUNBUFFERED 1
 ARG ENV
+ARG SWAGGER_DIR
+ARG SWAGGER_FILE
 RUN mkdir /code
 WORKDIR /code
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
-RUN ls
+COPY . /code/
+COPY --from=0 $SWAGGER_FILE /code/$SWAGGER_DIR$SWAGGER_FILE
 EXPOSE 8080:8080

@@ -1,12 +1,9 @@
 import json
-
+from test import t_con, utils, config
 import pytest
 
 from app import Server
-from test import t_con, utils, config
-from datetime import datetime
-import hashlib
-import time
+
 
 
 anon_name = '_anon{}'.format('dfjkshfuihvuiehfnijvrifbvrf')

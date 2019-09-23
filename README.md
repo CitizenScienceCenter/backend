@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/CitizenScienceCenter/backend](https://badges.gitter.im/CitizenScienceCenter/backend.svg)](https://gitter.im/CitizenScienceCenter/backend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Flask based OpenAPI (2) supported backend with a Postgres backend.
+Flask based OpenAPI (3) supported backend with a Postgres backend.
 
 Current implementation holds a basic implementation with an API inspired by that of Pybossa. Basic auth is currently included.
 
@@ -23,24 +23,40 @@ NOTE: starting as as service means that the processs is daemonized immediately a
 
 `make test`
 
-NOTE: This requires that port 5432 is available on your system. You can change this in the Makefile but this port **MUST** be fixed at 5432 for CI.
+
+## Resolving your spec
+
+Here we use the [Speccy](https://github.com/wework/speccy) tool which requires npm (the docker file can also resolve it for you in the build steps)
+
+`speccy resolve ./openapi/oapi.yaml -o ./oapi/cc.yaml`
 
 
 ### .env Contents
 
 ```env
-ENV=local # environment variable
-CC_PORT=9000 
-SW_ENV=swagger.yaml # swagger file to build from
-DB_URI=postgresql://testing:testing@localhost/testcs?sslmode=disable
-HOST=http://0.0.0.0:8081 # host for frontend
-DEBUG=True
-SWAGGER_DIR=swagger/
-SWAGGER_FILE=swagger_complete.yaml # Swagger file to  pass to main app
-SECRET_KEY=SUPES_SECRET987 # Secret key for sessions
-COMPOSE_FILE=docker-compose.dev.yml # Docker compose file
-PG_USER=testing # DB user
-PG_PASSWORD=testing # DB pwd
+CC_PORT=8080
+ENV=local
+
+HOST=https://api.citizenscience.ch
+SWAGGER_URL=${HOST}/api/v3/openapi.json
+
+SWAGGER_DIR=openapi/
+SWAGGER_FILE=cc.yaml
+
+SECRET_KEY=SUPES_SECRET987
+
+PG_USER=YOURUSER
+PG_PASSWORD=YOURPWD
+PG_DB=cs
+PG_HOST=0.0.0.0
+DB_URI=postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}?sslmode=disable
+
+COMPOSE_FILE=docker-compose.yml
+
+SMTP_ADDR=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
 
 # DB will always be called `cs`
 ```
@@ -59,5 +75,5 @@ Requires [swagger-codegen](https://swagger.io/swagger-codegen/).
 * [ ] Generate E-R diagram
 * [ ] Ownership handling
 * [ ] Android/iOS client SDK generation
-* [ ] Reduce NoContent responses
+* [x] Reduce NoContent responses
 * [x] Auth decorator

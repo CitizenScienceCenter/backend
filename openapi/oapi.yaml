@@ -368,33 +368,6 @@ paths:
         "404":
           description: Media does not exist
       x-openapi-router-controller: api.media.model
-  /media/upload:
-    post:
-      security:
-        - apiKeyHeader:
-            []
-      description: Add a new media attachment
-      tags:
-        - Media
-      operationId: upload
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                attachment:
-                  description: The file to be uploaded
-                  type: string
-                  format: binary
-                id:
-                  type: string
-              required:
-                - attachment
-      responses:
-        "200":
-          description: Media attached
-      x-openapi-router-controller: api.media.custom
   "/media/{id}":
     get:
       security:

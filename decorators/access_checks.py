@@ -1,9 +1,10 @@
-from flask import session, request, g, abort
-from connexion import NoContent
+from flask import request, abort
 from functools import wraps
-from db import *
+from db import User, Project, Activity
 import prison
 import uuid
+
+from pony.flask import db_session
 
 db_tables = ['activities', 'users', 'projects', 'comments', 'submissions', 'media', 'tasks']
 
@@ -11,14 +12,19 @@ db_tables = ['activities', 'users', 'projects', 'comments', 'submissions', 'medi
 @db_session
 def ensure_key(token, required_scopes=None):
     u = User.get(api_key=token)
-    if u is not None:
+    if u is not None and ('anonymous' not in u.info or u.anonymous == False):
         return {'sub': 'admin'}
     else:
         abort(401)
 
 @db_session
 def ensure_anon_key(token, required_scopes=None):
-    return ensure_key(token, required_scopes)
+    u = User.get(api_key=token)
+    if u is not None and u.anonymous is True:
+        # TODO check on sub roles for Connexion
+        return {'sub': 'admin'}
+    else:
+        abort(401)
 
 @db_session
 class ensure_model(object):
@@ -52,7 +58,6 @@ class ensure_owner(object):
     def __call__(self, func):
         @wraps(func)
         def decorated_function(*args, **kwargs):
-            print("owner access check")
             if "X-API-KEY" in request.headers:
                 key = request.headers["X-API-KEY"]
                 current = User.get(api_key=key)
@@ -60,16 +65,13 @@ class ensure_owner(object):
                     abort(401)
                 model_id = request.view_args["id"]
                 model = self.model
-                owned_id = None
                 requested = None
                 if model is Project:
                     requested = Project.get(owned_by=current.id, id=model_id)
-                elif model is Activity:
-                    found = False                 
+                elif model is Activity:                
                     for p in current.owned_projects:
                         for a in p.activities:
                             if str(a.id) == model_id:
-                                print("FOUND")
                                 return func(*args, **kwargs)
                     abort(404)
                 elif model is User:

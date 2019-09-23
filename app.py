@@ -6,7 +6,7 @@ import uuid
 import configparser
 import connexion
 from connexion.resolver import RestyResolver
-
+from pony.orm import *
 from flask import session, request, g, app, jsonify
 from pony.flask import Pony
 from flask_cors import CORS
@@ -36,17 +36,17 @@ class Server:
 
         if self.config['ENV'] == 'local' or self.config['ENV'] == 'test':
             try:
-                db.bind('sqlite', ':memory:')
+                DB.bind('sqlite', ':memory:')
             except BindingError:
                 pass
             else:
-                db.generate_mapping(create_tables=True)
+                DB.generate_mapping(create_tables=True)
 
             # db.drop_all_tables(with_all_data=True)
             # db.create_tables()
         else:
             try:
-                db.bind(
+                DB.bind(
                     provider="postgres",
                     user=self.config['PG_USER'],
                     password=self.config['PG_PASSWORD'],
@@ -59,7 +59,7 @@ class Server:
                 pass
             else:
                 try:
-                    db.generate_mapping(create_tables=True)
+                    DB.generate_mapping(create_tables=True)
                 except:
                     pass
 

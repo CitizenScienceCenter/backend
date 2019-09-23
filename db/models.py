@@ -1,11 +1,12 @@
 import uuid
-from pony.orm import *
 from datetime import datetime
+from pony.orm import Set, PrimaryKey, Optional, Required, Json, Database
 
-db = Database()
+
+DB = Database()
 
 
-class User(db.Entity):
+class User(DB.Entity):
     _table_ = 'users'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -13,6 +14,7 @@ class User(db.Entity):
     info = Required(Json, default={})
     username = Required(str, unique=True)
     email = Optional(str, unique=True)
+    anonymous = Optional(bool, default=False)
     pwd = Required(str)
     api_key = Required(uuid.UUID, default=uuid.uuid4)
     confirmed = Required(bool, default=False)
@@ -22,7 +24,7 @@ class User(db.Entity):
     tokens = Set('OToken')
     comments = Set('Comment')
 
-class OToken(db.Entity):
+class OToken(DB.Entity):
     _table_ = 'oauth_tokens'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -33,7 +35,7 @@ class OToken(db.Entity):
     token = Required(uuid.UUID, default=uuid.uuid4)
     expiry = Optional(datetime)
 
-class Project(db.Entity):
+class Project(DB.Entity):
     _table_ = 'projects'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -48,13 +50,14 @@ class Project(db.Entity):
     media = Set('Media')
     tokens = Set(OToken)
 
-class Activity(db.Entity):
+class Activity(DB.Entity):
     _table_ = 'activities'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
     updated_at = Required(datetime, default=datetime.now)
     info = Required(Json, default={})
     name = Required(str)
+    anonymous_allowed = Optional(bool, default=True)
     description = Required(str)
     platform = Required(str)
     active = Required(bool, default=False)
@@ -62,7 +65,7 @@ class Activity(db.Entity):
     media = Set('Media')
     tasks = Set('Task')
 
-class Task(db.Entity):
+class Task(DB.Entity):
     _table_ = 'tasks'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -77,7 +80,7 @@ class Task(db.Entity):
     media = Set('Media')
     submissions = Set('Submission')
 
-class Submission(db.Entity):
+class Submission(DB.Entity):
     _table_ = 'submissions'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -89,7 +92,7 @@ class Submission(db.Entity):
     response = Required(Json)
     media = Set('Media')
 
-class Comment(db.Entity):
+class Comment(DB.Entity):
     _table_ = 'comments'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -101,7 +104,7 @@ class Comment(db.Entity):
     text = Required(str)
     user_id = Required(User)
 
-class Media(db.Entity):
+class Media(DB.Entity):
     _table_ = 'media'
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)

@@ -43,6 +43,8 @@ components:
           type: string
         api_key:
           type: string
+        anonymous:
+          type: boolean
     UserUpdate:
       type: object
       allOf:
@@ -57,6 +59,8 @@ components:
           type: string
         api_key:
           type: string
+        anonymous:
+          type: boolean
     Media:
       type: object
       allOf:
@@ -124,6 +128,9 @@ components:
             - Desktop
             - Mobile
             - Both
+        anonymous_allowed:
+          type: boolean
+          default: true
         part_of:
           type: string
           description: The ID of the project that this activity is part of
