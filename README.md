@@ -12,10 +12,9 @@ Current implementation holds a basic implementation with an API inspired by that
 
 OR
 
-* run `make ENVIRON=docker activate` to symlink `envs/docker.env`
-* `make start` or `make start_service`
+* `make start` or `make start_bg`
 
-NOTE: starting as as service means that the processs is daemonized immediately and you must attach to the running container in order to debug (unless you redirect logs)
+NOTE: starting as `bg` means that the processs is daemonized immediately and you must attach to the running container in order to debug (unless you redirect logs)
 
 * `make stop` and `make clean`
 
@@ -57,8 +56,6 @@ SMTP_ADDR=
 SMTP_PORT=
 SMTP_USER=
 SMTP_PASS=
-
-# DB will always be called `cs`
 ```
 
 ## Generate SDKs
@@ -73,7 +70,7 @@ Requires [swagger-codegen](https://swagger.io/swagger-codegen/).
 
 * [ ] Oauth support
 * [ ] Generate E-R diagram
-* [ ] Ownership handling
+* [x] Ownership handling
 * [ ] Android/iOS client SDK generation
 * [x] Reduce NoContent responses
 * [x] Auth decorator

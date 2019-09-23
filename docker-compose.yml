@@ -23,20 +23,18 @@ services:
       URL: ${SWAGGER_URL}
     depends_on:
       - cccs-connexion
-  # graphql:
-  #   restart: always
-  #   image: graphile/postgraphile
-  #   ports:
-  #     - "7000:5000"
-  #   command: postgraphile --connection 'postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}?sslmode=disable' --host 0.0.0.0 --port 5000 --schema public -a -j
-  #   depends_on:
-  #     - db
+  graphql:
+    restart: always
+    image: graphile/postgraphile
+    ports:
+      - "7000:5000"
+    command: postgraphile --connection 'postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}?sslmode=disable' --host 0.0.0.0 --port 5000 --schema public -a -j
+    depends_on:
+      - db
   cccs-connexion:
     build:
       context: .
     command:  uwsgi --http :${CC_PORT} --wsgi-file uwsgi.py --master --processes 4 --threads 2 --stats :9191
-    volumes:
-      - ~/dev/upload:/code/static/upload
     ports:
       - "${CC_PORT}:${CC_PORT}"
     depends_on:

@@ -4,19 +4,22 @@ ENV SWAGGER_DIR openapi/
 ENV SWAGGER_SRC oapi.yaml
 ENV SWAGGER_FILE cc.yaml
 COPY $SWAGGER_DIR .
-RUN ls
 RUN npm i -g speccy
 RUN speccy resolve $SWAGGERDIR$SWAGGER_SRC > $SWAGGER_FILE
 
 FROM python:3.7-alpine
+RUN apk add build-base
+RUN apk add postgresql-dev
+RUN apk add libffi-dev
 ENV PYTHONUNBUFFERED 1
-ARG ENV
+ENV CC_PORT 8080
 ARG SWAGGER_DIR
 ARG SWAGGER_FILE
 RUN mkdir /code
 WORKDIR /code
+RUN pip install --upgrade pip
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 COPY . /code/
 COPY --from=0 $SWAGGER_FILE /code/$SWAGGER_DIR$SWAGGER_FILE
-EXPOSE 8080:8080
+EXPOSE 8080:$CC_PORT

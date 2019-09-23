@@ -48,7 +48,6 @@ pluggy==0.8.0
 pony==0.7.10
 prance==0.16.0
 prison==0.1.0
-psycopg2==2.7.4
 psycopg2-binary==2.7.4
 pudb==2018.1
 py==1.5.3
