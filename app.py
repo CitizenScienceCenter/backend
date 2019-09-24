@@ -60,7 +60,8 @@ class Server:
             else:
                 try:
                     DB.generate_mapping(create_tables=True)
-                except:
+                except Exception as e:
+                    print(str(e))
                     pass
 
         self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()

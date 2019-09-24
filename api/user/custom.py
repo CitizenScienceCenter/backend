@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
-from flask import session, request, current_app
+from flask import session, request, current_app, abort
 from db import User, utils, Submission
 import smtplib
 from email import message
@@ -48,7 +48,7 @@ def logout():
 def auth(body):
     user = body
     # TODO create oauth token here and add to table. Just send api key for now
-    q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
+    q = User.get(email=user['email'])
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
             session["user"] = q.dump()
@@ -61,31 +61,31 @@ def auth(body):
 @db_session
 def reset(email):
     conf = current_app.config
-    user = utils.get_user(request, db_session)
+    user = User.get(email=email)
     # TODO handle domain
     if user:
-        tk = ts.sign(user.id)
+        tk = ts.sign(str(user.id))
         reset = "{}/reset/{}".format("https://citizenscience.ch", tk.decode("utf-8"))
         text = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(
             reset
         )
         msg = message.EmailMessage()
         msg.set_content(text)
-        smtp_user = "info@citizenscience.ch"
+        smtp_user = conf['SMTP_USER']
         msg["Subject"] = "Password Reset for Citizen Science Project"
         msg["From"] = smtp_user
         msg["To"] = user.email
         try:
-            s = smtplib.SMTP("asmtp.mailstation.ch", 587)
-            s.login(smtp_user, "UniZuETH2018")
+            s = smtplib.SMTP(conf['SMTP_ADDR'], 587)
+            s.login(smtp_user, conf['SMTP_PASS'])
             s.sendmail(smtp_user, [user.email], msg.as_string())
             s.quit()
         except Exception as e:
             print("ERROR RESETTING", e)
-            return e, 503
+            abort(501)
         return NoContent, 200
     else:
-        return NoContent, 401
+        abort(404)
 
 @db_session
 def get_subs(id=None):
@@ -98,10 +98,13 @@ def verify_reset(reset):
     print(reset)
     try:
         token = ts.unsign(reset["token"], 2000)
-        user = db_session.query(User).filter(User.id == reset["id"]).one_or_none()
-        user.pwd = pbkdf2_sha256.encrypt(reset["pwd"], rounds=200000, salt_size=16)
-        db_session.commit()
+        user = User.get(id=reset['id'])
+        if user:
+            user.pwd = pbkdf2_sha256.encrypt(reset["pwd"], rounds=200000, salt_size=16)
+            commit()
+        else:
+            abort(404)
         return True, 200
     except Exception as e:
         print(e)
-        return False, 401
+        abort(401)
