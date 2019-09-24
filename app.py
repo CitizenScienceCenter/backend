@@ -11,8 +11,8 @@ from pony.flask import Pony
 from pony.orm import BindingError
 from flask_cors import CORS
 from db.models import DB
+from minio import Minio
 from middleware.response_handler import ResponseHandler
-from middleware.uploader import Uploader
 
 class Server:
     application = None
@@ -63,7 +63,7 @@ class Server:
         Pony(self.connexion_app.app)
 
         if self.config['ENV'] != 'test':
-            self.app.uploader = Uploader(self.config['MIN_URL'], self.config['MIN_ACCESS'], self.config['MIN_SECRET'], self.config['MIN_SECURE'])
+            self.app.uploader = Minio(self.config['MIN_URL'], self.config['MIN_ACCESS'], self.config['MIN_SECRET'], self.config['MIN_SECURE'])
         @self.connexion_app.app.errorhandler(401)
         def unauthorised_error(error):
             return ResponseHandler(401, 'You do not have access to this object', ok=False).send()

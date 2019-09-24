@@ -3,7 +3,7 @@ info:
   title: CCCS
   version: 3.0.0
 servers:
-  - url: http://0.0.0.0:8080/api/v3
+  - url: http://localhost:9000/api/v3
     description: Local Development Server
   - url: https://api-staging.citizenscience.ch/api/v3
     description: Staging Server
