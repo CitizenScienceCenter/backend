@@ -17,6 +17,7 @@ from middleware.uploader import Uploader
 class Server:
     application = None
     app = None
+    uploader = None
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
@@ -61,6 +62,8 @@ class Server:
         
         Pony(self.connexion_app.app)
 
+        if self.config['ENV'] != 'test':
+            self.app.uploader = Uploader(self.config['MIN_URL'], self.config['MIN_ACCESS'], self.config['MIN_SECRET'], self.config['MIN_SECURE'])
         @self.connexion_app.app.errorhandler(401)
         def unauthorised_error(error):
             return ResponseHandler(401, 'You do not have access to this object', ok=False).send()
