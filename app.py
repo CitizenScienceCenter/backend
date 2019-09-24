@@ -12,6 +12,7 @@ from pony.orm import BindingError
 from flask_cors import CORS
 from db.models import DB
 from middleware.response_handler import ResponseHandler
+from middleware.uploader import Uploader
 
 class Server:
     application = None

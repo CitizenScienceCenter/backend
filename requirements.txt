@@ -73,7 +73,7 @@ python-language-server==0.28.3
 pytz==2019.2
 PyYAML==5.1.2
 readme-renderer==24.0
-requests==2.20.1
+requests==2.22.0
 requests-toolbelt==0.8.0
 six==1.11.0
 spec-synthase==0.1.9
@@ -89,7 +89,7 @@ tqdm==4.29.1
 twine==1.12.1
 typed-ast==1.4.0
 typing-extensions==3.7.4
-urllib3==1.24.1
+urllib3==1.25.5
 urwid==2.0.1
 uWSGI==2.0.17.1
 webencodings==0.5.1
