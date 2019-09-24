@@ -656,6 +656,30 @@ paths:
         "404":
           description: Media does not exist
       x-openapi-router-controller: api.media.model
+  /media/upload:
+    get:
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags:
+        - Media
+      summary: Return pre-authorised url to upload media
+      operationId: get_pre_signed_url
+      parameters:
+        - name: source_id
+          in: query
+          schema:
+            type: string
+        - name: filename
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return presigned url
+        "401":
+          description: User does not have uploading access
+      x-openapi-router-controller: api.media.custom
   /projects:
     get:
       tags:
