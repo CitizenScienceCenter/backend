@@ -11,9 +11,13 @@ db_tables = ['activities', 'users', 'projects', 'comments', 'submissions', 'medi
 
 @db_session
 def ensure_key(token, required_scopes=None):
+    """ 
+    @todo Implement JWT authentication
+    @body Using the `jose` lib, handle creation of JWTs for users (and renewal upon expiry)
+    """
     u = User.get(api_key=token)
     if u is not None and ('anonymous' not in u.info or u.anonymous == False):
-        return {'sub': 'admin'}
+        return {str(u.id): token, 'role': 'user'}
     else:
         abort(401)
 
@@ -22,7 +26,7 @@ def ensure_anon_key(token, required_scopes=None):
     u = User.get(api_key=token)
     if u is not None and u.anonymous is True:
         # TODO check on sub roles for Connexion
-        return {str(u.id): token}
+        return {'anonymous': token, 'role': 'anonymous'}
     else:
         abort(401)
 
