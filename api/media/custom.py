@@ -1,14 +1,16 @@
 import logging
 from db import Media
-from minio import PostPolicy
 from minio.error import ResponseError
 from flask import current_app
 from datetime import datetime, timedelta
+from middleware.response_handler import ResponseHandler
+
 
 def get_for_source(id=None):
     m = Media.get(source_id=id)
     if m is not None:
         return m
+
 
 def get_pre_signed_url(source_id, filename):
     client = current_app.uploader
@@ -19,13 +21,7 @@ def get_pre_signed_url(source_id, filename):
     except ResponseError as e:
         logging.error(e)
 
-    post_policy = PostPolicy()
-    post_policy.set_bucket_name(source_id)
-    post_policy.set_key_startswith(filename)
-    post_policy.set_content_length_range(10, 1024)
-    expires_date = datetime.utcnow() + timedelta(days=10)
-    post_policy.set_expires(expires_date)
-    # Load client
-    current_app.uploader.presigned_post_policy(post_policy)
-
-    pass
+    url = current_app.uploader.presigned_put_object(
+        source_id, filename, expires=timedelta(days=3)
+    )
+    return ResponseHandler(200, {"url": url}, body=url).send()
