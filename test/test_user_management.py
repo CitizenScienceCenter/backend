@@ -23,12 +23,12 @@ def anonymous_user(client):
         'confirmed': False,
         'info': {
             'anonymous': True
-        }
+        },
+        'anonymous': True
     }
     reg = client.post(
         f"{config.ROOT_URL}/users/register", json=u
     )
-    print(reg.data)
     assert reg.status_code == 201 or reg.status_code == 409
 
 
@@ -41,7 +41,7 @@ def login_anonymous(client, anonymous_user):
     user = json.loads(lg.data)
     assert 'pwd' not in user
     lg = client.post(
-        f"{config.ROOT_URL}/users/register", json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'},
+        f"{config.ROOT_URL}/users/register", json={"username": "gavin", "email": 'abc@abc.com', "pwd": 'dklfjfkf373'},
         headers=[("X-Api-Key", user['api_key'])],
     )
     assert lg.status_code == 201

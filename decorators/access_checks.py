@@ -1,6 +1,6 @@
 from flask import request, abort
 from functools import wraps
-from db import User, Project, Activity
+from db import User, Project, Activity, Submission, Comment
 import prison
 import uuid
 
@@ -45,7 +45,6 @@ class ensure_model(object):
                     if t.lower().split(" ")[0] not in db_tables:
                         allowed_table = False
                         break
-                print(allowed_table)
                 if not allowed_table:
                     abort(401)
                 return func(*args, **kwargs)

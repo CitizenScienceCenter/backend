@@ -1082,7 +1082,7 @@ paths:
             type: string
             pattern: ^[a-zA-Z0-9-]+$
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/UserUpdate"
+        $ref: "./bodies.yaml#/components/requestBodies/UserUpdate" # separate because password is not required
       responses:
         "200":
           description: User updated

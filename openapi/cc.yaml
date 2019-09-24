@@ -1400,6 +1400,7 @@ paths:
                       type: string
                     anonymous:
                       type: boolean
+                      default: false
       x-openapi-router-controller: api.user.model
   /users/authorize:
     post:
@@ -1449,6 +1450,7 @@ paths:
                   type: string
                 anonymous:
                   type: boolean
+                  default: false
       responses:
         "200":
           description: Token created

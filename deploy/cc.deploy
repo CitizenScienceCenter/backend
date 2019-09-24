@@ -1,6 +1,0 @@
-export NAME=api-staging
-export IMG=backend
-export NS=c3s-staging
-export PORT=8080
-export TAG=${TAG}
-export HOST=api-staging.citizenscience.ch

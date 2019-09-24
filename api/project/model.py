@@ -28,14 +28,14 @@ def create_project(body):
     project = body
     user = utils.get_user(request, db_session)
     project["owned_by"] = user.id
-    res, p = model.post(Model, project)
-    print(p.to_dict())
+    res, _ = model.post(Model, project)
     return res.send()
 
 
 def update_project(id, body):
-    res, p = model.put(Model, id, body)
+    res, _ = model.put(Model, id, body)
     return res.send()
+
 
 @db_session
 @access_checks.ensure_owner(Model)

@@ -6,12 +6,11 @@ import uuid
 import configparser
 import connexion
 from connexion.resolver import RestyResolver
-from pony.orm import *
 from flask import session, request, g, app, jsonify
 from pony.flask import Pony
+from pony.orm import BindingError
 from flask_cors import CORS
-from flask_dotenv import DotEnv
-from db.models import *
+from db.models import DB
 from middleware.response_handler import ResponseHandler
 
 class Server:
@@ -22,28 +21,23 @@ class Server:
         logging.basicConfig(level=logging.INFO)
         self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./openapi")
         CORS(self.connexion_app.app)
-        env = DotEnv()
-        env_loc = os.path.join(os.path.dirname(os.path.expanduser(os.path.expandvars(__file__))), '.env')
-        env.init_app(self.connexion_app.app, env_file=env_loc, verbose_mode=False)
-        # print(self.connexion_app.app.config)
         self.app = self.connexion_app.app
+        self.app.config.from_envvar('CC_ENV')
         self.connexion_app.add_api(self.connexion_app.app.config["SWAGGER_FILE"], options={'swagger_ui': False})
-
-        self.port = int(self.connexion_app.app.config['CC_PORT']) or 8080
-        self.debug = bool(self.connexion_app.app.config["DEBUG"]) or False
-
-        self.config = self.connexion_app.app.config
+        
+        self.config = self.app.config
+        self.port = int(self.config['CC_PORT']) or 8080
+        self.debug = bool(self.config["DEBUG"]) or False
+        self.app.secret_key = self.config["SECRET_KEY"] or uuid.uuid4()
 
         if self.config['ENV'] == 'local' or self.config['ENV'] == 'test':
             try:
                 DB.bind('sqlite', ':memory:')
-            except BindingError:
+            except BindingError as b:
+                logging.error(b)
                 pass
             else:
                 DB.generate_mapping(create_tables=True)
-
-            # db.drop_all_tables(with_all_data=True)
-            # db.create_tables()
         else:
             try:
                 DB.bind(
@@ -54,28 +48,17 @@ class Server:
                     database=self.config['PG_DB'],
                     sslmode='disable',
                 )
-            except Exception as e:
-                print(str(e))
+            except BindingError as e:
+                logging.error(e)
                 pass
             else:
                 try:
                     DB.generate_mapping(create_tables=True)
                 except Exception as e:
-                    print(str(e))
+                    logging.error(e)
                     pass
-
-        self.connexion_app.app.secret_key = self.connexion_app.app.config["SECRET_KEY"] or uuid.uuid4()
+        
         Pony(self.connexion_app.app)
-
-        # @self.connexion_app.app.after_request
-        # def apply_cors(response):
-        #     response.headers["Content-Type"] = "application/json"
-        #     response.headers["Access-Control-Allow-Origin"] = "*"
-        #     response.headers["Access-Control-Allow-Headers"] = "x-api-key, Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token"
-        #     response.headers["Access-Control-Request-Headers"] = "*"
-        #     response.headers["Access-Control-Allow-Methods"] = "GET, PUT, POST, OPTIONS, DELETE"
-        #     response.headers["Access-Control-Allow-Credentials"] = "true"
-        #     return response
 
         @self.connexion_app.app.errorhandler(401)
         def unauthorised_error(error):
@@ -94,8 +77,8 @@ class Server:
             return ResponseHandler(409, 'Internal server error', str(error), ok=False).send()
 
     def run(self):
-        if self.connexion_app.app.config["ENV"] in ["dev", "local", "test", "docker"]:
-            print("Running in Debug Mode")
+        if self.config["ENV"] in ["dev", "local", "test", "docker"]:
+            logging.info("Running in Debug Mode")
             self.connexion_app.run(port=self.port, debug=True, threaded=True)
         else:
             self.connexion_app.run(port=self.port, debug=self.debug, server="gevent")

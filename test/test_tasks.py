@@ -57,7 +57,6 @@ def activity(client, user, project):
             "platform": "Both",
             "part_of": project['body']["id"],
         }
-    print(act_dict)
     return client.post(
         f"{config.ROOT_URL}/activities",
         json=act_dict,

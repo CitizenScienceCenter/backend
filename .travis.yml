@@ -10,8 +10,9 @@ before_script:
   - psql -c "CREATE DATABASE testcs WITH OWNER testing;" -U postgres
 services:
   - postgresql
+env:
+  - CC_ENV=config/test.cfg
 script:
-  - ln -sf envs/travis.env .env
   - pytest test/
 notifications:
   webhooks:

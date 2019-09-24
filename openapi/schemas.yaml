@@ -45,6 +45,7 @@ components:
           type: string
         anonymous:
           type: boolean
+          default: false
     UserUpdate:
       type: object
       allOf:
