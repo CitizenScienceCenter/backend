@@ -22,7 +22,7 @@ def ensure_anon_key(token, required_scopes=None):
     u = User.get(api_key=token)
     if u is not None and u.anonymous is True:
         # TODO check on sub roles for Connexion
-        return {'sub': 'admin'}
+        return {str(u.id): token}
     else:
         abort(401)
 
