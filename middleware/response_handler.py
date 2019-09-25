@@ -15,6 +15,8 @@ class ResponseHandler():
         self.code = status_code
         self.body_key = body_key
         self.mimetype = self.mimetype
+        if ok is False:
+            self.msg['err'] = msg
         if body is not None:
             self.msg['body'] = body
 

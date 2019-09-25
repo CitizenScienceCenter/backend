@@ -73,11 +73,6 @@ paths:
       x-openapi-router-controller: api.activity.model
   "/activities/{id}":
     get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
       tags:
         - Activities
       summary: Get a single activity
@@ -145,11 +140,75 @@ paths:
         "404":
           description: Activity does not exist
       x-openapi-router-controller: api.activity.model
-  /comments:
+  "/tasks/{id}/submissions":
     get:
       security:
         - apiKeyHeader:
             []
+      tags:
+        - Tasks
+        - Submissions
+      summary: Get submissions for a specific task
+      operationId: get_task_submissions
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of submissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/Submission"
+      x-openapi-router-controller: api.task.custom
+  "/activities/{id}/tasks":
+    get:
+      tags:
+        - Activities
+        - Tasks
+      summary: Get the tasks for an activity
+      operationId: get_activity_tasks
+      parameters:
+        - description: The Activity ID
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^[a-zA-Z0-9-]+$
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: number
+            default: 0
+      responses:
+        "200":
+          description: Return activity tasks
+        "404":
+          description: Activity does not exist
+      x-openapi-router-controller: api.activity.custom
+  /comments:
+    get:
       tags:
         - Comments
       summary: Get a single comment
@@ -201,6 +260,8 @@ paths:
     get:
       security:
         - apiKeyHeader:
+            []
+        - anonUser:
             []
       tags:
         - Comments
@@ -275,11 +336,6 @@ paths:
       x-openapi-router-controller: api.comment.model
   /media:
     get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
       description: Get a list of media
       tags:
         - Media
@@ -315,11 +371,6 @@ paths:
       x-openapi-router-controller: api.media.model
   "/media/source/{id}":
     get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
       tags:
         - Media
       summary: Query media for a specific task or project
@@ -370,11 +421,6 @@ paths:
       x-openapi-router-controller: api.media.model
   "/media/{id}":
     get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
       tags:
         - Media
       summary: Get a single file
@@ -432,8 +478,6 @@ paths:
     get:
       security:
         - apiKeyHeader:
-            []
-        - anonUser:
             []
       tags:
         - Media
@@ -517,11 +561,6 @@ paths:
       x-openapi-router-controller: api.project.model
   "/projects/{id}":
     get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
       tags:
         - Projects
       summary: Get a single project
@@ -589,40 +628,26 @@ paths:
         "404":
           description: Project does not exist
       x-openapi-router-controller: api.project.model
-  "/projects/{id}/submissions":
+  "/projects/{id}/activities":
     get:
-      security:
-        - apiKeyHeader:
-            []
       tags:
         - Projects
-      summary: Get submissions for a specific project
-      operationId: get_project_submissions
+        - Activities
+      summary: Get all activities related to a project
+      operationId: get_project_activities
       parameters:
-        - name: id
+        - description: The ID of the project
+          name: id
           in: path
+          required: true
           schema:
             type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            default: 20
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            default: 0
+            pattern: ^[a-zA-Z0-9-]+$
       responses:
         "200":
-          description: List of submissions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/Submission"
+          description: Return Activities
+        "404":
+          description: Project does not exist
       x-openapi-router-controller: api.project.custom
   "/submission/{id}":
     get:
@@ -702,12 +727,9 @@ paths:
       x-openapi-router-controller: api.submission.model
   /submissions:
     get:
-      security:
-        - apiKeyHeader:
-            []
       tags:
         - Submissions
-      summary: Get a single submission
+      summary: Get all submissions
       operationId: get_submissions
       parameters:
         - name: search_term
@@ -936,35 +958,6 @@ paths:
         "204":
           description: Task was deleted
       x-openapi-router-controller: api.task.model
-  /users:
-    get:
-      security:
-        - oauth2:
-            []
-      tags:
-        - Users
-      operationId: get_users
-      parameters:
-        - name: search_term
-          in: query
-          schema:
-            type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            default: 20
-      responses:
-        "200":
-          description: Return all users
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/User"
-      x-openapi-router-controller: api.user.model
   /users/authorize:
     post:
       tags:
@@ -1056,7 +1049,7 @@ paths:
               schema:
                 type: object
       x-openapi-router-controller: api.user.custom
-  "/users/{id}":
+  "/users/me":
     get:
       security:
         - apiKeyHeader:
@@ -1065,26 +1058,15 @@ paths:
             []
       tags:
         - Users
-      summary: Get all users (or those matching an ID)
+      summary: Get specific user
       operationId: get_user
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
       responses:
         "200":
-          description: Return users
+          description: Return user
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/User"
+                $ref: "./schemas.yaml#/components/schemas/User"
         "404":
           description: User not found
       x-openapi-router-controller: api.user.model
@@ -1123,21 +1105,10 @@ paths:
       security:
         - apiKeyHeader:
             []
-        - anonUser:
-            []
       tags:
         - Users
       summary: Delete user (only allowed by the user themselves)
       operationId: delete_user
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
       responses:
         "200":
           description: User deleted
@@ -1146,26 +1117,16 @@ paths:
         "404":
           description: User not found
       x-openapi-router-controller: api.user.model
-  "/users/{id}/submissions":
+  "/users/submissions":
     get:
       security:
         - apiKeyHeader:
             []
-        - anonUser:
-            []
       tags:
         - Users
+        - Submissions
       summary: Get all submissions for a user (or those matching an ID)
       operationId: get_subs
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
       responses:
         "200":
           description: Return submissions

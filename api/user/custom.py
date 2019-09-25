@@ -8,6 +8,8 @@ import smtplib
 from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from pony.orm import commit
+from middleware.response_handler import ResponseHandler
+
 
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
 from pony.flask import db_session
@@ -91,10 +93,13 @@ def reset(email):
 
 
 @db_session
-def get_subs(id=None):
+def get_subs():
     user = utils.get_user(request, db_session)
     submissions = user.submissions
-    return [s.to_dict() for s in submissions]
+    if submissions.count() > 0:
+        return ResponseHandler(200, '', body=[s.to_dict() for s in submissions]).send()
+    else:
+        return ResponseHandler(200, 'User has no submissions', body=[], ok=False).send()
 
 
 @db_session

@@ -2,8 +2,9 @@ import connexion
 from sqlalchemy.orm import lazyload, joinedload
 from db import Project, User, Submission, Task
 from decorators import access_checks
-from flask import request
+from flask import request, abort
 from pony.flask import db_session
+from middleware.response_handler import ResponseHandler
 
 
 @db_session
@@ -30,3 +31,18 @@ def activity_stats(id=None):
         },
         200,
     )
+
+
+@db_session
+def get_activity_tasks(id=None, limit=20, offset=0):
+    a = Activity.get(id=id)
+    if a and a.tasks.count() > 0:
+        return ResponseHandler(200, body=[s.to_dict() for s in a.tasks.limit(limit, offset=offset)]).send()
+    elif a and a.tasks.count() == 0:
+        return ResponseHandler(200, 'Activity has no tasks', body=[], ok=False).send()
+    else:
+        abort(404)
+
+@db_session
+def get_random_activity_task(id=None, orderBy=None, notDone=False):
+    return '', 200

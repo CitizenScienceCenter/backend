@@ -12,7 +12,7 @@ from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from api import model
 from pony.flask import db_session
 from pony.orm import core, commit
-from db import DB, Activity, OToken, Project, Comment, Submission, Media, User, Task
+from db import DB, Activity, OToken, Project, Comment, Submission, Media, User, Task, utils
 from middleware.response_handler import ResponseHandler
 
 Model = User
@@ -25,15 +25,10 @@ allowed = ["username", "pwd", "email", "info"]
 def get_users(limit=100, search_term=None, offset=0):
     return model.get_all(Model, limit, offset, search_term).send()
 
-
-@access_checks.ensure_owner(Model)
-def get_user(id=None):
-    try:
-        u = User[id]
-        return ResponseHandler(200, "User found", body=u.to_dict(exclude="pwd")).send()
-    except core.ObjectNotFound:
-        abort(404)
-
+@db_session
+def get_user():
+    u = utils.get_user(request, db_session)
+    return ResponseHandler(200, "User found", body=u.to_dict(exclude="pwd")).send()
 
 @db_session
 def create_user(body):
@@ -59,19 +54,23 @@ def create_user(body):
     return res.send()
 
 
-def update_user(id, body):
+@db_session
+def update_user(body):
+    current = utils.get_user(request, db_session)
     for k in body.keys():
         if k not in allowed:
             abort(401)
     if "pwd" in body:
         body["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(body["pwd"])
 
-    res, u = model.put(Model, id, body)
+    res, u = model.put(Model, current, body)
     res.set_body(u.to_dict(exclude="pwd"))
     return res.send()
 
 
 @db_session
-def delete_user(id):
+def delete_user():
+    current = utils.get_user(request, db_session)
+    current.delete()
     # user.relationship.clear() will empty all relations
-    return model.delete(User, id).send()
+    return ResponseHandler(200, 'User deleted').send()
