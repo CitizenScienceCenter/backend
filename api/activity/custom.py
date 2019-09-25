@@ -1,11 +1,12 @@
 import connexion
 from sqlalchemy.orm import lazyload, joinedload
-from db import Project, User, Submission, Task
+from db import Project, User, Submission, Task, Activity, utils
 from decorators import access_checks
 from flask import request, abort
 from pony.flask import db_session
 from middleware.response_handler import ResponseHandler
 
+RANDOM_TASK="select * from tasks LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}' ORDER BY random() LIMIT 1;"
 
 @db_session
 def activity_stats(id=None):
@@ -45,4 +46,7 @@ def get_activity_tasks(id=None, limit=20, offset=0):
 
 @db_session
 def get_random_activity_task(id=None, orderBy=None, notDone=False):
-    return '', 200
+    u = utils.get_user(request, db_session)
+    a = Activity.get(id=id)
+    t = a.tasks.get_by_sql(RANDOM_TASK.format(u.id, a.id))
+    return ResponseHandler(200, 'Task', body=t.to_dict()).send()

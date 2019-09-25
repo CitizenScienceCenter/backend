@@ -6,6 +6,9 @@ all:
 		clean
 		start
 
+reveal:
+	git secret reveal -f
+
 .PHONY: clean
 clean:
 		docker-compose -f ${COMPOSE_FILE} rm
@@ -23,7 +26,7 @@ swaggerui:
 
 services: spec swaggerui
 
-local: spec swaggerui run
+local: spec swaggerui reveal run
 
 .PHONY: run
 run:

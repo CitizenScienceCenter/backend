@@ -11,12 +11,6 @@ from sqlalchemy.dialects import postgresql
 from pony.flask import db_session
 
 @db_session
-def project_tasks(id, limit=20, offset=0):
-    tasks = Project[id]
-    tasks = Project.get(id=id).tasks
-    return [t.to_dict() for t in tasks]
-
-@db_session
 def delete_tasks(tasks):
     for t in tasks:
         model.delete(Task, t['id'])
