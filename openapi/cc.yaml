@@ -1402,9 +1402,9 @@ paths:
       summary: Post auth for token response
       operationId: generate
       requestBody:
+        x-nullable: true
         content:
           application/json:
-            x-body-name: user
             schema:
               type: object
               required:
@@ -1602,7 +1602,6 @@ paths:
       requestBody:
         content:
           application/json:
-            x-body-name: user
             schema:
               type: object
               allOf:

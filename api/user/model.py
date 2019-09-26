@@ -12,7 +12,18 @@ from itsdangerous import TimestampSigner, URLSafeTimedSerializer
 from api import model
 from pony.flask import db_session
 from pony.orm import core, commit
-from db import DB, Activity, OToken, Project, Comment, Submission, Media, User, Task, utils
+from db import (
+    DB,
+    Activity,
+    OToken,
+    Project,
+    Comment,
+    Submission,
+    Media,
+    User,
+    Task,
+    utils,
+)
 from middleware.response_handler import ResponseHandler
 
 Model = User
@@ -25,10 +36,12 @@ allowed = ["username", "pwd", "email", "info"]
 def get_users(limit=100, search_term=None, offset=0):
     return model.get_all(Model, limit, offset, search_term).send()
 
+
 @db_session
 def get_user():
     u = utils.get_user(request, db_session)
     return ResponseHandler(200, "User found", body=u.to_dict(exclude="pwd")).send()
+
 
 @db_session
 def create_user(body):
@@ -73,4 +86,4 @@ def delete_user():
     current = utils.get_user(request, db_session)
     current.delete()
     # user.relationship.clear() will empty all relations
-    return ResponseHandler(200, 'User deleted').send()
+    return ResponseHandler(200, "User deleted").send()

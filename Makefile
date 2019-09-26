@@ -26,7 +26,7 @@ swaggerui:
 
 services: spec swaggerui
 
-local: spec swaggerui reveal run
+local: spec swaggerui run
 
 .PHONY: run
 run:

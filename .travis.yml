@@ -1,21 +1,20 @@
-language: python
-python:
-  - "3.6"
-install:
-  - pip install -r requirements.txt
 addons:
-  postgresql: "9.4"
+  postgresql: 9.4
 before_script:
-  - psql -c "CREATE USER testing WITH PASSWORD 'testing';" -U postgres
-  - psql -c "CREATE DATABASE testcs WITH OWNER testing;" -U postgres
-services:
-  - postgresql
+  - 'psql -c "CREATE USER testing WITH PASSWORD ''testing'';" -U postgres'
+  - 'psql -c "CREATE DATABASE testcs WITH OWNER testing;" -U postgres'
 env:
   - CC_ENV=config/test.cfg
-script:
-  - pytest test/
+install:
+  - 'pip install -r requirements.txt'
+language: python
 notifications:
   webhooks:
     - https://chat.citizenscience.ch/hooks/HyKJmkFFsxjNTx2ce/RkjhJoNPEXLgnCbpKnkDL4iodkZhiCdRxGKaM8mu79mAcmRx
     - https://hooks.citizenscience.ch/hooks/redeploy-openapi?token=SI6nhAHR5nXCoe
-
+python:
+  - 3.6
+script:
+  - 'pytest test/'
+services:
+  - postgresql
