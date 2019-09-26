@@ -10,4 +10,4 @@ RUN pip install --upgrade pip
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 COPY . /code/
-EXPOSE 9000:$CC_PORT
+EXPOSE 9000:9000

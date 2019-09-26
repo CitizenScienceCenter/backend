@@ -1,12 +1,14 @@
 import connexion
-from sqlalchemy.orm import lazyload, joinedload
-from db import Project, User, Submission, Task, Activity, utils
-from decorators import access_checks
-from flask import request, abort
+from flask import abort, request
 from pony.flask import db_session
+from sqlalchemy.orm import joinedload, lazyload
+
+from db import Activity, Project, Submission, Task, User, utils
+from decorators import access_checks
 from middleware.response_handler import ResponseHandler
 
-RANDOM_TASK="select * from tasks LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}' ORDER BY random() LIMIT 1;"
+RANDOM_TASK = "select * from tasks LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}' ORDER BY random() LIMIT 1;"
+
 
 @db_session
 def activity_stats(id=None):
@@ -38,15 +40,20 @@ def activity_stats(id=None):
 def get_activity_tasks(id=None, limit=20, offset=0):
     a = Activity.get(id=id)
     if a and a.tasks.count() > 0:
-        return ResponseHandler(200, body=[s.to_dict() for s in a.tasks.limit(limit, offset=offset)]).send()
+        return ResponseHandler(
+            200,
+            {"offset": offset, "limit": limit, "total": a.tasks.count()},
+            body=[s.to_dict() for s in a.tasks.limit((limit), offset=(offset))],
+        ).send()
     elif a and a.tasks.count() == 0:
-        return ResponseHandler(200, 'Activity has no tasks', body=[], ok=False).send()
+        return ResponseHandler(200, "Activity has no tasks", body=[], ok=False).send()
     else:
         abort(404)
+
 
 @db_session
 def get_random_activity_task(id=None, orderBy=None, notDone=False):
     u = utils.get_user(request, db_session)
     a = Activity.get(id=id)
     t = a.tasks.get_by_sql(RANDOM_TASK.format(u.id, a.id))
-    return ResponseHandler(200, 'Task', body=t.to_dict()).send()
+    return ResponseHandler(200, "Task", body=t.to_dict()).send()

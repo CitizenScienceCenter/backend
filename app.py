@@ -13,7 +13,6 @@ from flask_cors import CORS
 from db.models import DB
 from minio import Minio
 from middleware.response_handler import ResponseHandler
-from decorators import validators
 
 
 class Server:
@@ -26,6 +25,9 @@ class Server:
         self.connexion_app = connexion.FlaskApp(__name__, specification_dir="./openapi")
         CORS(self.connexion_app.app)
         self.app = self.connexion_app.app
+        if not os.environ.get("CC_ENV"):
+            print("CC_ENV not set, using default (.env)")
+            os.environ["CC_ENV"] = ".env"
         self.app.config.from_envvar("CC_ENV")
         self.connexion_app.add_api(
             self.connexion_app.app.config["SWAGGER_FILE"],
@@ -34,7 +36,7 @@ class Server:
             options={"swagger_ui": False},
         )
         self.config = self.app.config
-        self.port = int(self.config["CC_PORT"]) or 8080
+        self.port = int(self.config["CC_PORT"]) or 9000
         self.debug = bool(self.config["DEBUG"]) or False
         self.app.secret_key = self.config["SECRET_KEY"] or uuid.uuid4()
 
@@ -52,7 +54,8 @@ class Server:
                     provider="postgres",
                     user=self.config["PG_USER"],
                     password=self.config["PG_PASSWORD"],
-                    host=self.config["PG_HOST"],
+                    hostaddr=self.config["PG_HOST"],
+                    port=self.config["PG_PORT"] or 5432,
                     database=self.config["PG_DB"],
                     sslmode="disable",
                 )

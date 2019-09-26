@@ -8,6 +8,7 @@ from api import model
 
 Model = Comment
 
+
 def get_comments(limit, offset, search_term=None):
     return model.get_all(Model, limit, offset, search_term).send()
 
@@ -15,13 +16,16 @@ def get_comments(limit, offset, search_term=None):
 def get_comment(cid=None):
     return model.get_one(Model, cid).send()
 
+
 def create_comment(body):
     res, c = model.post(Model, body)
     return res.send()
 
+
 def update_comment(id, body):
     res, c = model.put(Model, id, body)
     return res.send()
+
 
 def delete_comment(id):
     return model.delete(Model, id).send()

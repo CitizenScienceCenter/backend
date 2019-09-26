@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o helm
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: cccs-connexion
+  name: cccs-connexion
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: cccs-connexion
+    spec:
+      containers:
+      - args:
+        - uwsgi
+        - --http
+        - :9000
+        - --wsgi-file
+        - uwsgi.py
+        - --master
+        - --processes
+        - "4"
+        - --threads
+        - "2"
+        - --stats
+        - :9191
+        image: cccs-connexion
+        name: cccs-connexion
+        ports:
+        - containerPort: 9000
+        resources: {}
+      restartPolicy: Always
+status: {}
