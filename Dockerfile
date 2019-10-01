@@ -7,6 +7,7 @@ ENV CC_PORT 9000
 RUN mkdir /code
 WORKDIR /code
 RUN pip install --upgrade pip
+RUN pip install virtualenv
 RUN virtualenv env; source env/bin/activate
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt
