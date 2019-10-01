@@ -1,4 +1,6 @@
 {
   "name": "api",
-  "port": 9000
+  "port": 9000,
+  "ns": "staging"
+  "deployfile": "backend.template.yaml"
 }
