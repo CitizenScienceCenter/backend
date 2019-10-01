@@ -27,7 +27,7 @@ class Server:
         self.app = self.connexion_app.app
         if not os.environ.get("CC_ENV"):
             print("CC_ENV not set, using default (.env)")
-            os.environ["CC_ENV"] = ".env"
+        #            os.environ["CC_ENV"] = ".env"
         self.app.config.from_envvar("CC_ENV")
         self.connexion_app.add_api(
             self.connexion_app.app.config["SWAGGER_FILE"],

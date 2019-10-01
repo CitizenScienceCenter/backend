@@ -18,10 +18,13 @@ clean:
 spec:
 	  speccy resolve openapi/oapi.yaml -o openapi/cc.yaml
 
+localdb:
+	  docker run --name backend-db -e POSTGRES_PASSWORD=testing -e POSTGRES_USER=testing -e POSTGRES_DB=testcs -d -p "5432:5432" postgres
+
 .PHONY: swaggerui
 swaggerui:
-	docker kill swag
-	docker rm swag
+	-docker kill swag
+	-docker rm swag
 	docker run --name=swag -d -e URL="http://localhost:9000/api/v3/openapi.json" -p "5000:8080" swaggerapi/swagger-ui
 
 services: spec swaggerui
@@ -30,7 +33,7 @@ local: spec swaggerui run
 
 .PHONY: run
 run:
-	ENV=config/local.cfg python app.py
+	CC_ENV=config/local.cfg python app.py
 
 .PHONY: test
 test:
