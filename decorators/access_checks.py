@@ -6,7 +6,15 @@ import uuid
 
 from pony.flask import db_session
 
-db_tables = ['activities', 'users', 'projects', 'comments', 'submissions', 'media', 'tasks']
+db_tables = [
+    "activities",
+    "users",
+    "projects",
+    "comments",
+    "submissions",
+    "media",
+    "tasks",
+]
 
 
 @db_session
@@ -15,20 +23,24 @@ def ensure_key(token, required_scopes=None):
     @todo Implement JWT authentication
     @body Using the `jose` lib, handle creation of JWTs for users (and renewal upon expiry)
     """
+    token = uuid.UUID(token)
     u = User.get(api_key=token)
-    if u is not None and ('anonymous' not in u.info or u.anonymous == False):
-        return {str(u.id): token, 'role': 'user'}
+    if u is not None and ("anonymous" not in u.info or u.anonymous == False):
+        return {str(u.id): token, "role": "user"}
     else:
         abort(401)
 
+
 @db_session
 def ensure_anon_key(token, required_scopes=None):
+    token = uuid.UUID(token)
     u = User.get(api_key=token)
     if u is not None and u.anonymous is True:
         # TODO check on sub roles for Connexion
-        return {'anonymous': token, 'role': 'anonymous'}
+        return {"anonymous": token, "role": "anonymous"}
     else:
         abort(401)
+
 
 @db_session
 class ensure_model(object):
@@ -50,6 +62,7 @@ class ensure_model(object):
                 return func(*args, **kwargs)
             else:
                 return func(*args, **kwargs)
+
         return decorated_function
 
 
@@ -57,12 +70,14 @@ class ensure_model(object):
 class ensure_owner(object):
     def __init__(self, model):
         self.model = model
+
     @db_session
     def __call__(self, func):
         @wraps(func)
         def decorated_function(*args, **kwargs):
             if "X-API-KEY" in request.headers:
                 key = request.headers["X-API-KEY"]
+                key = uuid.UUID(key)
                 current = User.get(api_key=key)
                 if not current:
                     abort(401)
@@ -71,7 +86,7 @@ class ensure_owner(object):
                 requested = None
                 if model is Project:
                     requested = Project.get(owned_by=current.id, id=model_id)
-                elif model is Activity:                
+                elif model is Activity:
                     for p in current.owned_projects:
                         for a in p.activities:
                             if str(a.id) == model_id:
@@ -90,5 +105,5 @@ class ensure_owner(object):
                     abort(401)
                 else:
                     return func(*args, **kwargs)
-          
+
         return decorated_function

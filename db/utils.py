@@ -7,7 +7,7 @@ import uuid
 
 @db_session
 def get_user(request, db):
-    if 'X-API-KEY' in request.headers:
+    if "X-API-KEY" in request.headers:
         key = uuid.UUID(request.headers["X-API-KEY"])
         u = User.get(api_key=key)
         if u:
@@ -15,4 +15,3 @@ def get_user(request, db):
         else:
             abort(404)
     abort(401)
-        
