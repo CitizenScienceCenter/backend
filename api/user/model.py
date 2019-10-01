@@ -59,7 +59,7 @@ def create_user(body):
         from_anon = request.headers["X-Api-Key"]
         anon = User.get(api_key=from_anon)
         if anon:
-            logging.warn("deleting anonymous user")
+            logging.warning("deleting anonymous user")
             for s in u.submissions:
                 s.user_id = u.id
             User.get(id=anon.id).delete()
@@ -85,5 +85,6 @@ def update_user(body):
 def delete_user():
     current = utils.get_user(request, db_session)
     current.delete()
+    commit()
     # user.relationship.clear() will empty all relations
     return ResponseHandler(200, "User deleted").send()

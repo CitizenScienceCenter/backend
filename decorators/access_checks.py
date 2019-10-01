@@ -23,9 +23,9 @@ def ensure_key(token, required_scopes=None):
     @todo Implement JWT authentication
     @body Using the `jose` lib, handle creation of JWTs for users (and renewal upon expiry)
     """
-    token = uuid.UUID(token)
     u = User.get(api_key=token)
-    if u is not None and ("anonymous" not in u.info or u.anonymous == False):
+    print(u)
+    if u and ("anonymous" not in u.info or u.anonymous == False):
         return {str(u.id): token, "role": "user"}
     else:
         abort(401)
@@ -33,7 +33,6 @@ def ensure_key(token, required_scopes=None):
 
 @db_session
 def ensure_anon_key(token, required_scopes=None):
-    token = uuid.UUID(token)
     u = User.get(api_key=token)
     if u is not None and u.anonymous is True:
         # TODO check on sub roles for Connexion
@@ -77,7 +76,6 @@ class ensure_owner(object):
         def decorated_function(*args, **kwargs):
             if "X-API-KEY" in request.headers:
                 key = request.headers["X-API-KEY"]
-                key = uuid.UUID(key)
                 current = User.get(api_key=key)
                 if not current:
                     abort(401)

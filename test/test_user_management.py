@@ -5,9 +5,9 @@ import pytest
 from app import Server
 
 
+anon_name = "_anon{}".format("dfjkshfuihvuiehfnijvrifbvrf")
+anon_pwd = "sbdshf783yfh4ub47iwhiu9heiu"
 
-anon_name = '_anon{}'.format('dfjkshfuihvuiehfnijvrifbvrf')
-anon_pwd = 'sbdshf783yfh4ub47iwhiu9heiu' 
 
 @pytest.fixture(scope="session")
 def client():
@@ -15,20 +15,17 @@ def client():
     with s.connexion_app.app.test_client() as c:
         yield c
 
+
 @pytest.fixture(scope="session")
 def anonymous_user(client):
     u = {
-        'username': anon_name,
-        'pwd': anon_pwd,
-        'confirmed': False,
-        'info': {
-            'anonymous': True
-        },
-        'anonymous': True
+        "username": anon_name,
+        "pwd": anon_pwd,
+        "confirmed": False,
+        "info": {"anonymous": True},
+        "anonymous": True,
     }
-    reg = client.post(
-        f"{config.ROOT_URL}/users/register", json=u
-    )
+    reg = client.post(f"{config.ROOT_URL}/users/register", json=u)
     assert reg.status_code == 201 or reg.status_code == 409
 
 
@@ -39,13 +36,15 @@ def login_anonymous(client, anonymous_user):
     )
     assert lg.status_code == 200
     user = json.loads(lg.data)
-    assert 'pwd' not in user
+    assert "pwd" not in user
     lg = client.post(
-        f"{config.ROOT_URL}/users/register", json={"username": "gavin", "email": 'abc@abc.com', "pwd": 'dklfjfkf373'},
-        headers=[("X-Api-Key", user['api_key'])],
+        f"{config.ROOT_URL}/users/register",
+        json={"username": "gavin", "email": "abc@abc.com", "pwd": "dklfjfkf373"},
+        headers=[("X-Api-Key", user["api_key"])],
     )
-    assert lg.status_code == 201
+    assert lg.status_code == 201 or lg.status_code == 409
     return user
+
 
 @pytest.mark.first
 def test_convert_anonymous_user(client, login_anonymous):
@@ -59,24 +58,28 @@ def test_anonymous_fail(client):
     )
     assert lg.status_code == 404
 
+
 @pytest.mark.third
 def test_login_user(client):
     lg = client.post(
-        f"{config.ROOT_URL}/users/login", json={"email": 'abc@abc.com', "pwd": 'dklfjfkf373'}
+        f"{config.ROOT_URL}/users/login",
+        json={"email": "abc@abc.com", "pwd": "dklfjfkf373"},
     )
     assert lg.status_code == 200
     user = json.loads(lg.data)
-    assert 'pwd' not in user
+    assert "pwd" not in user
+
 
 def update_user(client):
     pass
 
+
 @pytest.mark.last
 def test_delete_user(client):
     user = utils.login(client, "abc@abc.com", "dklfjfkf373")
+    print(user)
     lg = client.delete(
-        f"{config.ROOT_URL}/users/{user['id']}",
-        headers=[("X-API-KEY", user["api_key"])],
+        f"{config.ROOT_URL}/users/me", headers=[("X-API-KEY", user["api_key"])]
     )
     assert lg.status_code == 200
 
