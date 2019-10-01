@@ -6,6 +6,10 @@ from pony.orm import Set, PrimaryKey, Optional, Required, Json, Database
 DB = Database()
 
 
+def gen_api_key():
+    return str(uuid.uuid4())
+
+
 class User(DB.Entity):
     _table_ = "users"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
@@ -16,7 +20,7 @@ class User(DB.Entity):
     email = Optional(str, unique=True)
     anonymous = Optional(bool, default=False)
     pwd = Required(str)
-    api_key = Required(uuid.UUID, default=uuid.uuid4)
+    api_key = Required(str, default=gen_api_key)
     confirmed = Required(bool, default=False)
     projects = Set("Project")
     owned_projects = Set("Project")

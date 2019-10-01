@@ -46,7 +46,7 @@ def get_user():
 @db_session
 def create_user(body):
     user = body
-    user["api_key"] = uuid.uuid4()
+    # user["api_key"] = uuid.uuid4()
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     if "anonymous" in user:
         if not user["anonymous"] and "email" not in user:
