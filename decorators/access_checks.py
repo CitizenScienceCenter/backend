@@ -24,7 +24,9 @@ def ensure_key(token, required_scopes=None):
     """
     u = User.get(api_key=token)
     print(u)
-    if u and ("anonymous" not in u.info or u.anonymous == False):
+    if u and (
+        (u.info is not None and "anonymous" not in u.info) or u.anonymous == False
+    ):
         return {str(u.id): token, "role": "user"}
     else:
         abort(401)
