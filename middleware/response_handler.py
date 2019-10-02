@@ -9,20 +9,20 @@ class ResponseHandler:
     def __init__(
         self, status_code, msg, body_key="data", mimetype=None, body=None, ok=True
     ):
-        self.msg = {"code": status_code, "msg": msg, "ok": ok}
+        self.body = {"code": status_code, "msg": msg, "ok": ok}
         self.code = status_code
         self.body_key = body_key
         self.mimetype = self.mimetype
         if ok is False:
-            self.msg["err"] = msg
+            self.body["err"] = msg
         if body is not None:
-            self.msg[self.body_key] = body
+            self.body[self.body_key] = body
 
     def set_body(self, body):
-        self.msg[self.body_key] = body
+        self.body[self.body_key] = body
 
     def set_val(self, k, v):
-        self.msg[k] = v
+        self.body[k] = v
 
     def send(self):
-        return jsonify(self.msg), self.code
+        return jsonify(self.body), self.code

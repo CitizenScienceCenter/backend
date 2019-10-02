@@ -1,1161 +1,1148 @@
-openapi: 3.0.0
+components:
+  securitySchemes:
+    anonUser:
+      in: header
+      name: X-ANON
+      type: apiKey
+      x-apikeyInfoFunc: decorators.access_checks.ensure_anon_key
+    apiKeyHeader:
+      in: header
+      name: X-API-KEY
+      type: apiKey
+      x-apikeyInfoFunc: decorators.access_checks.ensure_key
+    oauth2:
+      flows:
+        implicit:
+          authorizationUrl: http://localhost:8081/oauth/authorize
+          scopes:
+            apiKey: 'Unique identifier of the user accessing the service.'
+      type: oauth2
+      x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
 info:
   title: CCCS
-  version: "3.0.0"
-servers:
-  - url: http://localhost:9000/api/v3
-    description: Local Development Server
-  - url: https://api-staging.citizenscience.ch/api/v3
-    description: Staging Server
-  - url: https://api.citizenscience.ch/api/v3
-    description: Production API Server
+  version: 3.0.0
+openapi: 3.0.0
 paths:
   /activities:
     get:
-      tags:
-        - Activities
-      summary: Get all Activities
       operationId: get_activities
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: search_term
           schema:
             type: string
-        - name: limit
-          in: query
+        - in: query
+          name: limit
           schema:
-            type: integer
-            minimum: 0
             default: 20
+            minimum: 0
+            type: integer
       responses:
-        "200":
-          description: Return Activities
+        200:
           content:
             application/json:
               schema:
-                type: array
                 items:
-                  $ref: "./schemas.yaml#/components/schemas/Activity"
-      x-openapi-router-controller: api.activity.model
-    post:
-      security:
-        - apiKeyHeader:
-            []
+                  $ref: ./schemas.yaml#/components/schemas/Activity
+                type: array
+          description: 'Return Activities'
+      summary: 'Get all Activities'
       tags:
         - Activities
-      summary: Post a activity
+      x-openapi-router-controller: api.activity.model
+    post:
       operationId: create_activity
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Activity"
+        $ref: ./bodies.yaml#/components/requestBodies/Activity
       responses:
-        "201":
-          description: New Activity created
-        "409":
-          description: Activity already exists
+        201:
+          description: 'New Activity created'
+        409:
+          description: 'Activity already exists'
+      security:
+        - apiKeyHeader: []
+      summary: 'Post a activity'
+      tags:
+        - Activities
       x-openapi-router-controller: api.activity.model
   /activities/count:
     get:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Activities
-      summary: Get row count of query
       operationId: get_activity_count
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: search_term
           schema:
             type: string
       responses:
-        "200":
-          description: Row count
-      x-openapi-router-controller: api.activity.model
-  "/activities/{id}":
-    get:
-      tags:
-        - Activities
-      summary: Get a single activity
-      operationId: get_activity
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      responses:
-        "200":
-          description: Return Activity
-        "404":
-          description: Activity does not exist
-      x-openapi-router-controller: api.activity.model
-    put:
+        200:
+          description: 'Row count'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+      summary: 'Get row count of query'
       tags:
         - Activities
-      summary: Modify/Create a Activity
-      operationId: update_activity
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Activity"
-      responses:
-        "200":
-          description: Activity modified
-        "201":
-          description: New Activity created
       x-openapi-router-controller: api.activity.model
+  /activities/{id}:
     delete:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Activities
-      summary: Remove an Activity
       operationId: delete_activity
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
-      responses:
-        "204":
-          description: Activity was deleted
-        "404":
-          description: Activity does not exist
-      x-openapi-router-controller: api.activity.model
-  "/tasks/{id}/submissions":
-    get:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Tasks
-        - Submissions
-      summary: Get submissions for a specific task
-      operationId: get_task_submissions
-      parameters:
-        - name: id
-          in: path
-          schema:
             type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            default: 20
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            default: 0
       responses:
-        "200":
-          description: List of submissions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/Submission"
-      x-openapi-router-controller: api.task.custom
-  "/activities/{id}/tasks":
+        204:
+          description: 'Activity was deleted'
+        404:
+          description: 'Activity does not exist'
+      security:
+        - apiKeyHeader: []
+      summary: 'Remove an Activity'
+      tags:
+        - Activities
+      x-openapi-router-controller: api.activity.model
     get:
+      operationId: get_activity
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return Activity'
+        404:
+          description: 'Activity does not exist'
+      summary: 'Get a single activity'
+      tags:
+        - Activities
+      x-openapi-router-controller: api.activity.model
+    put:
+      operationId: update_activity
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        $ref: ./bodies.yaml#/components/requestBodies/Activity
+      responses:
+        200:
+          description: 'Activity modified'
+        201:
+          description: 'New Activity created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Modify/Create a Activity'
+      tags:
+        - Activities
+      x-openapi-router-controller: api.activity.model
+  /activities/{id}/tasks:
+    get:
+      operationId: get_activity_tasks
+      parameters:
+        - description: 'The Activity ID'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        200:
+          description: 'Return activity tasks'
+        404:
+          description: 'Activity does not exist'
+      summary: 'Get the tasks for an activity'
       tags:
         - Activities
         - Tasks
-      summary: Get the tasks for an activity
-      operationId: get_activity_tasks
-      parameters:
-        - description: The Activity ID
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 20
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            default: 0
-      responses:
-        "200":
-          description: Return activity tasks
-        "404":
-          description: Activity does not exist
       x-openapi-router-controller: api.activity.custom
   /comments:
     get:
-      tags:
-        - Comments
-      summary: Get a single comment
       operationId: get_comments
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: search_term
           schema:
             type: string
-        - name: limit
-          in: query
+        - in: query
+          name: limit
           schema:
-            type: integer
-            minimum: 0
             default: 20
+            minimum: 0
+            type: integer
       responses:
-        "200":
-          description: List of comments
+        200:
           content:
             application/json:
               schema:
-                type: array
                 items:
-                  $ref: "./schemas.yaml#/components/schemas/Comment"
+                  $ref: ./schemas.yaml#/components/schemas/Comment
+                type: array
+          description: 'List of comments'
+      summary: 'Get a single comment'
+      tags:
+        - Comments
       x-openapi-router-controller: api.comment.model
     post:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
-      tags:
-        - Comments
-      summary: Post a comment
       operationId: create_comment
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Comment"
+        $ref: ./bodies.yaml#/components/requestBodies/Comment
       responses:
-        "201":
-          description: Comment created
+        201:
           content:
             application/json:
               schema:
-                $ref: "./schemas.yaml#/components/schemas/Comment"
-        "409":
-          description: Comment already exists
-      x-openapi-router-controller: api.comment.model
-  "/comments/{id}":
-    get:
+                $ref: ./schemas.yaml#/components/schemas/Comment
+          description: 'Comment created'
+        409:
+          description: 'Comment already exists'
       security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Post a comment'
       tags:
         - Comments
-      summary: Get a single comment
-      operationId: get_comment
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      responses:
-        "200":
-          description: Return comment
-          content:
-            application/json:
-              schema:
-                $ref: "./schemas.yaml#/components/schemas/Comment"
-        "404":
-          description: Comment does not exist
       x-openapi-router-controller: api.comment.model
-    put:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Comments
-      summary: Modify/Create a Comment
-      operationId: update_comment
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Comment"
-      responses:
-        "200":
-          description: Comment modified
-        "201":
-          description: New Comment created
-      x-openapi-router-controller: api.comment.model
+  /comments/{id}:
     delete:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Comments
-      summary: Remove a Comment
       operationId: delete_comment
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       responses:
-        "204":
-          description: Comment was deleted
-        "404":
-          description: Comment does not exist
+        204:
+          description: 'Comment was deleted'
+        404:
+          description: 'Comment does not exist'
+      security:
+        - apiKeyHeader: []
+      summary: 'Remove a Comment'
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+    get:
+      operationId: get_comment
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas.yaml#/components/schemas/Comment
+          description: 'Return comment'
+        404:
+          description: 'Comment does not exist'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Get a single comment'
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+    put:
+      operationId: update_comment
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        $ref: ./bodies.yaml#/components/requestBodies/Comment
+      responses:
+        200:
+          description: 'Comment modified'
+        201:
+          description: 'New Comment created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Modify/Create a Comment'
+      tags:
+        - Comments
       x-openapi-router-controller: api.comment.model
   /media:
     get:
-      description: Get a list of media
-      tags:
-        - Media
+      description: 'Get a list of media'
       operationId: get_media
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: search_term
           schema:
             type: string
-        - name: limit
-          in: query
+        - in: query
+          name: limit
           schema:
-            type: integer
-            minimum: 0
             default: 20
+            minimum: 0
+            type: integer
       responses:
-        "200":
-          description: List of media
-      x-openapi-router-controller: api.media.model
-    post:
-      security:
-        - apiKeyHeader:
-            []
-      description: The media details (for files already on the server or remotely hosted)
+        200:
+          description: 'List of media'
       tags:
         - Media
+      x-openapi-router-controller: api.media.model
+    post:
+      description: 'The media details (for files already on the server or remotely
+        hosted)'
       operationId: create_medium
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Medium"
+        $ref: ./bodies.yaml#/components/requestBodies/Medium
       responses:
-        "200":
-          description: Media attached
-      x-openapi-router-controller: api.media.model
-  "/media/source/{id}":
-    get:
-      tags:
-        - Media
-      summary: Query media for a specific task or project
-      operationId: get_for_source
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      responses:
-        "200":
-          description: Return Media
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/Media"
-        "404":
-          description: Media does not exist
-      x-openapi-router-controller: api.media.custom
-    delete:
+        200:
+          description: 'Media attached'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
       tags:
         - Media
-      summary: Delete all media files related to  source
+      x-openapi-router-controller: api.media.model
+  /media/source/{id}:
+    delete:
       operationId: delete_medium
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       responses:
-        "200":
-          description: Media deleted
-        "404":
-          description: Media does not exist
-      x-openapi-router-controller: api.media.model
-  "/media/{id}":
-    get:
+        200:
+          description: 'Media deleted'
+        404:
+          description: 'Media does not exist'
+      security:
+        - apiKeyHeader: []
+      summary: 'Delete all media files related to  source'
       tags:
         - Media
-      summary: Get a single file
-      operationId: get_medium
+      x-openapi-router-controller: api.media.model
+    get:
+      operationId: get_for_source
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       responses:
-        "200":
-          description: Return Media
+        200:
           content:
             application/json:
               schema:
-                type: string
-                format: binary
-        "404":
-          description: Media does not exist
-      x-openapi-router-controller: api.media.model
-    put:
-      security:
-        - apiKeyHeader:
-            []
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Media
+                type: array
+          description: 'Return Media'
+        404:
+          description: 'Media does not exist'
+      summary: 'Query media for a specific task or project'
       tags:
         - Media
-      summary: Put a single file
-      operationId: update_medium
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Medium"
-      responses:
-        "201":
-          description: Return Media
-          content:
-            application/json:
-              schema:
-                $ref: "./schemas.yaml#/components/schemas/Media"
-        "404":
-          description: Media does not exist
-      x-openapi-router-controller: api.media.model
-  "/media/upload":
+      x-openapi-router-controller: api.media.custom
+  /media/upload:
     get:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Media
-      summary: Return pre-authorised url to upload media
       operationId: get_pre_signed_url
       parameters:
-        - name: source_id
-          in: query
+        - in: query
+          name: source_id
           schema:
             type: string
-        - name: filename
-          in: query
+        - in: query
+          name: filename
           schema:
             type: string
       responses:
-        "200":
-          description: Return presigned url
-        "401":
-          description: User does not have uploading access
-      x-openapi-router-controller: api.media.custom
-  /projects:
-    get:
+        200:
+          description: 'Return presigned url'
+        401:
+          description: 'User does not have uploading access'
+      security:
+        - apiKeyHeader: []
+      summary: 'Return pre-authorised url to upload media'
       tags:
-        - Projects
-      summary: Get all projects
-      operationId: get_projects
+        - Media
+      x-openapi-router-controller: api.media.custom
+  /media/{id}:
+    get:
+      operationId: get_medium
       parameters:
-        - name: search_term
-          in: query
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
           schema:
+            pattern: ^[a-zA-Z0-9-]+$
             type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            default: 20
       responses:
-        "200":
-          description: Return projects
+        200:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/Project"
-      x-openapi-router-controller: api.project.model
-    post:
+                format: binary
+                type: string
+          description: 'Return Media'
+        404:
+          description: 'Media does not exist'
+      summary: 'Get a single file'
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+    put:
+      operationId: update_medium
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        $ref: ./bodies.yaml#/components/requestBodies/Medium
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas.yaml#/components/schemas/Media
+          description: 'Return Media'
+        404:
+          description: 'Media does not exist'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+      summary: 'Put a single file'
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+  /projects:
+    get:
+      operationId: get_projects
+      parameters:
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Project
+                type: array
+          description: 'Return projects'
+      summary: 'Get all projects'
       tags:
         - Projects
-      summary: Post a project
+      x-openapi-router-controller: api.project.model
+    post:
       operationId: create_project
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Project"
+        $ref: ./bodies.yaml#/components/requestBodies/Project
       responses:
-        "201":
-          description: New project created
-        "409":
-          description: Project already exists
+        201:
+          description: 'New project created'
+        409:
+          description: 'Project already exists'
+      security:
+        - apiKeyHeader: []
+      summary: 'Post a project'
+      tags:
+        - Projects
       x-openapi-router-controller: api.project.model
   /projects/count:
     get:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Projects
-      summary: Get row count of query
       operationId: get_project_count
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: search_term
           schema:
             type: string
       responses:
-        "200":
-          description: Row count
-      x-openapi-router-controller: api.project.model
-  "/projects/{id}":
-    get:
-      tags:
-        - Projects
-      summary: Get a single project
-      operationId: get_project
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      responses:
-        "200":
-          description: Return project
-        "404":
-          description: Project does not exist
-      x-openapi-router-controller: api.project.model
-    put:
+        200:
+          description: 'Row count'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+      summary: 'Get row count of query'
       tags:
         - Projects
-      summary: Modify/Create a project
-      operationId: update_project
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Project"
-      responses:
-        "200":
-          description: Project modified
-        "201":
-          description: New project created
       x-openapi-router-controller: api.project.model
+  /projects/{id}:
     delete:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Projects
-      summary: Remove a project
       operationId: delete_project
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       responses:
-        "204":
-          description: Project was deleted
-        "404":
-          description: Project does not exist
+        204:
+          description: 'Project was deleted'
+        404:
+          description: 'Project does not exist'
+      security:
+        - apiKeyHeader: []
+      summary: 'Remove a project'
+      tags:
+        - Projects
       x-openapi-router-controller: api.project.model
-  "/projects/{id}/activities":
     get:
+      operationId: get_project
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return project'
+        404:
+          description: 'Project does not exist'
+      summary: 'Get a single project'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+    put:
+      operationId: update_project
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        $ref: ./bodies.yaml#/components/requestBodies/Project
+      responses:
+        200:
+          description: 'Project modified'
+        201:
+          description: 'New project created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Modify/Create a project'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+  /projects/{id}/activities:
+    get:
+      operationId: get_project_activities
+      parameters:
+        - description: 'The ID of the project'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return Activities'
+        404:
+          description: 'Project does not exist'
+      summary: 'Get all activities related to a project'
       tags:
         - Projects
         - Activities
-      summary: Get all activities related to a project
-      operationId: get_project_activities
+      x-openapi-router-controller: api.project.custom
+  /submission/{id}:
+    delete:
+      operationId: delete_submission
       parameters:
-        - description: The ID of the project
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       responses:
-        "200":
-          description: Return Activities
-        "404":
-          description: Project does not exist
-      x-openapi-router-controller: api.project.custom
-  "/submission/{id}":
-    get:
+        204:
+          description: 'Submission was deleted'
+        404:
+          description: 'Submission does not exist'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+      summary: 'Remove a submission'
       tags:
         - Submissions
-      summary: Get a single submission
+      x-openapi-router-controller: api.submission.model
+    get:
       operationId: get_submission
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       responses:
-        "200":
-          description: Return submission
+        200:
           content:
             application/json:
               schema:
-                $ref: "./schemas.yaml#/components/schemas/Submission"
-        "404":
-          description: Submission does not exist
+                $ref: ./schemas.yaml#/components/schemas/Submission
+          description: 'Return submission'
+        404:
+          description: 'Submission does not exist'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get a single submission'
+      tags:
+        - Submissions
       x-openapi-router-controller: api.submission.model
     put:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Submissions
-      summary: Modify/Create a submission
       operationId: update_submission
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Submission"
+        $ref: ./bodies.yaml#/components/requestBodies/Submission
       responses:
-        "200":
-          description: Submission modified
-        "201":
-          description: New submission created
-      x-openapi-router-controller: api.submission.model
-    delete:
+        200:
+          description: 'Submission modified'
+        201:
+          description: 'New submission created'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+      summary: 'Modify/Create a submission'
       tags:
         - Submissions
-      summary: Remove a submission
-      operationId: delete_submission
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      responses:
-        "204":
-          description: Submission was deleted
-        "404":
-          description: Submission does not exist
       x-openapi-router-controller: api.submission.model
   /submissions:
     get:
-      tags:
-        - Submissions
-      summary: Get all submissions
       operationId: get_submissions
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: search_term
           schema:
             type: string
-        - name: limit
-          in: query
+        - in: query
+          name: limit
           schema:
-            type: integer
-            minimum: 0
             default: 20
+            minimum: 0
+            type: integer
       responses:
-        "200":
-          description: List of submissions
+        200:
           content:
             application/json:
               schema:
-                type: array
                 items:
-                  $ref: "./schemas.yaml#/components/schemas/Submission"
-      x-openapi-router-controller: api.submission.model
-    post:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
+                  $ref: ./schemas.yaml#/components/schemas/Submission
+                type: array
+          description: 'List of submissions'
+      summary: 'Get all submissions'
       tags:
         - Submissions
-      summary: Post a submission
+      x-openapi-router-controller: api.submission.model
+    post:
       operationId: create_submission
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Submission"
+        $ref: ./bodies.yaml#/components/requestBodies/Submission
       responses:
-        "201":
-          description: Submission created
+        201:
           content:
             application/json:
               schema:
-                $ref: "./schemas.yaml#/components/schemas/Submission"
+                $ref: ./schemas.yaml#/components/schemas/Submission
+          description: 'Submission created'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Post a submission'
+      tags:
+        - Submissions
       x-openapi-router-controller: api.submission.model
   /submissions/count:
     get:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Submissions
-      summary: Get row count of query
       operationId: get_submission_count
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: search_term
           schema:
             type: string
       responses:
-        "200":
-          description: Row count
+        200:
+          description: 'Row count'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get row count of query'
+      tags:
+        - Submissions
       x-openapi-router-controller: api.submission.model
-  /tasks:
-    get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
-      tags:
-        - Tasks
-      summary: Get a list of tasks
-      operationId: get_tasks
-      parameters:
-        - name: offset
-          in: query
-          schema:
-            type: number
-            default: 0
-        - name: search_term
-          in: query
-          schema:
-            type: string
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-            default: 20
-      responses:
-        "200":
-          description: List of tasks
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/Task"
-      x-openapi-router-controller: api.task.model
+  /task:
     post:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Tasks
-      summary: Post an array of tasks
-      operationId: create_tasks
+      operationId: create_task
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Task"
+        $ref: ./bodies.yaml#/components/requestBodies/Task
       responses:
-        "201":
-          description: Task created
+        201:
           content:
             application/json:
               schema:
-                type: array
                 items:
-                  $ref: "./schemas.yaml#/components/schemas/Task"
-      x-openapi-router-controller: api.task.model
-    delete:
+                  $ref: ./schemas.yaml#/components/schemas/Task
+                type: array
+          description: 'Task created'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+      summary: 'Post a single task'
       tags:
         - Tasks
-      summary: Delete an array of tasks
+      x-openapi-router-controller: api.task.model
+  /tasks:
+    delete:
       operationId: delete_tasks
       requestBody:
         content:
           application/json:
             schema:
-              type: array
               items:
                 type: string
+              type: array
       responses:
-        "204":
-          description: Tasks were deleted
+        204:
+          description: 'Tasks were deleted'
+      security:
+        - apiKeyHeader: []
+      summary: 'Delete an array of tasks'
+      tags:
+        - Tasks
       x-openapi-router-controller: api.task.custom
-  /tasks/count:
     get:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Tasks
-      summary: Get row count of query
-      operationId: get_task_count
+      operationId: get_tasks
       parameters:
-        - name: search_term
-          in: query
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: number
+        - in: query
+          name: search_term
           schema:
             type: string
-      responses:
-        "200":
-          description: Row count
-      x-openapi-router-controller: api.task.model
-  "/tasks/{id}":
-    get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
-      tags:
-        - Tasks
-      summary: Get a single task
-      operationId: get_task
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
+        - in: query
+          name: limit
           schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
+            default: 20
+            minimum: 0
+            type: integer
       responses:
-        "200":
-          description: Return task
+        200:
           content:
             application/json:
               schema:
-                $ref: "./schemas.yaml#/components/schemas/Task"
-        "404":
-          description: Task does not exist
-      x-openapi-router-controller: api.task.model
-    put:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Task
+                type: array
+          description: 'List of tasks'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Get a list of tasks'
       tags:
         - Tasks
-      summary: Modify/Create a task
-      operationId: update_task
+      x-openapi-router-controller: api.task.model
+    post:
+      operationId: create_tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: ./schemas.yaml#/components/schemas/Task
+              type: array
+        description: 'List of tasks'
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Task
+                type: array
+          description: 'Task created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Post an array of tasks'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+  /tasks/count:
+    get:
+      operationId: get_task_count
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
+        - in: query
+          name: search_term
           schema:
             type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/Task"
       responses:
-        "201":
-          description: New task created
-      x-openapi-router-controller: api.task.model
-    delete:
+        200:
+          description: 'Row count'
       security:
-        - apiKeyHeader:
-            []
+        - apiKeyHeader: []
+      summary: 'Get row count of query'
       tags:
         - Tasks
-      summary: Delete a single tasks
+      x-openapi-router-controller: api.task.model
+  /tasks/{id}:
+    delete:
       operationId: delete_task
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
           in: path
+          name: id
           required: true
           schema:
-            type: string
             pattern: ^[a-zA-Z0-9-]+$
+            type: string
       responses:
-        "204":
-          description: Task was deleted
+        204:
+          description: 'Task was deleted'
+      security:
+        - apiKeyHeader: []
+      summary: 'Delete a single tasks'
+      tags:
+        - Tasks
       x-openapi-router-controller: api.task.model
+    get:
+      operationId: get_task
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas.yaml#/components/schemas/Task
+          description: 'Return task'
+        404:
+          description: 'Task does not exist'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Get a single task'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+    put:
+      operationId: update_task
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        $ref: ./bodies.yaml#/components/requestBodies/Task
+      responses:
+        201:
+          description: 'New task created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Modify/Create a task'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+  /tasks/{id}/submissions:
+    get:
+      operationId: get_task_submissions
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Submission
+                type: array
+          description: 'List of submissions'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get submissions for a specific task'
+      tags:
+        - Tasks
+        - Submissions
+      x-openapi-router-controller: api.task.custom
   /users/authorize:
     post:
-      tags:
-        - Users
-      summary: Post auth for token response
       operationId: generate
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/User"
+        $ref: ./bodies.yaml#/components/requestBodies/User
       responses:
-        "200":
-          description: Token created
+        200:
+          description: 'Token created'
+      summary: 'Post auth for token response'
+      tags:
+        - Users
       x-openapi-router-controller: api.otoken
   /users/login:
     post:
-      tags:
-        - Users
-      summary: Allow a user to login
       operationId: login
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/User"
+        $ref: ./bodies.yaml#/components/requestBodies/User
         required: true
       responses:
-        "200":
-          description: Login successful
-        "401":
-          description: Incorrect login details
-        "404":
-          description: User not found
-      x-openapi-router-controller: api.user.custom
-  /users/register:
-    post:
+        200:
+          description: 'Login successful'
+        401:
+          description: 'Incorrect login details'
+        404:
+          description: 'User not found'
+      summary: 'Allow a user to login'
       tags:
         - Users
-      summary: Registration end point for a user account
+      x-openapi-router-controller: api.user.custom
+  /users/me:
+    delete:
+      operationId: delete_user
+      responses:
+        200:
+          description: 'User deleted'
+        401:
+          description: 'Not authorised'
+        404:
+          description: 'User not found'
+      security:
+        - apiKeyHeader: []
+      summary: 'Delete user (only allowed by the user themselves)'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model
+    get:
+      operationId: get_user
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas.yaml#/components/schemas/User
+          description: 'Return user'
+        404:
+          description: 'User not found'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Get specific user'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model
+    put:
+      operationId: update_user
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        $ref: ./bodies.yaml#/components/requestBodies/UserUpdate
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas.yaml#/components/schemas/User
+          description: 'User updated'
+        404:
+          description: 'User not found'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Update user details (change password, add details etc)'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model
+  /users/register:
+    post:
       operationId: create_user
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/User"
+        $ref: ./bodies.yaml#/components/requestBodies/User
       responses:
-        "201":
-          description: Created user
-        "409":
-          description: User exists
+        201:
+          description: 'Created user'
+        409:
+          description: 'User exists'
+      summary: 'Registration end point for a user account'
+      tags:
+        - Users
       x-openapi-router-controller: api.user.model
   /users/reset:
     get:
-      tags:
-        - Users
-      summary: Reset user password
       operationId: reset
       parameters:
-        - name: email
-          in: query
+        - in: query
+          name: email
           required: true
           schema:
             type: string
       responses:
-        "200":
-          description: Password reset
-      x-openapi-router-controller: api.user.custom
-    post:
+        200:
+          description: 'Password reset'
+      summary: 'Reset user password'
       tags:
         - Users
-      summary: Verify password reset token
+      x-openapi-router-controller: api.user.custom
+    post:
       operationId: verify_reset
       requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/User"
+        $ref: ./bodies.yaml#/components/requestBodies/User
       responses:
-        "200":
-          description: Verified and reset
-        "401":
-          description: Unauthorised user
+        200:
+          description: 'Verified and reset'
+        401:
+          description: 'Unauthorised user'
+      summary: 'Verify password reset token'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+  /users/submissions:
+    get:
+      operationId: get_subs
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Submission
+                type: array
+          description: 'Return submissions'
+        404:
+          description: 'User not found'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get all submissions for a user (or those matching an ID)'
+      tags:
+        - Users
+        - Submissions
       x-openapi-router-controller: api.user.custom
   /users/validate:
     get:
-      tags:
-        - Users
-      summary: OAuth2 token info
       operationId: validate
       parameters:
-        - name: key
-          in: query
+        - in: query
+          name: key
           schema:
             type: string
       responses:
-        "200":
-          description: Token info object
+        200:
           content:
             application/json:
               schema:
                 type: object
+          description: 'Token info object'
+      summary: 'OAuth2 token info'
+      tags:
+        - Users
       x-openapi-router-controller: api.user.custom
-  "/users/me":
-    get:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
-      tags:
-        - Users
-      summary: Get specific user
-      operationId: get_user
-      responses:
-        "200":
-          description: Return user
-          content:
-            application/json:
-              schema:
-                $ref: "./schemas.yaml#/components/schemas/User"
-        "404":
-          description: User not found
-      x-openapi-router-controller: api.user.model
-    put:
-      security:
-        - apiKeyHeader:
-            []
-        - anonUser:
-            []
-      tags:
-        - Users
-      summary: Update user details (change password, add details etc)
-      operationId: update_user
-      parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
-          name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[a-zA-Z0-9-]+$
-      requestBody:
-        $ref: "./bodies.yaml#/components/requestBodies/UserUpdate" # separate because password is not required
-      responses:
-        "200":
-          description: User updated
-          content:
-            application/json:
-              schema:
-                $ref: "./schemas.yaml#/components/schemas/User"
-        "404":
-          description: User not found
-      x-openapi-router-controller: api.user.model
-    delete:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Users
-      summary: Delete user (only allowed by the user themselves)
-      operationId: delete_user
-      responses:
-        "200":
-          description: User deleted
-        "401":
-          description: Not authorised
-        "404":
-          description: User not found
-      x-openapi-router-controller: api.user.model
-  "/users/submissions":
-    get:
-      security:
-        - apiKeyHeader:
-            []
-      tags:
-        - Users
-        - Submissions
-      summary: Get all submissions for a user (or those matching an ID)
-      operationId: get_subs
-      responses:
-        "200":
-          description: Return submissions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "./schemas.yaml#/components/schemas/Submission"
-        "404":
-          description: User not found
-      x-openapi-router-controller: api.user.custom
-components:
-  securitySchemes:
-    anonUser:
-      type: apiKey
-      name: X-ANON
-      in: header
-      x-apikeyInfoFunc: decorators.access_checks.ensure_anon_key
-    apiKeyHeader:
-      type: apiKey
-      name: X-API-KEY
-      in: header
-      x-apikeyInfoFunc: decorators.access_checks.ensure_key
-    oauth2:
-      type: oauth2
-      x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
-      flows:
-        implicit:
-          authorizationUrl: http://localhost:8081/oauth/authorize
-          scopes:
-            apiKey: Unique identifier of the user accessing the service.
+servers:
+  - description: 'Local Development Server'
+    url: http://localhost:9000/api/v3
+  - description: 'Staging Server'
+    url: https://api-staging.citizenscience.ch/api/v3
+  - description: 'Production API Server'
+    url: https://api.citizenscience.ch/api/v3

@@ -12,23 +12,21 @@ from decorators import access_checks
 from middleware.response_handler import ResponseHandler
 
 from pony.flask import db_session
+
 js = jtos.JTOS()
 
 
 @db_session
 def get_all(model, limit, offset, search_term=None):
-    r = ResponseHandler(200, '')
-    r.set_val('page', {
-        'limit': limit,
-        'offset': offset
-    })
+    r = ResponseHandler(200, "")
+    r.set_val("page", {"limit": limit, "offset": offset})
     if search_term:
         try:
             st = prison.loads(search_term)
-            if 'limit' not in st.keys():
-                st['limit'] = 20
-            if 'offset' not in st.keys():
-                st['offset'] = 0
+            if "limit" not in st.keys():
+                st["limit"] = 20
+            if "offset" not in st.keys():
+                st["offset"] = 0
             q_stmt = js.parse_object(st)
             logging.info(q_stmt)
             q = model.select_by_sql(q_stmt)
@@ -42,19 +40,21 @@ def get_all(model, limit, offset, search_term=None):
     r.set_body(q)
     return r
 
+
 @db_session
 def get_count(model, search_term=None):
     st = prison.loads(search_term)
     count_query = st.copy()
-    count_query['select']['fields'] = ['COUNT(*)']
-    if 'limit' in count_query:
-        del count_query['limit']
-    if 'offset' in count_query:
-        del count_query['offset']
+    count_query["select"]["fields"] = ["COUNT(*)"]
+    if "limit" in count_query:
+        del count_query["limit"]
+    if "offset" in count_query:
+        del count_query["offset"]
     # count_stmt = js.parse_object(count_query)
     count = [0]
     # count = db_session.execute(count_stmt).fetchone()
     return count[0], 200
+
 
 @db_session
 def get_one(model, id=None):
@@ -62,16 +62,19 @@ def get_one(model, id=None):
         m = model[id]
     except core.ObjectNotFound:
         abort(404)
-    return ResponseHandler(200, 'Object found', body=m.to_dict())
+    return ResponseHandler(200, "Object found", body=m.to_dict())
+
 
 @db_session
 def get_file(model, id=None):
     m = model[id]
     return send_file(m.path) if m is not None else m, 404
 
+
 @db_session
-def post(model, object):
-    p = model(**object)
+def post(model, obj):
+    print(obj)
+    p = model(**obj)
     try:
         commit()
         obj = model.__name__.lower()
@@ -85,7 +88,8 @@ def post(model, object):
     except Exception as e:
         logging.error(e)
         abort(500)
-    return ResponseHandler(201, '{} created'.format(obj), body=p.to_dict()), p
+    return ResponseHandler(201, "{} created".format(obj), body=p.to_dict()), p
+
 
 @db_session
 def put(model, id, object):
@@ -101,7 +105,8 @@ def put(model, id, object):
         setattr(p, k, object[k])
     commit()
     obj = model.__name__.lower()
-    return ResponseHandler(201, '{} updated'.format(obj), body=p.to_dict()), p
+    return ResponseHandler(201, "{} updated".format(obj), body=p.to_dict()), p
+
 
 @db_session
 def delete(model, id):
@@ -112,4 +117,4 @@ def delete(model, id):
         logging.error(e)
         abort(500)
     obj = model.__name__.lower()
-    return ResponseHandler(200, '{} deleted'.format(obj))
+    return ResponseHandler(200, "{} deleted".format(obj))
