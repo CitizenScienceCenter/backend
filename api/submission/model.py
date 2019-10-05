@@ -1,5 +1,5 @@
 from db import Submission
-from decorators import access_checks
+from decorators import access_checks, user_checks
 from flask import request
 from api import model
 
@@ -17,7 +17,7 @@ def get_submission_count(search_term=None):
 def get_submission(id=None):
     return model.get_one(Model, id).send()
 
-
+@user_checks.multiple_submissions
 def create_submission(body):
     res, s = model.post(Model, body)
     return res.send()
