@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/encima/dev/uzh/backend/env/bin/python3.7",
+    "python.pythonPath": "env/bin/python",
     "python.linting.pylintEnabled": true,
     "python.formatting.provider": "black",
     "python.linting.flake8Enabled": false,

@@ -34,7 +34,7 @@ def login(body):
         return {"msg": "Incorrect keys provided"}, 500
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
-            return q.to_dict(exclude="pwd"), 200
+            return ResponseHandler(200, 'Welcome', body=q.to_dict(exclude="pwd")).send()
         else:
             abort(401)
     else:

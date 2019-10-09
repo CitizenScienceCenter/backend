@@ -5,18 +5,18 @@ import json
 class ResponseHandler:
 
     mimetype = "application/json"
+    body_key = "data"
 
     def __init__(
-        self, status_code, msg, body_key="data", mimetype=None, body=None, ok=True
+        self, status_code, msg, mimetype=None, body=None, ok=True
     ):
         self.body = {"code": status_code, "msg": msg, "ok": ok}
         self.code = status_code
-        self.body_key = body_key
         self.mimetype = self.mimetype
         if ok is False:
             self.body["err"] = msg
         if body is not None:
-            self.body[self.body_key] = body
+            self.body['data'] = body
 
     def set_body(self, body):
         self.body[self.body_key] = body
