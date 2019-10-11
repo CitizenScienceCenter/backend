@@ -1,4 +1,4 @@
-from db.models import User
+from db.models import User, Task, Submission
 from flask import abort
 from pony.flask import db_session
 from pony.orm import *
@@ -15,3 +15,14 @@ def get_user(request, db):
         else:
             abort(404)
     abort(401)
+
+def calc_completed_tasks(tasks, uid=None):
+    questions = [t.content['question'] for t in tasks]
+    subs = None
+    if uid:
+        subs = Task.submissions.where(user_id = uid)
+    else:
+        subs = Task.submissions
+    # TODO check submissions response against task question here, could be a view in PG on task submission? 
+
+

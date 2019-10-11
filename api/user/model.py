@@ -68,6 +68,7 @@ def create_user(body):
 
 
 @db_session
+@access_checks.ensure_owner
 def update_user(body):
     current = utils.get_user(request, db_session)
     for k in body.keys():
@@ -82,6 +83,7 @@ def update_user(body):
 
 
 @db_session
+@access_checks.ensure_owner
 def delete_user():
     current = utils.get_user(request, db_session)
     current.delete()

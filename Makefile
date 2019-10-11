@@ -18,8 +18,11 @@ clean:
 spec:
 	  speccy resolve openapi/oapi.yaml -o openapi/cc.yaml
 
+.PHONY: localdb
 localdb:
-	  docker run --name backend-db -e POSTGRES_PASSWORD=testing -e POSTGRES_USER=testing -e POSTGRES_DB=testcs -d -p "5432:5432" postgres
+	 -docker kill backend-db
+	 -docker rm backend-db
+	 docker run --name backend-db -e POSTGRES_PASSWORD=testing -e POSTGRES_USER=testing -e POSTGRES_DB=testcs -d -p "5432:5432" postgres
 
 .PHONY: swaggerui
 swaggerui:
