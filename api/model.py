@@ -31,9 +31,8 @@ def get_all(model, limit, offset, search_term=None):
             logging.info(q_stmt)
             q = model.select_by_sql(q_stmt)
         except Exception as e:
-            # TODO handle parsing error
             logging.error(e)
-            abort(500)
+            abort(500, "Failed to understand query")
     else:
         q = select(a for a in model).limit(limit, offset=offset)
     q = [o.to_dict() for o in q]

@@ -173,6 +173,34 @@ paths:
       tags:
         - Activities
       x-openapi-router-controller: api.activity.model
+  "/activities/{aid}/submissions/{uid}":
+    get:
+      operationId: get_activity_submissions
+      parameters:
+        - description: The Activity ID
+          in: path
+          name: aid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - description: User ID for specific user submissions
+          in: path
+          name: uid
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return activity submissions
+        "404":
+          description: Activity does not exist
+      summary: Get the submissions for an activity
+      tags:
+        - Activities
+        - Submissions
+        - Users
+      x-openapi-router-controller: api.submission.custom
   "/activities/{id}":
     delete:
       operationId: delete_activity
@@ -1232,24 +1260,6 @@ paths:
         - Tasks
       x-openapi-router-controller: api.task.model
   /tasks:
-    delete:
-      operationId: delete_tasks
-      requestBody:
-        content:
-          application/json:
-            schema:
-              items:
-                type: string
-              type: array
-      responses:
-        "204":
-          description: Tasks were deleted
-      security:
-        - apiKeyHeader: []
-      summary: Delete an array of tasks
-      tags:
-        - Tasks
-      x-openapi-router-controller: api.task.custom
     get:
       operationId: get_tasks
       parameters:
@@ -1346,7 +1356,8 @@ paths:
           description: Task was deleted
       security:
         - apiKeyHeader: []
-      summary: Delete a single tasks
+      summary: Delete a single task. WARNING - This will also disassociate all
+        submissions for the task
       tags:
         - Tasks
       x-openapi-router-controller: api.task.model
@@ -1579,8 +1590,7 @@ paths:
     put:
       operationId: update_user
       parameters:
-        - description: The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)
+        - description: The unique identifer for a User
           in: path
           name: id
           required: true
@@ -1686,28 +1696,6 @@ paths:
       tags:
         - Users
       x-openapi-router-controller: api.user.custom
-  /users/submissions:
-    get:
-      operationId: get_subs
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: "#/paths/~1submission~1%7Bid%7D/get/responses/200/content/a\
-                    pplication~1json/schema"
-                type: array
-          description: Return submissions
-        "404":
-          description: User not found
-      security:
-        - apiKeyHeader: []
-      summary: Get all submissions for a user (or those matching an ID)
-      tags:
-        - Users
-        - Submissions
-      x-openapi-router-controller: api.user.custom
   /users/validate:
     get:
       operationId: validate
@@ -1727,6 +1715,33 @@ paths:
       tags:
         - Users
       x-openapi-router-controller: api.user.custom
+  "/users/{id}/submissions":
+    get:
+      operationId: get_user_submissions
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1submission~1%7Bid%7D/get/responses/200/content/a\
+                    pplication~1json/schema"
+                type: array
+          description: Return submissions
+        "404":
+          description: User not found
+      security:
+        - apiKeyHeader: []
+      summary: Get all submissions for a user (or those matching an ID)
+      tags:
+        - Users
+        - Submissions
+      x-openapi-router-controller: api.submission.custom
 servers:
   - description: Local Development Server
     url: http://localhost:9000/api/v3

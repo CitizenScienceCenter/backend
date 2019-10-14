@@ -7,13 +7,14 @@ from pony.flask import db_session
 
 from middleware.response_handler import ResponseHandler
 
+
 @db_session
 @access_checks.ensure_owner
-# TODO add to openapi spec as /users/:id/submissions
 def get_user_submissions(uid):
     user = User.get(id=uid)
     subs = user.submissions
-    return ResponseHandler(200, 'Submissions for user', body=subs)
+    return ResponseHandler(200, "Submissions for user", body=subs)
+
 
 @db_session
 # TODO access check for project members and user
@@ -23,9 +24,10 @@ def get_user_task_submissions(uid, tid):
     task = Task.get(id=tid)
     if task and user:
         subs = Task.get(id=tid).submissions.where(user_id=uid)
-        return ResponseHandler(200, 'Submissions for user', body=subs)
+        return ResponseHandler(200, "Submissions for user", body=subs)
     else:
         abort(404)
+
 
 # TODO add to openapi spec as /activity/:id/submissions/:uid
 @db_session
@@ -41,6 +43,6 @@ def get_activity_submissions(aid, uid=None):
                 subs[task.id] = task.submissions.where(user_id=uid)
             else:
                 subs[task.id] = task.submissions.where()
-        return ResponseHandler(200, 'Activity Submissions for User', body=subs)
+        return ResponseHandler(200, "Activity Submissions for User", body=subs)
     else:
         abort(404)

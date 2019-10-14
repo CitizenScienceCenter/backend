@@ -49,10 +49,3 @@ def update_task(id, body):
 @access_checks.ensure_owner(Model)
 def delete_task(id):
     return model.delete(Model, id).send()
-
-
-# TODO check type expected
-def delete_tasks(body):
-    for task in body:
-        model.delete(Model, task)
-    return NoContent, 200
