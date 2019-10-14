@@ -10,8 +10,8 @@ def login(client, username, password):
     })
     assert u.status_code == 200
     u = json.loads(u.get_data())
-    assert 'api_key' in u
-    return u
+    assert 'api_key' in u['data']
+    return u['data']
 
 def logout(client):
     return client.get(f"{config.ROOT_URL}/users/logout", follow_redirects=True)

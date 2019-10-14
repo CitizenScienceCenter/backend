@@ -30,7 +30,6 @@ Model = User
 
 allowed = ["username", "pwd", "email", "info"]
 
-
 @access_checks.ensure_model(Model)
 @db_session
 def get_users(limit=100, search_term=None, offset=0):
@@ -45,8 +44,10 @@ def get_user():
 
 @db_session
 def create_user(body):
+    env = current_app.config['ENV']
     user = body
-    # user["api_key"] = uuid.uuid4()
+    if env.lower() == 'test':
+        user["api_key"] = str(uuid.uuid4())
     user["pwd"] = pbkdf2_sha256.using(rounds=200000, salt_size=16).hash(user["pwd"])
     if "anonymous" in user:
         if not user["anonymous"] and "email" not in user:
@@ -62,13 +63,13 @@ def create_user(body):
             logging.warning("deleting anonymous user")
             for s in u.submissions:
                 s.user_id = u.id
-            User[anon_id].delete()
+            User[anon.id].delete()
             commit()
     return res.send()
 
 
 @db_session
-@access_checks.ensure_owner
+@access_checks.ensure_owner(Model)
 def update_user(body):
     current = utils.get_user(request, db_session)
     for k in body.keys():
@@ -82,11 +83,11 @@ def update_user(body):
     return res.send()
 
 
+@access_checks.ensure_owner(Model)
 @db_session
-@access_checks.ensure_owner
 def delete_user():
-    current = utils.get_user(request, db_session)
-    current.delete()
-    commit()
+    #current = utils.get_user(request, db_session)
+    #current.delete()
+    #commit()
     # user.relationship.clear() will empty all relations
     return ResponseHandler(200, "User deleted").send()

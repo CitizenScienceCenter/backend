@@ -1,7 +1,7 @@
 services:
   cccs-connexion:
     build:
-      context: .
+      context: ..
     command: 'pytest test/'
     ports:
       - ${CC_PORT}:${CC_PORT}

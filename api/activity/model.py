@@ -29,7 +29,7 @@ def create_activity(body):
 
 
 @db_session
-@access_checks.ensure_owner(Activity)
+@access_checks.ensure_owner(Model)
 def delete_activity(aid):
     # TODO delete tasks first? Or set info to deleted?
     return model.delete(Model, aid).send()

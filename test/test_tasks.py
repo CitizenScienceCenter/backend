@@ -35,7 +35,7 @@ def client():
 @pytest.fixture(scope="module")
 def register(client):
     lg = client.post(
-        f"{config.ROOT_URL}/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+            f"{config.ROOT_URL}/users/register", json={"username": t_con.TEST_USER, "email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
     assert lg.status_code == 201 or lg.status_code == 409
 
@@ -55,7 +55,7 @@ def activity(client, user, project):
             "name": "Test Activity",
             "description": "Test Activity",
             "platform": "Both",
-            "part_of": project['body']["id"],
+            "part_of": project['data']["id"],
         }
     return client.post(
         f"{config.ROOT_URL}/activities",
@@ -80,6 +80,7 @@ class TestActivities:
     @pytest.mark.run(order=14)
     def test_delete_activity(self, client, user, project, activity):
         act = json.loads(activity.data)
-        lg = client.delete(f"{config.ROOT_URL}/activities/{act['body']['id']}", headers=[("X-API-KEY", user["api_key"])])
+        print(activity.data['data']['id'])
+        lg = client.delete(f"{config.ROOT_URL}/activities/{act['data']['id']}", headers=[("X-API-KEY", user["api_key"])])
         assert lg.status_code == 200
     

@@ -70,8 +70,8 @@ class ensure_model(object):
 class ensure_owner(object):
     def __init__(self, model):
         self.model = model
+        self.model_id = None
 
-    @db_session
     def __call__(self, func):
         @wraps(func)
         def decorated_function(*args, **kwargs):
@@ -80,28 +80,29 @@ class ensure_owner(object):
                 current = User.get(api_key=key)
                 if not current:
                     abort(401)
-                model_id = request.view_args["id"]
-                model = self.model
+                if "id" in request.view_args:
+                    self.model_id = request.view_args["id"]
                 requested = None
-                if model is Project:
-                    requested = Project.get(owned_by=current.id, id=model_id)
-                elif model is Activity:
+                if self.model is Project:
+                    requested = Project.get(owned_by=current.id, id=self.model_id)
+                elif self.model is Activity:
                     for p in current.owned_projects:
                         for a in p.activities:
-                            if str(a.id) == model_id:
+                            if str(a.id) == self.model_id:
                                 return func(*args, **kwargs)
                     abort(404)
-                elif model is User:
-                    key = uuid.UUID(key)
-                    requested = User.get(id=model_id)
+                elif self.model is User:
+                    requested = current
+                    if self.model_id is not None:
+                        requested = User[self.model_id]
                     if requested is None or current != requested:
                         abort(401)
-                elif model is Submission:
-                    requested = Submission.get(user_id=current.id, id=model_id)
-                elif model is Comment:
-                    requested = Comment.get(user_id=current.id, id=model_id)
-                elif model is Task:
-                    t = Task.get(id=model_id)
+                elif self.model is Submission:
+                    requested = Submission.get(user_id=current.id, id=self.model_id)
+                elif self.model is Comment:
+                    requested = Comment.get(user_id=current.id, id=self.model_id)
+                elif self.model is Task:
+                    t = Task[self.model_id]
                     if (
                         t is not None
                         and t.activity_id.part_of.owned_by.id == current.id

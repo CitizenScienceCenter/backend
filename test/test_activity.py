@@ -27,7 +27,7 @@ def client():
 @pytest.fixture(scope="module")
 def register(client):
     lg = client.post(
-        f"{config.ROOT_URL}/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+            f"{config.ROOT_URL}/users/register", json={"username": t_con.TEST_USER, "email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
     )
     assert lg.status_code == 201 or lg.status_code == 409
 
@@ -48,7 +48,7 @@ def activity(client, user, project):
             "name": "Test Activity",
             "description": "Test Activity",
             "platform": "Both",
-            "part_of": project['body']["id"],
+            "part_of": project['data']["id"],
         }
     return client.post(
         f"{config.ROOT_URL}/activities",
@@ -76,7 +76,7 @@ class TestActivities:
         )
         act = json.loads(lg.data)
         assert lg.status_code == 200
-        assert 'description' in act['body'][0]
+        assert 'description' in act['data'][0]
         assert lg.status_code == 200
 
     @pytest.mark.run(order=15)
@@ -94,7 +94,7 @@ class TestActivities:
     def test_delete_activity(self, client, user, project, activity):
         act =json.loads(activity.data)
         pd = client.delete(
-            f"{config.ROOT_URL}/activities/{act['body']['id']}"
+            f"{config.ROOT_URL}/activities/{act['data']['id']}"
         )
         assert pd.status_code == 401
 
@@ -102,12 +102,12 @@ class TestActivities:
     def test_delete_activity_and_project(self, client, user, project, activity):
         act =json.loads(activity.data)
         pd = client.delete(
-            f"{config.ROOT_URL}/activities/{act['body']['id']}",
+            f"{config.ROOT_URL}/activities/{act['data']['id']}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert pd.status_code == 200
         gd = client.delete(
-            f"{config.ROOT_URL}/projects/{project['body']['id']}",
+            f"{config.ROOT_URL}/projects/{project['data']['id']}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert gd.status_code == 200

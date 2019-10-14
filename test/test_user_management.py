@@ -40,7 +40,7 @@ def login_anonymous(client, anonymous_user):
     lg = client.post(
         f"{config.ROOT_URL}/users/register",
         json={"username": "gavin", "email": "abc@abc.com", "pwd": "dklfjfkf373"},
-        headers=[("X-Api-Key", user["api_key"])],
+        headers=[("X-Api-Key", user["data"]["api_key"])],
     )
     assert lg.status_code == 201 or lg.status_code == 409
     return user
@@ -77,7 +77,6 @@ def update_user(client):
 @pytest.mark.last
 def test_delete_user(client):
     user = utils.login(client, "abc@abc.com", "dklfjfkf373")
-    print(user)
     lg = client.delete(
         f"{config.ROOT_URL}/users/me", headers=[("X-API-KEY", user["api_key"])]
     )
