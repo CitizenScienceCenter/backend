@@ -7,9 +7,7 @@ from db import Media, Submission, Task
 from decorators import access_checks
 from flask import request
 from pony.flask import db_session
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import joinedload
-from sqlalchemy.sql.expression import func
+from db import Task
 
 Model = Task
 
@@ -23,8 +21,8 @@ def get_task_count(search_term=None):
     return ms, code
 
 
-def get_task(id=None):
-    return model.get_one(Model, id).send()
+def get_task(tid=None):
+    return model.get_one(Model, tid).send()
 
 
 def create_task(body):
@@ -41,11 +39,11 @@ def create_tasks(body):
     return res.send()
 
 
-def update_task(id, body):
-    res, t = model.put(Model, id, body)
+def update_task(tid, body):
+    res, t = model.put(Model, tid, body)
     return res.send()
 
 
 @access_checks.ensure_owner(Model)
-def delete_task(id):
-    return model.delete(Model, id).send()
+def delete_task(tid):
+    return model.delete(Model, tid).send()

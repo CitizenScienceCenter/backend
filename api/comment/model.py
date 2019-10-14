@@ -22,10 +22,10 @@ def create_comment(body):
     return res.send()
 
 
-def update_comment(id, body):
-    res, c = model.put(Model, id, body)
+def update_comment(cid, body):
+    res, c = model.put(Model, cid, body)
     return res.send()
 
 
-def delete_comment(id):
-    return model.delete(Model, id).send()
+def delete_comment(cid):
+    return model.delete(Model, cid).send()

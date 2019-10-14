@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 from middleware.response_handler import ResponseHandler
 
 
-def get_for_source(id=None):
-    m = Media.get(source_id=id)
+def get_for_source(sid=None):
+    m = Media.get(source_id=sid)
     if m is not None:
         return m
 

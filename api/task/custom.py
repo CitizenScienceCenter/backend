@@ -19,8 +19,8 @@ def delete_tasks(tasks):
 
 
 @db_session
-def get_task_submissions(id=None, limit=20, offset=0):
-    t = Task.get(id=id)
+def get_task_submissions(tid=None, limit=20, offset=0):
+    t = Task[tid]
     if t and t.submissions.count() > 0:
         return ResponseHandler(
             200,
@@ -34,8 +34,8 @@ def get_task_submissions(id=None, limit=20, offset=0):
 
 
 @db_session
-def get_task_media(id=None, limit=20, offset=0):
-    t = Task.get(id=id)
+def get_task_media(tid=None, limit=20, offset=0):
+    t = Task[tid]
     if t and t.media.count() > 0:
         return ResponseHandler(
             200, "", body=[s.to_dict() for s in t.media.limit(limit, offset=offset)]
@@ -47,7 +47,7 @@ def get_task_media(id=None, limit=20, offset=0):
 
 
 @db_session
-def get_stats(id=None):
+def get_stats(tid=None):
     pass
 
 

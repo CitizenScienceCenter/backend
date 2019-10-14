@@ -19,8 +19,8 @@ def get_activity_count(search_term=None):
     return ms, code
 
 
-def get_activity(id=None):
-    return model.get_one(Model, id).send()
+def get_activity(aid=None):
+    return model.get_one(Model, aid).send()
 
 
 def create_activity(body):
@@ -30,10 +30,10 @@ def create_activity(body):
 
 @db_session
 @access_checks.ensure_owner(Activity)
-def delete_activity(id):
+def delete_activity(aid):
     # TODO delete tasks first? Or set info to deleted?
-    return model.delete(Model, id).send()
+    return model.delete(Model, aid).send()
 
 
-def update_activity(id, body):
-    return model.put(Model, id, body).send()
+def update_activity(aid, body):
+    return model.put(Model, aid, body).send()

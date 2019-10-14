@@ -54,7 +54,7 @@ def create_user(body):
         if user["anonymous"] and not "username" in user:
             user["username"] = current_app.config["ANON_PREFIX"] + str(uuid.uuid4())
     res, u = model.post(User, user)
-    res.set_val('data', u.to_dict(exclude="pwd"))
+    res.set_val("data", u.to_dict(exclude="pwd"))
     if "X-Api-Key" in request.headers and request.headers["X-Api-Key"] is not None:
         from_anon = request.headers["X-Api-Key"]
         anon = User.get(api_key=from_anon)
@@ -62,7 +62,7 @@ def create_user(body):
             logging.warning("deleting anonymous user")
             for s in u.submissions:
                 s.user_id = u.id
-            User.get(id=anon.id).delete()
+            User[anon_id].delete()
             commit()
     return res.send()
 

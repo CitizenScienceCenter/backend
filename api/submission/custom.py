@@ -29,7 +29,6 @@ def get_user_task_submissions(uid, tid):
         abort(404)
 
 
-# TODO add to openapi spec as /activity/:id/submissions/:uid
 @db_session
 def get_activity_submissions(aid, uid=None):
     user = None

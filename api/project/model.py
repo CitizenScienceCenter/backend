@@ -19,8 +19,8 @@ def get_project_count(search_term=None):
     return ms, code
 
 
-def get_project(id=None):
-    return model.get_one(Model, id).send()
+def get_project(pid=None):
+    return model.get_one(Model, pid).send()
 
 
 @db_session
@@ -32,12 +32,12 @@ def create_project(body):
     return res.send()
 
 
-def update_project(id, body):
-    res, _ = model.put(Model, id, body)
+def update_project(pid, body):
+    res, _ = model.put(Model, pid, body)
     return res.send()
 
 
 @db_session
 @access_checks.ensure_owner(Model)
-def delete_project(id):
-    return model.delete(Model, id).send()
+def delete_project(pid):
+    return model.delete(Model, pid).send()

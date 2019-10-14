@@ -16,8 +16,8 @@ from pony.flask import db_session
 
 @db_session
 @access_checks.ensure_owner(Project)
-def get_project_submissions(id=None, limit=20, offset=0):
-    p = Project.get(id=id)
+def get_project_submissions(pid=None, limit=20, offset=0):
+    p = Project[pid]
     if p:
         return [s.to_dict() for s in p.submissions.limit(limit, offset=offset)]
     else:
@@ -25,28 +25,17 @@ def get_project_submissions(id=None, limit=20, offset=0):
 
 
 @db_session
-def get_project_activities(id=None, limit=20, offset=0):
-    p = Project.get(id=id)
+def get_project_activities(pid=None, limit=20, offset=0):
+    p = Project[pid]
     if p and p.activities.count() > 0:
         return ResponseHandler(
             200,
             "",
             body=[s.to_dict() for s in p.activities.limit(limit, offset=offset)],
         ).send()
-    elif a and a.submissions.count() == 0:
+    elif p and p.activities.count() == 0:
         return ResponseHandler(
             200, "Project has no activities", body=[], ok=False
         ).send()
-    else:
-        abort(404)
-
-
-@db_session
-def get_project_taskss(id=None, limit=20, offset=0):
-    p = Project.get(id=id)
-    if p and p.tasks.count() > 0:
-        return [s.to_dict() for s in p.tasks.limit(limit, offset=offset)]
-    elif p and p.tasks.count() > 0:
-        return ResponseHandler(200, "Project has no tasks", body=[], ok=False).send()
     else:
         abort(404)

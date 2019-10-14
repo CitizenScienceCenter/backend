@@ -7,26 +7,28 @@ from pony.flask import db_session
 
 Model = Media
 
+
 def get_media(limit=100, search_term=None):
-    ms, code =  model.get_all(Model, limit, search_term)
+    ms, code = model.get_all(Model, limit, search_term)
     if len(ms) > 0 and isinstance(ms[0], Media):
         return [m.dump() for m in ms][:limit], code
     else:
         return [dict(m) for m in ms][:limit], code
 
 
-def get_medium(id=None):
-    return model.get_file(Model, id)
+def get_medium(mid=None):
+    return model.get_file(Model, mid)
 
 
 def create_medium(body):
     m, code = model.post(Model, body)
     return m.dump(), code
 
-def update_medium(id, body):
-    m, code = model.put(Model, id, body)
+
+def update_medium(mid, body):
+    m, code = model.put(Model, mid, body)
     return m.dump(), code
 
 
-def delete_medium(id):
-    return model.delete(Model, id)
+def delete_medium(mid):
+    return model.delete(Model, mid)
