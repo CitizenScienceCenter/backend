@@ -40,8 +40,8 @@ run:
 
 .PHONY: test
 test:
-		ln -sf envs/test.env .env
-		docker-compose -f docker-compose.test.yml up --build --force-recreate
+		ln -sf config/test.env .env
+		docker-compose -f test/docker-compose.yml up --build --force-recreate
 
 .PHONY: start
 docker:
