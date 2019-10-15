@@ -80,14 +80,16 @@ class ensure_owner(object):
                 current = User.get(api_key=key)
                 if not current:
                     abort(401)
-                if "id" in request.view_args:
-                    self.model_id = request.view_args["id"]
+                for key in kwargs.keys():
+                    if "id" in key:
+                        self.model_id = kwargs[key]
                 requested = None
                 if self.model is Project:
                     requested = Project.get(owned_by=current.id, id=self.model_id)
                 elif self.model is Activity:
                     for p in current.owned_projects:
                         for a in p.activities:
+                            print(a.id)
                             if str(a.id) == self.model_id:
                                 return func(*args, **kwargs)
                     abort(404)
