@@ -7,6 +7,7 @@ env:
   - CC_ENV=config/test.cfg
 install:
   - 'pip install -r requirements.txt'
+  - 'ln -sf config/travis.env .env'
 language: python
 notifications:
   webhooks:
