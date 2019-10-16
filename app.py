@@ -50,12 +50,15 @@ class Server:
                 DB.generate_mapping(create_tables=True)
         else:
             try:
+                db_port = 5432
+                if "PG_PORT" in self.config:
+                    db_port = int(self.config["PG_PORT"])
                 DB.bind(
                     provider="postgres",
                     user=self.config["PG_USER"],
                     password=self.config["PG_PASSWORD"],
                     hostaddr=self.config["PG_HOST"],
-                    port=self.config["PG_PORT"] or 5432,
+                    port=db_port,
                     database=self.config["PG_DB"],
                     sslmode="disable",
                 )
