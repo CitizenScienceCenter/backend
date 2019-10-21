@@ -9,7 +9,7 @@ from middleware.response_handler import ResponseHandler
 
 
 @db_session
-@access_checks.ensure_owner
+@access_checks.ensure_owner(Submission)
 def get_user_submissions(uid):
     user = User.get(id=uid)
     subs = user.submissions
@@ -17,8 +17,6 @@ def get_user_submissions(uid):
 
 
 @db_session
-# TODO access check for project members and user
-# TODO add to openapi spec as /task/:id/submissions/:uid
 def get_user_task_submissions(uid, tid):
     user = User.get(id=uid)
     task = Task.get(id=tid)
@@ -28,20 +26,26 @@ def get_user_task_submissions(uid, tid):
     else:
         abort(404)
 
-
 @db_session
-def get_activity_submissions(aid, uid=None):
-    user = None
-    if uid is not None:
-        user = User.get(id=uid)
+@access_checks.ensure_owner(Activity)
+def get_activity_submissions(aid):
     activity = Activity.get(id=aid)
-    if (user and uid) and activity:
+    if activity:
         subs = {}
         for task in Activity.tasks:
-            if uid:
-                subs[task.id] = task.submissions.where(user_id=uid)
-            else:
-                subs[task.id] = task.submissions.where()
+            subs[task.id] = task.submissions
+        return ResponseHandler(200, "Activity Submissions for User", body=subs)
+    else:
+        abort(404)
+
+@db_session
+def get_activity_user_submissions(aid, uid):
+    user = User[uid]
+    activity = Activity.get(id=aid)
+    if user and activity:
+        subs = {}
+        for task in Activity.tasks:
+            subs[task.id] = task.submissions.where(user_id=uid)
         return ResponseHandler(200, "Activity Submissions for User", body=subs)
     else:
         abort(404)

@@ -1,6 +1,6 @@
 import uuid
 from functools import wraps
-
+import prison
 from db import Activity, Comment, Project, Submission, Task, User
 from flask import abort, request
 from pony.flask import db_session
@@ -100,19 +100,27 @@ class ensure_owner(object):
                     if requested is None or current != requested:
                         abort(401)
                 elif self.model is Submission:
-                    requested = Submission.get(user_id=current.id, id=self.model_id)
-                elif self.model is Comment:
-                    requested = Comment.get(user_id=current.id, id=self.model_id)
-                elif self.model is Task:
-                    t = Task[self.model_id]
-                    if (
-                        t is not None
-                        and t.activity_id.part_of.owned_by.id == current.id
-                    ):
-                        requested = t
+                    if self.model_id is not None:
+                        requested = Submission.get(user_id=current.id, id=self.model_id)
                     else:
-                        requested = None
-
+                        abort(404)
+                elif self.model is Comment:
+                    if self.model_id is not None:
+                        requested = Comment.get(user_id=current.id, id=self.model_id)
+                    else:
+                        abort(404)
+                elif self.model is Task:
+                    if self.model_id is not None:
+                        t = Task[self.model_id]
+                        if (
+                            t is not None
+                            and t.activity_id.part_of.owned_by.id == current.id
+                        ):
+                            requested = t
+                        else:
+                            requested = None
+                    else:
+                        abort(404)
                 if requested is None:
                     abort(401)
                 else:

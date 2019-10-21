@@ -16,7 +16,7 @@ from pony.flask import db_session
 
 @db_session
 @access_checks.ensure_owner(Project)
-def get_project_submissions(pid=None, limit=20, offset=0):
+def get_project_submissions(pid, limit=20, offset=0):
     p = Project[pid]
     if p:
         return [s.to_dict() for s in p.submissions.limit(limit, offset=offset)]
@@ -25,7 +25,7 @@ def get_project_submissions(pid=None, limit=20, offset=0):
 
 
 @db_session
-def get_project_activities(pid=None, limit=20, offset=0):
+def get_project_activities(pid, limit=20, offset=0):
     p = Project[pid]
     if p and p.activities.count() > 0:
         return ResponseHandler(

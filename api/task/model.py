@@ -21,7 +21,7 @@ def get_task_count(search_term=None):
     return ms, code
 
 
-def get_task(tid=None):
+def get_task(tid):
     return model.get_one(Model, tid).send()
 
 

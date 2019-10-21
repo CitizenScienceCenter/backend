@@ -7,7 +7,7 @@ from db import Activity, Project, Submission, Task, User, utils
 from decorators import access_checks
 from middleware.response_handler import ResponseHandler
 
-RANDOM_TASK = "select * from tasks LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}' ORDER BY random() LIMIT 1;"
+RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}';"
 
 
 @db_session
@@ -15,10 +15,15 @@ def activity_stats(aid=None):
     a = Activity[aid]
     task_count = 0
     tasks = []
+    complete = 0
     data = {"task_count": task_count, "tasks": tasks, "complete": 0}
     if a is not None:
         task_count = a.tasks.count()
         tasks = a.tasks
+        for t in a.tasks:
+            if t.submissions.count() > 0:
+                complete += 1
+        data['complete'] = complete
     else:
         abort(404)
     return ResponseHandler(200, "", body=data).send()

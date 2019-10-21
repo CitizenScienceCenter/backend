@@ -149,9 +149,31 @@ paths:
       tags:
         - Activities
       x-openapi-router-controller: api.activity.model
-  /activities/{aid}/submissions/{uid}:
+  /activities/{aid}/submissions:
     get:
       operationId: get_activity_submissions
+      parameters:
+        - description: 'The Activity ID'
+          in: path
+          name: aid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return activity submissions'
+        404:
+          description: 'Activity does not exist'
+      summary: 'Get the submissions for an activity'
+      tags:
+        - Activities
+        - Submissions
+        - Users
+      x-openapi-router-controller: api.submission.custom
+  /activities/{aid}/submissions/{uid}:
+    get:
+      operationId: get_activity_user_submissions
       parameters:
         - description: 'The Activity ID'
           in: path
@@ -163,7 +185,7 @@ paths:
         - description: 'User ID for specific user submissions'
           in: path
           name: uid
-          required: false
+          required: true
           schema:
             type: string
       responses:
@@ -171,7 +193,7 @@ paths:
           description: 'Return activity submissions'
         404:
           description: 'Activity does not exist'
-      summary: 'Get the submissions for an activity'
+      summary: 'Get user submissions for an activity'
       tags:
         - Activities
         - Submissions
@@ -914,13 +936,11 @@ paths:
     put:
       operationId: update_task
       parameters:
-        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
-            Submission etc)'
+        - description: 'The unique identifer for the Task'
           in: path
           name: tid
           required: true
           schema:
-            pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
         $ref: ./bodies.yaml#/components/requestBodies/Task
@@ -1121,12 +1141,12 @@ paths:
       tags:
         - Users
       x-openapi-router-controller: api.user.custom
-  /users/{id}/submissions:
+  /users/{uid}/submissions:
     get:
       operationId: get_user_submissions
       parameters:
         - in: path
-          name: id
+          name: uid
           schema:
             type: string
       responses:
@@ -1149,8 +1169,8 @@ paths:
       x-openapi-router-controller: api.submission.custom
 servers:
   - description: 'Local Development Server'
-    url: http://localhost:9000/api/v3
+    url: http://localhost:9000/v3
   - description: 'Staging Server'
     url: https://api-staging.citizenscience.ch/api/v3
   - description: 'Production API Server'
-    url: https://api.citizenscience.ch/api/v3
+    url: https://api.citizenscience.ch/v3

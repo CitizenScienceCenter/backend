@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from pony.orm import core, commit, select
 from db import DB, User, Project, Task, Activity, Submission, Comment, Media
 from decorators import access_checks
+from datetime import datetime
 
 from middleware.response_handler import ResponseHandler
 
@@ -102,6 +103,7 @@ def put(model, id, object):
     logging.info("Updating %s %s..", model, id)
     for k in object.keys():
         setattr(p, k, object[k])
+    object['updated_at'] = datetime.now()
     commit()
     obj = model.__name__.lower()
     return ResponseHandler(201, "{} updated".format(obj), body=p.to_dict()), p

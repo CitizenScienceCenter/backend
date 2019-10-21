@@ -28,7 +28,7 @@ localdb:
 swaggerui:
 	-docker kill swag
 	-docker rm swag
-	docker run --name=swag -d -e URL="http://localhost:9000/api/v3/openapi.json" -p "5000:8080" swaggerapi/swagger-ui
+	docker run --name=swag -d -e URL="http://localhost:9000/v3/openapi.json" -p "5000:8080" swaggerapi/swagger-ui
 
 services: spec swaggerui
 

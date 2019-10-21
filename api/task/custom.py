@@ -4,7 +4,8 @@ from db import Task, Submission, Media, Project, utils
 from api import model
 from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import joinedload
-from flask import request
+from flask import request, abort
+from middleware.response_handler import ResponseHandler
 import sqlalchemy
 import logging
 from sqlalchemy.dialects import postgresql
@@ -48,7 +49,15 @@ def get_task_media(tid=None, limit=20, offset=0):
 
 @db_session
 def get_stats(tid=None):
-    pass
+    task = Task[tid]
+    if task is not None:
+        data = {
+            'task': tid,
+            'submissions_count': task.submissions.count()
+        }
+        return ResponseHandler(200, 'Task Stats', body=data).send()
+    else:
+        abort(404)
 
 
 @db_session
