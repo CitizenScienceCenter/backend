@@ -171,6 +171,26 @@ paths:
         - Submissions
         - Users
       x-openapi-router-controller: api.submission.custom
+  /activities/{aid}/stats:
+    get:
+      operationId: get_stats
+      parameters:
+        - description: 'The Activity ID'
+          in: path
+          name: aid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return activity statistics'
+        404:
+          description: 'Activity does not exist'
+      summary: 'Get the statistics for an activity'
+      tags:
+        - Activities
+      x-openapi-router-controller: api.activity.custom
   /activities/{aid}/submissions/{uid}:
     get:
       operationId: get_activity_user_submissions
@@ -987,6 +1007,27 @@ paths:
       tags:
         - Tasks
         - Submissions
+      x-openapi-router-controller: api.task.custom
+  /tasks/{tid}/stats:
+    get:
+      operationId: get_stats
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+          description: 'Stats for task submissions'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get statistics for a specific task'
+      tags:
+        - Tasks
       x-openapi-router-controller: api.task.custom
   /users/authorize:
     post:

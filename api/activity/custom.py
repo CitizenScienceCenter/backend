@@ -11,7 +11,7 @@ RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissi
 
 
 @db_session
-def activity_stats(aid=None):
+def get_stats(aid=None):
     a = Activity[aid]
     task_count = 0
     tasks = []
