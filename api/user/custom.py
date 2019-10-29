@@ -93,7 +93,7 @@ def reset(email):
 
 
 @db_session
-def get_subs():
+def get_user_submissions():
     user = utils.get_user(request, db_session)
     submissions = user.submissions
     if submissions.count() > 0:
