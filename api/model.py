@@ -9,7 +9,7 @@ from pony.orm import core, commit, select
 from db import DB, User, Project, Task, Activity, Submission, Comment, Media
 from decorators import access_checks
 from datetime import datetime
-
+import uuid
 from middleware.response_handler import ResponseHandler
 
 from pony.flask import db_session
@@ -74,7 +74,9 @@ def get_file(model, id=None):
 @db_session
 def post(model, obj):
     print(obj)
+    obj['id'] = uuid.uuid4()
     p = model(**obj)
+     
     try:
         commit()
         obj = model.__name__.lower()
