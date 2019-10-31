@@ -21,7 +21,7 @@ def delete_tasks(tasks):
 
 @db_session
 def get_task_submissions(tid=None, limit=20, offset=0):
-    t = Task[tid]
+    t = Task.get(id="{}".format(tid))
     if t and t.submissions.count() > 0:
         return ResponseHandler(
             200,

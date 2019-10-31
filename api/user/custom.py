@@ -19,6 +19,18 @@ from pony.flask import db_session
 def validate(key):
     return utils.get_user(request, db_session).to_dict(exclude="pwd")
 
+@db_session
+def check_user(email=None, username=None):
+    u = None
+    if email:
+        u = User.get(email=email)
+    elif username:
+        u = User.get(username=username)
+    if u:
+        abort(200)
+    else:
+        abort(404)
+
 
 @db_session
 def login(body):
