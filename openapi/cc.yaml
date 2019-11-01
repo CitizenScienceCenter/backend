@@ -19,8 +19,9 @@ components:
       type: oauth2
       x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
 info:
-  title: CCCS
-  version: 3.0.0
+  title: C3S API
+  description: An API for creating, running and analysing citizen science projects
+  version: 3.0.1
 openapi: 3.0.0
 paths:
   /activities:
