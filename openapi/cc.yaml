@@ -1824,6 +1824,6 @@ servers:
   - description: Local Development Server
     url: http://localhost:9000/v3
   - description: Staging Server
-    url: https://api-staging.citizenscience.ch/api/v3
+    url: https://api-staging.citizenscience.ch/v3
   - description: Production API Server
     url: https://api.citizenscience.ch/v3
