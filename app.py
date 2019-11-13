@@ -73,8 +73,8 @@ class Server:
                     pass
 
         Pony(self.connexion_app.app)
-
-        if self.config["ENV"] != "test" or self.config["ENV"] != "travis":
+        print(self.config["ENV"])
+        if self.config["ENV"] != "test" and self.config["ENV"] != "travis" and self.config["ENV"] != "local":
             self.app.uploader = Minio(
                 self.config["MIN_URL"],
                 self.config["MIN_ACCESS"],
