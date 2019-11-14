@@ -36,7 +36,7 @@ local: spec swaggerui run
 
 .PHONY: run
 run:
-	CC_ENV=config/local.cfg python app.py
+	python app.py
 
 .PHONY: test
 test:

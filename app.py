@@ -39,8 +39,7 @@ class Server:
         self.port = int(self.config["CC_PORT"]) or 9000
         self.debug = bool(self.config["DEBUG"]) or False
         self.app.secret_key = self.config["SECRET_KEY"] or uuid.uuid4()
-
-        if self.config["ENV"] == "local" or self.config["ENV"] == "test":
+        if self.config["ENV"] == "test":
             try:
                 DB.bind("sqlite", ":memory:")
             except BindingError as b:
@@ -71,10 +70,9 @@ class Server:
                 except Exception as e:
                     logging.error(e)
                     pass
-
         Pony(self.connexion_app.app)
-
-        if self.config["ENV"] != "test" or self.config["ENV"] != "travis":
+        print(self.config["ENV"])
+        if self.config["ENV"] != "test" and self.config["ENV"] != "travis" and self.config["ENV"] != "local":
             self.app.uploader = Minio(
                 self.config["MIN_URL"],
                 self.config["MIN_ACCESS"],
