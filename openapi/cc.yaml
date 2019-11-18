@@ -1595,6 +1595,21 @@ paths:
         - Users
       x-openapi-router-controller: api.user.custom
   /users/me:
+    put:
+      operationId: update_user
+      x-opeanpi-router-contoller: api.user.model
+      responses:
+        "200":
+          description: User updated
+        "401":
+          description: Not authorised
+        "404":
+          description: User not found
+      security:
+        - apiKeyHeader: []
+      summary: Update user
+      tags:
+        - Users
     delete:
       operationId: delete_user
       responses:

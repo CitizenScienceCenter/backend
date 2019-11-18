@@ -89,8 +89,4 @@ def update_user(body):
 @access_checks.ensure_owner(Model)
 @db_session
 def delete_user():
-    # current = utils.get_user(request, db_session)
-    # current.delete()
-    # commit()
-    # user.relationship.clear() will empty all relations
-    return ResponseHandler(200, "User deleted").send()
+    abort(501)
