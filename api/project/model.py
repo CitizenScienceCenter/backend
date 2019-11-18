@@ -1,5 +1,5 @@
 from connexion import NoContent
-from db import Comment, utils, Activity, User, Project
+from db import Comment, utils, User, Project
 from decorators import access_checks
 from flask import request
 import logging

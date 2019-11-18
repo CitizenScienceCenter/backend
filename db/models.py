@@ -5,10 +5,8 @@ from pony.orm import Set, PrimaryKey, Optional, Required, Json, Database
 
 DB = Database()
 
-
 def gen_api_key():
     return str(uuid.uuid4())
-
 
 class User(DB.Entity):
     _table_ = "users"
@@ -22,8 +20,8 @@ class User(DB.Entity):
     pwd = Required(str)
     api_key = Required(str, default=gen_api_key)
     confirmed = Required(bool, default=False)
-    projects = Set("Project")
     owned_projects = Set("Project")
+    member_of = Set("Member")
     submissions = Set("Submission")
     tokens = Set("OToken")
     comments = Set("Comment")
@@ -36,9 +34,18 @@ class OToken(DB.Entity):
     updated_at = Optional(datetime, default=datetime.now)
     info = Required(Json, default={})
     owner = Required(User)
-    part_of = Required("Project")
     token = Required(uuid.UUID, default=uuid.uuid4)
     expiry = Optional(datetime)
+
+class Member(DB.Entity):
+    _table_ = "members"
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
+    created_at = Required(datetime, default=datetime.now)
+    updated_at = Optional(datetime, default=datetime.now)
+    info = Required(Json, default={})
+    user_id = Required("User", reverse="member_of")
+    project_id = Required("Project", reverse="members")
+    role = Required(str)
 
 
 class Project(DB.Entity):
@@ -48,27 +55,12 @@ class Project(DB.Entity):
     updated_at = Optional(datetime, default=datetime.now)
     info = Required(Json, default={})
     name = Required(str)
-    description = Required(str)
-    active = Required(bool, default=False)
-    activities = Set("Activity")
-    owned_by = Required(User, reverse="owned_projects")
-    members = Set(User)
-    media = Set("Media")
-    tokens = Set(OToken)
-
-
-class Activity(DB.Entity):
-    _table_ = "activities"
-    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
-    created_at = Required(datetime, default=datetime.now)
-    updated_at = Optional(datetime, default=datetime.now)
-    info = Required(Json, default={})
-    name = Required(str)
     anonymous_allowed = Optional(bool, default=True)
     description = Required(str)
     platform = Required(str)
     active = Required(bool, default=False)
-    part_of = Required("Project")
+    owner = Required("User", reverse="owned_projects")
+    members = Set("Member")
     media = Set("Media")
     tasks = Set("Task")
 
@@ -79,7 +71,7 @@ class Task(DB.Entity):
     created_at = Required(datetime, default=datetime.now)
     updated_at = Optional(datetime, default=datetime.now)
     info = Required(Json, default={})
-    activity_id = Required(Activity)
+    part_of = Required(Project)
     sequence = Optional(int)
     title = Required(str)
     required = Required(bool, default=True)
@@ -87,7 +79,6 @@ class Task(DB.Entity):
     content = Optional(Json)
     media = Set("Media")
     submissions = Set("Submission")
-
 
 class Submission(DB.Entity):
     _table_ = "submissions"
@@ -101,7 +92,6 @@ class Submission(DB.Entity):
     response = Required(Json)
     media = Set("Media")
 
-
 class Comment(DB.Entity):
     _table_ = "comments"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
@@ -113,7 +103,6 @@ class Comment(DB.Entity):
     children = Set("Comment")
     text = Required(str)
     user_id = Required(User)
-
 
 class Media(DB.Entity):
     _table_ = "media"
@@ -127,6 +116,4 @@ class Media(DB.Entity):
     filetype = Optional(str)
     project = Optional(Project)
     submission = Optional(Submission)
-    activity = Optional(Activity)
     task = Optional(Task)
-    submission = Required(Submission)

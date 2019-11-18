@@ -1,4 +1,4 @@
-from db import Submission, User, Task, Activity
+from db import Submission, User, Task, Project
 from decorators import access_checks, user_checks
 from flask import request, abort
 from api import model
@@ -27,25 +27,25 @@ def get_user_task_submissions(uid, tid):
         abort(404)
 
 @db_session
-@access_checks.ensure_owner(Activity)
-def get_activity_submissions(aid):
-    activity = Activity.get(id=aid)
-    if activity:
+@access_checks.ensure_owner(Project)
+def get_project_submissions(pid):
+    p = Project.get(id=pid)
+    if p:
         subs = {}
-        for task in Activity.tasks:
+        for task in Project.tasks:
             subs[task.id] = task.submissions
-        return ResponseHandler(200, "Activity Submissions for User", body=subs)
+        return ResponseHandler(200, "Project Submissions for User", body=subs)
     else:
         abort(404)
 
 @db_session
-def get_activity_user_submissions(aid, uid):
+def get_project_user_submissions(pid, uid):
     user = User[uid]
-    activity = Activity.get(id=aid)
-    if user and activity:
+    project = Project.get(id=pid)
+    if user and project:
         subs = {}
-        for task in Activity.tasks:
+        for task in Project.tasks:
             subs[task.id] = task.submissions.where(user_id=uid)
-        return ResponseHandler(200, "Activity Submissions for User", body=subs)
+        return ResponseHandler(200, "Project Submissions for User", body=subs)
     else:
         abort(404)

@@ -6,7 +6,7 @@ from flask import send_file, abort
 from jtos import jtos
 from sqlalchemy.exc import IntegrityError
 from pony.orm import core, commit, select
-from db import DB, User, Project, Task, Activity, Submission, Comment, Media
+from db import DB, User, Project, Task, Member, Submission, Comment, Media
 from decorators import access_checks
 from datetime import datetime
 import uuid
