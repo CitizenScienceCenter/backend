@@ -45,8 +45,28 @@ class Member(DB.Entity):
     info = Required(Json, default={})
     user_id = Required("User", reverse="member_of")
     project_id = Required("Project", reverse="members")
-    role = Required(str)
+    role = Required("Role")
 
+class Role(DB.Entity):
+    _table_ = "roles"
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
+    created_at = Required(datetime, default=datetime.now)
+    updated_at = Optional(datetime, default=datetime.now)
+    info = Required(Json, default={})
+    name = Required(str)
+    view_project = Required(bool, default=False)
+    edit_project = Required(bool, default=False)
+    delete_project = Required(bool, default=False)
+    view_tasks = Required(bool, default=False)
+    edit_tasks = Required(bool, default=False)
+    add_tasks = Required(bool, default=False)
+    delete_tasks = Required(bool, default=False)
+    edit_media = Required(bool, default=False)
+    delete_media = Required(bool, default=False)
+    view_submissions = Required(bool, default=False)
+    edit_submissions = Required(bool, default=False)
+    delete_submissions = Required(bool, default=False)
+    export_data = Required(bool, default=False)
 
 class Project(DB.Entity):
     _table_ = "projects"
