@@ -1422,8 +1422,7 @@ paths:
           description: User not found
       security:
         - apiKeyHeader: []
-        - anonUser: []
-      summary: Get specific user
+      summary: Get logged in user
       tags:
         - Users
       x-openapi-router-controller: api.user.model
@@ -1488,7 +1487,6 @@ paths:
           description: User not found
       security:
         - apiKeyHeader: []
-        - anonUser: []
       summary: Update user details (change password, add details etc)
       tags:
         - Users
@@ -1583,6 +1581,8 @@ paths:
         - Submissions
       x-openapi-router-controller: api.submission.custom
 servers:
+  - description: Local Development Server
+    url: http://localhost:9000/v3
   - description: Staging Server
     url: https://api-staging.citizenscience.ch/v3
   - description: Production API Server

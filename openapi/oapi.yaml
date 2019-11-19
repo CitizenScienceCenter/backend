@@ -964,8 +964,7 @@ paths:
           description: 'User not found'
       security:
         - apiKeyHeader: []
-        - anonUser: []
-      summary: 'Get specific user'
+      summary: 'Get logged in user'
       tags:
         - Users
       x-openapi-router-controller: api.user.model
