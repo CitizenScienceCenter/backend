@@ -67,6 +67,7 @@ class Role(DB.Entity):
     edit_submissions = Required(bool, default=False)
     delete_submissions = Required(bool, default=False)
     export_data = Required(bool, default=False)
+    members = Set("Member")
 
 class Project(DB.Entity):
     _table_ = "projects"
