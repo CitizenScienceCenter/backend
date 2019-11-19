@@ -14,7 +14,6 @@ from pony.flask import db_session
 from pony.orm import core, commit
 from db import (
     DB,
-    Activity,
     OToken,
     Project,
     Comment,

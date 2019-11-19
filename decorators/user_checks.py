@@ -1,7 +1,7 @@
 import uuid
 from functools import wraps
 
-from db import Activity, Comment, Project, Submission, Task, User
+from db import Comment, Project, Submission, Task, User
 from flask import abort, request
 from pony.flask import db_session
 

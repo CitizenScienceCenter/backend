@@ -1,12 +1,12 @@
 import uuid
 from functools import wraps
 import prison
-from db import Activity, Comment, Project, Submission, Task, User
+from db import Comment, Project, Submission, Task, User
 from flask import abort, request
 from pony.flask import db_session
 
 db_tables = [
-    "activities",
+    "members",
     "users",
     "projects",
     "comments",
@@ -18,7 +18,7 @@ db_tables = [
 
 @db_session
 def ensure_key(token, required_scopes=None):
-    """ 
+    """
     @todo Implement JWT authentication
     @body Using the `jose` lib, handle creation of JWTs for users (and renewal upon expiry)
     """
@@ -85,14 +85,7 @@ class ensure_owner(object):
                         self.model_id = kwargs[key]
                 requested = None
                 if self.model is Project:
-                    requested = Project.get(owned_by=current.id, id=self.model_id)
-                elif self.model is Activity:
-                    for p in current.owned_projects:
-                        for a in p.activities:
-                            print(a.id)
-                            if str(a.id) == self.model_id:
-                                return func(*args, **kwargs)
-                    abort(404)
+                    requested = Project.get(owner=current.id, id=self.model_id)
                 elif self.model is User:
                     requested = current
                     if self.model_id is not None:
