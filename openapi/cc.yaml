@@ -1836,8 +1836,6 @@ paths:
         - Submissions
       x-openapi-router-controller: api.submission.custom
 servers:
-  - description: Local Development Server
-    url: http://localhost:9000/v3
   - description: Staging Server
     url: https://api-staging.citizenscience.ch/v3
   - description: Production API Server
