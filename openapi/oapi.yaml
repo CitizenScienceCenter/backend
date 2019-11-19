@@ -992,7 +992,6 @@ paths:
           description: 'User not found'
       security:
         - apiKeyHeader: []
-        - anonUser: []
       summary: 'Update user details (change password, add details etc)'
       tags:
         - Users
