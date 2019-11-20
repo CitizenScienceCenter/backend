@@ -17,18 +17,19 @@ def get_media(limit=100, search_term=None):
 
 
 def get_medium(mid=None):
-    return model.get_file(Model, mid)
+    return model.get_one(Model, mid).send()
 
 
 def create_medium(body):
-    m, code = model.post(Model, body)
-    return m.dump(), code
+    res, _ = model.post(Model, body)
+    return res.send()
 
 
 def update_medium(mid, body):
-    m, code = model.put(Model, mid, body)
-    return m.dump(), code
+    res, _ = model.put(Model, mid, body)
+    return res.send()
 
 
 def delete_medium(mid):
-    return model.delete(Model, mid)
+    res, _ = model.delete(Model, mid)
+    return res.send()

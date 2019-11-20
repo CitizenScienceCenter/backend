@@ -116,7 +116,6 @@ components:
       required:
         - name
         - description
-        - platform
         - part_of
       properties:
         name:
