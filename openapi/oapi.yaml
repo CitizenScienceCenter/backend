@@ -96,6 +96,30 @@ paths:
       tags:
         - Projects
       x-openapi-router-controller: api.project.custom
+  /projects/{pid}/import/csv:
+    post:
+      operationId: import_csv
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        $ref: ./bodies.yaml#/components/requestBodies/Tasks
+      responses:
+        201:
+          description: 'Tasks imported'
+        404:
+          description: 'Project does not exist'
+        401:
+          description: 'Unauthorised'
+      summary: 'Import Tasks for a project'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.import.csv
   /projects/{pid}/submissions/{uid}:
     get:
       operationId: get_project_user_submissions

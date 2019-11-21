@@ -95,7 +95,7 @@ class Project(DB.Entity):
     members = Set("Member")
     media = Set("Media")
     tasks = Set("Task")
-
+    group = Optional("ProjectGroup")
 
 class Task(DB.Entity):
     _table_ = "tasks"
