@@ -69,6 +69,17 @@ class Role(DB.Entity):
     export_data = Required(bool, default=False)
     members = Set("Member")
 
+class ProjectGroup(DB.Entity):
+    _table_ = "projectgroups"
+    id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
+    created_at = Required(datetime, default=datetime.now)
+    updated_at = Optional(datetime, default=datetime.now)
+    info = Required(Json, default={})
+    name = Required(str)
+    owner = Required(str)
+    projects = Set("Project")
+    members = Set("Member")
+
 class Project(DB.Entity):
     _table_ = "projects"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
@@ -131,7 +142,7 @@ class Media(DB.Entity):
     created_at = Required(datetime, default=datetime.now)
     updated_at = Optional(datetime, default=datetime.now)
     info = Required(Json, default={})
-    media_source_id = Required(uuid.UUID)
+    source_id = Required(uuid.UUID)
     path = Required(str)
     name = Required(str)
     filetype = Optional(str)

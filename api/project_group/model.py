@@ -7,38 +7,32 @@ from api import model
 
 from pony.flask import db_session
 
-Model = Project
+Model = ProjectGroup
 
 
-def get_projects(limit=100, offset=0, search_term=None):
+def get_project_groups(limit=100, offset=0, search_term=None):
     return model.get_all(Model, limit, offset, search_term).send()
 
 
-def get_project_count(search_term=None):
-    ms, code = model.get_count(Model, search_term)
-    return ms, code
-
-
-def get_project(pid=None):
+def get_project_group(pid=None):
     return model.get_one(Model, pid).send()
 
 
 @db_session
-def create_project(body):
+def create_project_group(body):
     project = body
     user = utils.get_user(request, db_session)
-    print(user, project)
     project["owned_by"] = user.id
     res, _ = model.post(Model, project)
     return res.send()
 
 
-def update_project(pid, body):
+def update_project_group(pid, body):
     res, _ = model.put(Model, pid, body)
     return res.send()
 
 
 @db_session
 @access_checks.ensure_owner(Model)
-def delete_project(pid):
+def delete_project_group(pid):
     return model.delete(Model, pid).send()

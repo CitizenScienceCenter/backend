@@ -13,7 +13,7 @@ from middleware.response_handler import ResponseHandler
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
 from pony.flask import db_session
 
-RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}';"
+RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}' LIMIT 1;"
 
 @db_session
 def get_stats(pid=None):
@@ -50,7 +50,7 @@ def get_project_tasks(pid=None, limit=20, offset=0):
 
 
 @db_session
-def get_random_project_task(aid=None, orderBy=None, notDone=False):
+def get_random_project_task(pid=None, orderBy=None, notDone=False):
     u = utils.get_user(request, db_session)
     p = Project[pid]
     t = p.tasks.get_by_sql(RANDOM_TASK.format(u.id, a.id))
