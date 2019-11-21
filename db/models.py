@@ -89,7 +89,7 @@ class Project(DB.Entity):
     name = Required(str)
     anonymous_allowed = Optional(bool, default=True)
     description = Required(str)
-    platform = Required(str)
+    platform = Required(str, default="Desktop")
     active = Required(bool, default=False)
     owner = Required("User", reverse="owned_projects")
     members = Set("Member")

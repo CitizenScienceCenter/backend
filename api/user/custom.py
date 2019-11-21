@@ -113,6 +113,15 @@ def get_user_submissions():
     else:
         return ResponseHandler(200, 'User has no submissions', body=[], ok=False).send()
 
+@db_session
+def get_user_projects():
+    user = utils.get_user(request, db_session)
+    projects = user.owned_projects
+    if projects.count() > 0:
+        return ResponseHandler(200, '', body=[p.to_dict() for p in projects]).send()
+    else:
+        return ResponseHandler(200, 'User has no projects', body=[], ok=False).send()
+
 
 @db_session
 def verify_reset(reset):

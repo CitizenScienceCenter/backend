@@ -155,6 +155,27 @@ paths:
         - Projects
         - Tasks
       x-openapi-router-controller: api.project.custom
+  /projects/{pid}/task:
+    get:
+      operationId: get_random_project_task
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return random project task'
+        404:
+          description: 'Project does not exist'
+      summary: 'Get a task for a project'
+      tags:
+        - Projects
+        - Tasks
+      x-openapi-router-controller: api.project.custom
   /comments:
     get:
       operationId: get_comments
@@ -1087,7 +1108,7 @@ paths:
       tags:
         - Users
       x-openapi-router-controller: api.user.custom
-  /users/{uid}/submissions:
+  /users/me/submissions:
     get:
       operationId: get_user_submissions
       parameters:
@@ -1108,15 +1129,39 @@ paths:
           description: 'User not found'
       security:
         - apiKeyHeader: []
-      summary: 'Get all submissions for a user (or those matching an ID)'
+      summary: 'Get all submissions for a user'
       tags:
         - Users
         - Submissions
-      x-openapi-router-controller: api.submission.custom
+      x-openapi-router-controller: api.user.custom
+  /users/me/projects:
+    get:
+      operationId: get_user_projects
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Project
+                type: array
+          description: 'Return Projects'
+        404:
+          description: 'User not found'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get all projects for a user'
+      tags:
+        - Users
+        - Projects
+      x-openapi-router-controller: api.user.custom
 servers:
-  - description: 'Local Development Server'
-    url: http://localhost:9000/v3
   - description: 'Staging Server'
-    url: https://api-staging.citizenscience.ch/v3
+    url: https://staging.citizenscience.ch/v3
   - description: 'Production API Server'
     url: https://api.citizenscience.ch/v3

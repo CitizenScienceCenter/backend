@@ -3,7 +3,7 @@ from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
 from flask import session, request, current_app, abort
-from db import User, utils, Submission, Project
+from db import User, utils, Submission, Project, Task, DB
 import smtplib
 from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
@@ -13,7 +13,7 @@ from middleware.response_handler import ResponseHandler
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
 from pony.flask import db_session
 
-RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.activity_id='{1}' LIMIT 1;"
+RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.part_of='{1}' LIMIT 1;"
 
 @db_session
 def get_stats(pid=None):
@@ -52,9 +52,14 @@ def get_project_tasks(pid=None, limit=20, offset=0):
 @db_session
 def get_random_project_task(pid=None, orderBy=None, notDone=False):
     u = utils.get_user(request, db_session)
-    p = Project[pid]
-    t = p.tasks.get_by_sql(RANDOM_TASK.format(u.id, a.id))
-    return ResponseHandler(200, "Task", body=t.to_dict()).send()
+    print(RANDOM_TASK.format(u.id, pid))
+    t = DB.select(RANDOM_TASK.format(u.id, pid))
+    print(t)
+    ret = {}
+    if len(t) != 0:
+        # TODO check return object
+        ret = t[0]
+    return ResponseHandler(200, "Task", body=ret).send()
 
 
 @db_session
