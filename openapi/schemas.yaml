@@ -133,19 +133,17 @@ components:
           default: true
         part_of:
           type: string
-          description: The ID of the project that this activity is part of
+          description: The ID of the project group that this prject is part of
     Task:
       type: object
       allOf:
         - $ref: '#/components/schemas/Base'
       required:
-        - activity_id
-        - sequence
+        - project_id
         - title
         - content
-        - required
       properties:
-        activity_id:
+        project_id:
           type: string
         sequence:
           type: integer

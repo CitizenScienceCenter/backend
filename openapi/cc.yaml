@@ -124,7 +124,7 @@ paths:
       summary: Import Tasks for a project
       tags:
         - Projects
-      x-openapi-router-controller: api.import.csv
+      x-openapi-router-controller: api.importers.csv
   "/projects/{pid}/submissions/{uid}":
     get:
       operationId: get_project_user_submissions
@@ -1067,13 +1067,11 @@ paths:
                       example: 2015-07-07T15:49:51.230+02:00
                       readOnly: true
               required:
-                - activity_id
-                - sequence
+                - project_id
                 - title
                 - content
-                - required
               properties:
-                activity_id:
+                project_id:
                   type: string
                 sequence:
                   type: integer
@@ -1113,13 +1111,11 @@ paths:
                           example: 2015-07-07T15:49:51.230+02:00
                           readOnly: true
                   required:
-                    - activity_id
-                    - sequence
+                    - project_id
                     - title
                     - content
-                    - required
                   properties:
-                    activity_id:
+                    project_id:
                       type: string
                     sequence:
                       type: integer

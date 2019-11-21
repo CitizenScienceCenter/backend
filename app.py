@@ -92,14 +92,16 @@ class Server:
 
         @self.connexion_app.app.errorhandler(409)
         def conflict_error(error):
+            print(error)
             return ResponseHandler(
                 409, "Conflict occured, object already exists", ok=False
             ).send()
 
         @self.connexion_app.app.errorhandler(500)
         def internal_error(error):
+            print(error)
             return ResponseHandler(
-                409, "Internal server error", str(error), ok=False
+                500, "Internal server error", str(error), ok=False
             ).send()
 
     def run(self):
