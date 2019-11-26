@@ -41,4 +41,5 @@ def update_project(pid, body):
 @db_session
 @access_checks.ensure_owner(Model)
 def delete_project(pid):
+    # TODO are projects deleted also or anonymised? Transferred to c3s admin?
     return model.delete(Model, pid).send()

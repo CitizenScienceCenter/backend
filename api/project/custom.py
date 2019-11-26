@@ -11,9 +11,32 @@ from decorators import access_checks
 from middleware.response_handler import ResponseHandler
 
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
-from pony.flask import db_session
+from pony.flask import db_session, commit
 
 RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.part_of='{1}' LIMIT 1;"
+
+@db_session
+@access_checks.ensure_owner(Project)
+def publish(pid=None):
+    p = Project[pid]
+    if p is not None and p.active is False:
+        p.info['applied'] = True
+        commit()
+        return ResponseHandler(200, "Application to publish submitted").send()
+    else:
+        return ResponseHandler(500, "Project is already published").send()
+
+@db_session
+@access_checks.ensure_owner(Project)
+def unpublish(pid=None):
+    p = Project[pid]
+    if p is not None and p.active is True:
+        p.active = False
+        commit()
+        return ResponseHandler(200, "Project unpublished").send()
+    else:
+        return ResponseHandler(500, "Project is already inactive").send()
+
 
 @db_session
 def get_stats(pid=None):
