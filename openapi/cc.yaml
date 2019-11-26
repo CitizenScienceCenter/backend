@@ -76,6 +76,26 @@ paths:
         - Submissions
         - Users
       x-openapi-router-controller: api.submission.custom
+  "/projects/{pid}/publish":
+    get:
+      operationId: publish
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          description: Project Published
+        "404":
+          description: Project does not exist
+      summary: Apply for a project to be published
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.custom
   "/projects/{pid}/stats":
     get:
       operationId: get_stats
@@ -96,9 +116,9 @@ paths:
       tags:
         - Projects
       x-openapi-router-controller: api.project.custom
-  "/projects/{pid}/import/csv":
+  "/projects/{pid}/import/tasks/csv":
     post:
-      operationId: import_csv
+      operationId: import_tasks_csv
       parameters:
         - description: The Project ID
           in: path
@@ -1283,6 +1303,68 @@ paths:
       tags:
         - Tasks
       x-openapi-router-controller: api.task.model
+  "/tasks/{tid}/media":
+    get:
+      operationId: get_task_media
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1media~1%7Bmid%7D/get/responses/200/content/appli\
+                    cation~1json/schema/items"
+                type: array
+          description: List of media
+      security:
+        - apiKeyHeader: []
+      summary: Get media for a specific task
+      tags:
+        - Tasks
+        - Media
+      x-openapi-router-controller: api.task.custom
+  /tasks/media/import/csv:
+    post:
+      operationId: import_media_csv
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+        - in: body
+          name: media
+          schema:
+            type: array
+            items:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1media~1%7Bmid%7D/get/responses/200/content/appli\
+                    cation~1json/schema/items"
+                type: array
+          description: List of media
+      security:
+        - apiKeyHeader: []
+      summary: Import media for tasks from CSV
+      tags:
+        - Tasks
+        - Media
+      x-openapi-router-controller: api.importers.csv
   "/tasks/{tid}/submissions":
     get:
       operationId: get_task_submissions

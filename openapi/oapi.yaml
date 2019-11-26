@@ -116,9 +116,9 @@ paths:
       tags:
         - Projects
       x-openapi-router-controller: api.project.custom
-  /projects/{pid}/import/csv:
+  /projects/{pid}/import/tasks/csv:
     post:
-      operationId: import_csv
+      operationId: import_tasks_csv
       parameters:
         - description: 'The Project ID'
           in: path
@@ -927,6 +927,66 @@ paths:
       tags:
         - Tasks
       x-openapi-router-controller: api.task.model
+  /tasks/{tid}/media:
+    get:
+      operationId: get_task_media
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Media
+                type: array
+          description: 'List of media'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get media for a specific task'
+      tags:
+        - Tasks
+        - Media
+      x-openapi-router-controller: api.task.custom
+  /tasks/media/import/csv:
+    post:
+      operationId: import_media_csv
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+        - in: body
+          name: media
+          schema:
+            type: array
+            items:
+              type: object
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ./schemas.yaml#/components/schemas/Media
+                type: array
+          description: 'List of media'
+      security:
+        - apiKeyHeader: []
+      summary: 'Import media for tasks from CSV'
+      tags:
+        - Tasks
+        - Media
+      x-openapi-router-controller: api.importers.csv
   /tasks/{tid}/submissions:
     get:
       operationId: get_task_submissions

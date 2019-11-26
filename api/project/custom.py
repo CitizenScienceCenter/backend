@@ -11,7 +11,8 @@ from decorators import access_checks
 from middleware.response_handler import ResponseHandler
 
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
-from pony.flask import db_session, commit
+from pony.flask import db_session
+from pony.orm import commit
 
 RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.part_of='{1}' LIMIT 1;"
 
