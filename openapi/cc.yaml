@@ -108,50 +108,12 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
+        description: CSV file content
+        required: true
         content:
           application/json:
-            type: array
-            items:
-              type: object
-              allOf:
-                - type: object
-                  properties:
-                    id:
-                      type: string
-                      maxLength: 100
-                      readOnly: true
-                    info:
-                      type: object
-                      description: A JSON field to extend a model with extra info
-                    created_at:
-                      type: string
-                      format: date-time
-                      description: Creation time
-                      example: 2015-07-07T15:49:51.230+02:00
-                      readOnly: true
-                    updated_at:
-                      type: string
-                      format: date-time
-                      description: Creation time
-                      example: 2015-07-07T15:49:51.230+02:00
-                      readOnly: true
-              required:
-                - activity_id
-                - sequence
-                - title
-                - content
-                - required
-              properties:
-                activity_id:
-                  type: string
-                sequence:
-                  type: integer
-                content:
-                  type: object
-                title:
-                  type: string
-                required:
-                  type: boolean
+            schema:
+              type: array
       responses:
         "201":
           description: Tasks imported
@@ -162,7 +124,7 @@ paths:
       summary: Import Tasks for a project
       tags:
         - Projects
-      x-openapi-router-controller: api.import.csv
+      x-openapi-router-controller: api.importers.csv
   "/projects/{pid}/submissions/{uid}":
     get:
       operationId: get_project_user_submissions
@@ -1081,8 +1043,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/paths/~1projects~1%7Bpid%7D~1import~1csv/post/requestBody/co\
-                ntent/application~1json/items"
+              type: object
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              required:
+                - project_id
+                - title
+                - content
+              properties:
+                project_id:
+                  type: string
+                sequence:
+                  type: integer
+                content:
+                  type: object
+                title:
+                  type: string
+                required:
+                  type: boolean
       responses:
         "201":
           content:
@@ -1113,13 +1111,11 @@ paths:
                           example: 2015-07-07T15:49:51.230+02:00
                           readOnly: true
                   required:
-                    - activity_id
-                    - sequence
+                    - project_id
                     - title
                     - content
-                    - required
                   properties:
-                    activity_id:
+                    project_id:
                       type: string
                     sequence:
                       type: integer

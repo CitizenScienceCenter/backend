@@ -73,23 +73,22 @@ def get_file(model, id=None):
 
 @db_session
 def post(model, obj):
-    print(obj)
     obj['id'] = uuid.uuid4()
     p = model(**obj)
-     
+    print(p.to_dict())
     try:
         commit()
         obj = model.__name__.lower()
         # use model.__name__.lower() for class name
-    except core.IntegrityError as e:
-        logging.error(e)
-        abort(409)
-    except core.TransactionIntegrityError as e:
-        logging.error(e)
-        abort(409)
+    #except core.IntegrityError as e:
+    #    print(e)
+    #    abort(409, str(e))
+    #except core.TransactionIntegrityError as e:
+    #    print(e)
+    #    abort(409, str(e))
     except Exception as e:
-        logging.error(e)
-        abort(500)
+        print(e)
+        abort(500, str(e))
     return ResponseHandler(201, "{} created".format(obj), body=p.to_dict()), p
 
 
