@@ -57,6 +57,13 @@ def get_stats(pid=None):
         abort(404)
     return ResponseHandler(200, "", body=data).send()
 
+@db_session
+def get_media(pid=None, limit = 20, offset = 0):
+    p = Project.get(id="{}".format(pid))
+    if p:
+        return [m.to_dict() for m in p.media.limit(limit, offset=offset)]
+    else:
+        abort(404)
 
 @db_session
 def get_project_tasks(pid=None, limit=20, offset=0):
