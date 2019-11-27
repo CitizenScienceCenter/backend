@@ -412,7 +412,10 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        type: object
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
           description: Comment modified
@@ -640,7 +643,10 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        type: object
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "201":
           content:
@@ -840,7 +846,10 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        type: object
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
           description: Project modified
@@ -945,7 +954,10 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        type: object
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
           description: Submission modified
@@ -1293,7 +1305,10 @@ paths:
           schema:
             type: string
       requestBody:
-        type: object
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "201":
           description: New task created
@@ -1595,7 +1610,10 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        type: object
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "200":
           content:
