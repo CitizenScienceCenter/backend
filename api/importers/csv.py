@@ -1,4 +1,4 @@
-from db import Task, Project, DB
+from db import Task, Project, DB, Media
 from api import model
 import uuid
 from middleware.response_handler import ResponseHandler
@@ -17,7 +17,7 @@ def import_tasks_csv(pid, body):
             try:
                 if len(row.keys()) > 0 and row['part_of'] and row['title']:
                     row['part_of'] = p.id
-                    if row['path']:
+                    if 'path' in row:
                         path = row['path']
                         row['info']['path'] = row['path']
                         del row['path']
@@ -25,9 +25,10 @@ def import_tasks_csv(pid, body):
                     if path != '':
                         # TODO check source and annotate with type
                         # TODO allow upload to storage
-                        m = Media(source_id=t.id, path=path, name=path)
-                        res, media  = model.post(Media, m)
+                        res, media  = model.post(Media, {'source_id': t.id, 'path': path, 'name': path})
                         path = ''
+                        if media:
+                            t.media.add(media)
                     tasks.append(t.to_dict())
             except Exception as e:
                 abort(500, e)
