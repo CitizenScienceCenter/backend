@@ -204,6 +204,37 @@ paths:
         - Projects
         - Tasks
       x-openapi-router-controller: api.project.custom
+  "/projects/{pid}/media":
+    get:
+      operationId: get_project_media
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        "200":
+          description: Return project media
+        "404":
+          description: Project does not exist
+      summary: Get the media for a project
+      tags:
+        - Projects
+        - Media
+      x-openapi-router-controller: api.project.custom
   "/projects/{pid}/task":
     get:
       operationId: get_random_project_task
