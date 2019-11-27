@@ -412,7 +412,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: "#/paths/~1comments/post/requestBody"
+        type: object
       responses:
         "200":
           description: Comment modified
@@ -640,7 +640,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: "#/paths/~1media/post/requestBody"
+        type: object
       responses:
         "201":
           content:
@@ -840,7 +840,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: "#/paths/~1projects/post/requestBody"
+        type: object
       responses:
         "200":
           description: Project modified
@@ -945,42 +945,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - task_id
-                - user_id
-              allOf:
-                - type: object
-                  properties:
-                    id:
-                      type: string
-                      maxLength: 100
-                      readOnly: true
-                    info:
-                      type: object
-                      description: A JSON field to extend a model with extra info
-                    created_at:
-                      type: string
-                      format: date-time
-                      description: Creation time
-                      example: 2015-07-07T15:49:51.230+02:00
-                      readOnly: true
-                    updated_at:
-                      type: string
-                      format: date-time
-                      description: Creation time
-                      example: 2015-07-07T15:49:51.230+02:00
-                      readOnly: true
-              properties:
-                task_id:
-                  type: string
-                user_id:
-                  type: string
-                content:
-                  type: object
+        type: object
       responses:
         "200":
           description: Submission modified
@@ -1023,7 +988,42 @@ paths:
     post:
       operationId: create_submission
       requestBody:
-        $ref: "#/paths/~1submission~1%7Bsid%7D/put/requestBody"
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - task_id
+                - user_id
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              properties:
+                task_id:
+                  type: string
+                user_id:
+                  type: string
+                content:
+                  type: object
       responses:
         "201":
           content:
@@ -1293,7 +1293,7 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: "#/paths/~1task/post/requestBody"
+        type: object
       responses:
         "201":
           description: New task created
@@ -1595,44 +1595,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              allOf:
-                - type: object
-                  properties:
-                    id:
-                      type: string
-                      maxLength: 100
-                      readOnly: true
-                    info:
-                      type: object
-                      description: A JSON field to extend a model with extra info
-                    created_at:
-                      type: string
-                      format: date-time
-                      description: Creation time
-                      example: 2015-07-07T15:49:51.230+02:00
-                      readOnly: true
-                    updated_at:
-                      type: string
-                      format: date-time
-                      description: Creation time
-                      example: 2015-07-07T15:49:51.230+02:00
-                      readOnly: true
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
-                  format: email
-                pwd:
-                  type: string
-                api_key:
-                  type: string
-                anonymous:
-                  type: boolean
+        type: object
       responses:
         "200":
           content:

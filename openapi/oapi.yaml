@@ -334,7 +334,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: ./bodies.yaml#/components/requestBodies/Comment
+        type: object
       responses:
         200:
           description: 'Comment modified'
@@ -484,7 +484,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: ./bodies.yaml#/components/requestBodies/Medium
+        type: object
       responses:
         201:
           content:
@@ -614,7 +614,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: ./bodies.yaml#/components/requestBodies/Project
+        type: object
       responses:
         200:
           description: 'Project modified'
@@ -687,7 +687,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: ./bodies.yaml#/components/requestBodies/Submission
+        type: object
       responses:
         200:
           description: 'Submission modified'
@@ -917,7 +917,7 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: ./bodies.yaml#/components/requestBodies/Task
+        type: object
       responses:
         201:
           description: 'New task created'
@@ -1139,7 +1139,7 @@ paths:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
       requestBody:
-        $ref: ./bodies.yaml#/components/requestBodies/UserUpdate
+        type: object
       responses:
         200:
           content:
