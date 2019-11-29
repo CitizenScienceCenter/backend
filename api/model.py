@@ -80,12 +80,6 @@ def post(model, obj):
         commit()
         obj = model.__name__.lower()
         # use model.__name__.lower() for class name
-    #except core.IntegrityError as e:
-    #    print(e)
-    #    abort(409, str(e))
-    #except core.TransactionIntegrityError as e:
-    #    print(e)
-    #    abort(409, str(e))
     except Exception as e:
         print(e)
         abort(500, str(e))
@@ -105,7 +99,10 @@ def put(model, id, object):
     for k in object.keys():
         setattr(p, k, object[k])
     object['updated_at'] = datetime.now()
-    commit()
+    try:
+        commit()
+    except Exception as e:
+        abort(500, str(e))
     obj = model.__name__.lower()
     return ResponseHandler(201, "{} updated".format(obj), body=p.to_dict()), p
 

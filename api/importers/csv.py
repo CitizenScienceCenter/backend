@@ -7,11 +7,21 @@ from datetime import datetime
 from pony.orm import core, commit, select
 from pony.flask import db_session
 
-@db_session
+
+def reimport_tasks_csv(pid, body):
+   handle_import(pid, body, True)
+
 def import_tasks_csv(pid, body):
+    handle_import(pid, body, False)
+
+@db_session
+def handle_import(pid, body, reimport):
     p = Project.get(id=pid)
     tasks = []
     path = ''
+    if reimport:
+        p.tasks.clear()
+        commit()
     if p:
         for row in body:
             try:
