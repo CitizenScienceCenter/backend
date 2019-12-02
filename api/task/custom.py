@@ -36,7 +36,8 @@ def get_task_submissions(tid=None, limit=20, offset=0):
 
 @db_session
 def get_task_media(tid=None, limit=20, offset=0):
-    t = Task[tid]
+    print(tid)
+    t = Task.get(id="{}".format(tid))
     if t and t.media.count() > 0:
         return ResponseHandler(
             200, "", body=[s.to_dict() for s in t.media.limit(limit, offset=offset)]
