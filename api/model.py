@@ -19,6 +19,9 @@ js = jtos.JTOS()
 
 @db_session
 def get_all(model, limit, offset, search_term=None):
+    """
+        Get an array of all types of a model, can use JTOS query handling to turn JSON to SQL and search
+    """
     r = ResponseHandler(200, "")
     r.set_val("page", {"limit": limit, "offset": offset})
     if search_term:
@@ -58,6 +61,9 @@ def get_count(model, search_term=None):
 
 @db_session
 def get_one(model, id=None):
+    """
+        Retrieve a model based on the ID
+    """
     try:
         m = model[id]
     except core.ObjectNotFound:
@@ -73,6 +79,9 @@ def get_file(model, id=None):
 
 @db_session
 def post(model, obj):
+    """
+        Create a model from provided params. Connexion handles the validation
+    """
     obj['id'] = uuid.uuid4()
     p = model(**obj)
     print(p.to_dict())
@@ -88,6 +97,9 @@ def post(model, obj):
 
 @db_session
 def put(model, id, object):
+    """
+        Update a model from provided ID and params
+    """
     try:
         p = model[id]
     except core.ObjectNotFound as o:
@@ -109,6 +121,10 @@ def put(model, id, object):
 
 @db_session
 def delete(model, id):
+    """
+        Delete a model based on the ID.
+        Individual instances handle access checks
+    """
     try:
         model[id].delete()
         commit()

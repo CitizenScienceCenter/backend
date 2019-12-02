@@ -14,6 +14,9 @@ clean:
 		docker-compose -f ${COMPOSE_FILE} rm
 		-rm .env
 
+docs:
+	sphinx-apidoc -o docs .
+
 .PHONY: spec
 spec:
 	  speccy resolve openapi/oapi.yaml -o openapi/cc.yaml
