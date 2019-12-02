@@ -14,7 +14,9 @@ ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
 from pony.flask import db_session
 from pony.orm import commit
 
-RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.part_of='{1}' LIMIT 1;"
+RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) WHERE tasks.id NOT IN (SELECT submissions.task_id from submissions where submissions.user_id = '{0}') AND tasks.part_of='{1}';"
+
+#RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(1) LEFT JOIN submissions on tasks.id=submissions.task_id WHERE (submissions.task_id IS NULL OR submissions.user_id != '{0}') AND tasks.part_of='{1}' LIMIT 1;"
 
 @db_session
 @access_checks.ensure_owner(Project)
@@ -81,16 +83,26 @@ def get_project_tasks(pid=None, limit=20, offset=0):
 
 
 @db_session
-def get_random_project_task(pid=None, orderBy=None, notDone=False):
-    u = utils.get_user(request, db_session)
-    print(RANDOM_TASK.format(u.id, pid))
-    t = DB.select(RANDOM_TASK.format(u.id, pid))
-    print(t)
-    ret = {}
-    if len(t) != 0:
-        # TODO check return object
-        ret = t[0]
-    return ResponseHandler(200, "Task", body=ret).send()
+def get_project_task(pid=None, index=-1, notDone=False):
+    p = Project[pid]
+    body = None
+    if p:
+        if index >= 0:
+            t = p.tasks.limit(1, offset=index)
+            body = t.to_dict()
+        else:
+            u = utils.get_user(request, db_session)
+            t = DB.select(RANDOM_TASK.format(u.id, pid))
+            print(t)
+            ret = None
+            if len(t) != 0:
+                # TODO check return object
+                ret = t[0]
+            else:
+                abort(404)
+        return ResponseHandler(200, "Task", body=body).send()
+    else:
+        abort(404)
 
 
 @db_session
