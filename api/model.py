@@ -21,6 +21,8 @@ js = jtos.JTOS()
 def get_all(model, limit, offset, search_term=None):
     r = ResponseHandler(200, "")
     r.set_val("page", {"limit": limit, "offset": offset})
+    if limit > 200:
+        abort(500, "Limit set too high")
     if search_term:
         try:
             st = prison.loads(search_term)
@@ -35,7 +37,7 @@ def get_all(model, limit, offset, search_term=None):
             logging.error(e)
             abort(500, "Failed to understand query")
     else:
-        q = select(a for a in model).limit(limit, offset=offset)
+        q = select(a for a in model).order_by(desc(model.created_at)).limit(limit, offset=offset)
     q = [o.to_dict() for o in q]
     r.set_body(q)
     return r
