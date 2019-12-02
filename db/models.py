@@ -45,7 +45,7 @@ class Member(DB.Entity):
     info = Required(Json, default={})
     user_id = Required("User", reverse="member_of")
     project_id = Optional("Project", reverse="members")
- #   group_id = Optional("ProjectGroup", reverse="members")
+    group_id = Optional("ProjectGroup", reverse="members")
     role = Required("Role")
 
 class Role(DB.Entity):
@@ -78,8 +78,8 @@ class ProjectGroup(DB.Entity):
     info = Required(Json, default={})
     name = Required(str)
     owner = Required(str)
-    projects = Optional(str)
-    members = Optional(str)
+    projects = Set("Project")
+    members = Set("Member")
 
 class Project(DB.Entity):
     _table_ = "projects"
@@ -96,7 +96,7 @@ class Project(DB.Entity):
     members = Set("Member")
     media = Set("Media")
     tasks = Set("Task")
-    #group = Optional("ProjectGroup")
+    group = Optional("ProjectGroup")
 
 class Task(DB.Entity):
     _table_ = "tasks"
