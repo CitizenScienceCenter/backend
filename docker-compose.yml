@@ -22,7 +22,7 @@ services:
     environment:
       URL: ${SWAGGER_JSON}
     depends_on:
-      - cccs-connexion
+      - api
   graphql:
     restart: always
     image: graphile/postgraphile
@@ -31,11 +31,10 @@ services:
     command: postgraphile --connection 'postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}?sslmode=disable' --host 0.0.0.0 --port 5000 --schema public -a -j
     depends_on:
       - db
-  cccs-connexion:
+  api:
+    network_mode: host
     build:
       context: .
     command:  uwsgi --http :${CC_PORT} --wsgi-file uwsgi.py --master --processes 4 --threads 2 --stats :9191
     ports:
       - "${CC_PORT}:${CC_PORT}"
-    depends_on:
-      - db
