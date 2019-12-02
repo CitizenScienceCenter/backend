@@ -266,7 +266,7 @@ paths:
       x-openapi-router-controller: api.project.custom
   /projects/{pid}/task:
     get:
-      operationId: get_random_project_task
+      operationId: get_project_task
       parameters:
         - description: 'The Project ID'
           in: path
@@ -275,6 +275,20 @@ paths:
           schema:
             pattern: ^[a-zA-Z0-9-]+$
             type: string
+        - description: 'Select a random task?'
+          in: query
+          name: random
+          required: false
+          schema:
+            default: false
+            type: boolean
+        - description: 'index'
+          in: query
+          name: index
+          required: false
+          schema:
+            default: -1
+            type: integer
       responses:
         200:
           description: 'Return random project task'

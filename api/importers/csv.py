@@ -9,10 +9,10 @@ from pony.flask import db_session
 
 
 def reimport_tasks_csv(pid, body):
-   handle_import(pid, body, True)
+   return handle_import(pid, body, True)
 
 def import_tasks_csv(pid, body):
-    handle_import(pid, body, False)
+    return handle_import(pid, body, False)
 
 @db_session
 def handle_import(pid, body, reimport):
