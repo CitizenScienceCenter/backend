@@ -10,10 +10,6 @@ Model = Submission
 def get_submissions(limit, offset, search_term=None):
     return model.get_all(Model, limit, offset, search_term).send()
 
-def get_submission_count(search_term=None):
-    ms, code = model.get_count(Model, search_term)
-    return ms, code
-
 def get_submission(id=None):
     return model.get_one(Model, id).send()
 

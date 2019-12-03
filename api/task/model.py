@@ -15,12 +15,6 @@ Model = Task
 def get_tasks(limit, offset, search_term=None):
     return model.get_all(Model, limit, offset, search_term).send()
 
-
-def get_task_count(search_term=None):
-    ms, code = model.get_count(Model, search_term)
-    return ms, code
-
-
 def get_task(tid):
     return model.get_one(Model, tid).send()
 

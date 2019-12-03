@@ -43,22 +43,6 @@ def get_all(model, limit, offset, search_term=None):
     r.set_body(q)
     return r
 
-
-@db_session
-def get_count(model, search_term=None):
-    st = prison.loads(search_term)
-    count_query = st.copy()
-    count_query["select"]["fields"] = ["COUNT(*)"]
-    if "limit" in count_query:
-        del count_query["limit"]
-    if "offset" in count_query:
-        del count_query["offset"]
-    # count_stmt = js.parse_object(count_query)
-    count = [0]
-    # count = db_session.execute(count_stmt).fetchone()
-    return count[0], 200
-
-
 @db_session
 def get_one(model, id=None):
     """

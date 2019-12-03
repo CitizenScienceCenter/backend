@@ -15,8 +15,8 @@ from pony.flask import db_session
 
 
 @db_session
-def get_project_group_projects(pid, limit=20, offset=0):
-    p = ProjectGroup.get(id="{}".format(pid))
+def get_project_group_projects(gid, limit=20, offset=0):
+    p = ProjectGroup.get(id="{}".format(gid))
     if p and p.projects.count() > 0:
         return ResponseHandler(
             200,
@@ -29,3 +29,8 @@ def get_project_group_projects(pid, limit=20, offset=0):
         ).send()
     else:
         abort(404)
+
+@db_session
+def get_user_project_groups(limit=20, offset=0):
+    u = utils.get_user(request, db_session)
+    return ResponseHandler(200, "User Project Groups", body=[g.to_dict() for g in u.groups.limit(limit, offset=offset)]).send()
