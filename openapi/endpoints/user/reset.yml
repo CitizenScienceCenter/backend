@@ -1,0 +1,31 @@
+paths:
+  reset:
+    get:
+      operationId: reset
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Password reset'
+      summary: 'Reset user password'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+    post:
+      operationId: verify_reset
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/User
+      responses:
+        200:
+          description: 'Verified and reset'
+        401:
+          description: 'Unauthorised user'
+      summary: 'Verify password reset token'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+

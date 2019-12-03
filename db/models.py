@@ -9,6 +9,9 @@ def gen_api_key():
     return str(uuid.uuid4())
 
 class User(DB.Entity):
+    """
+        General user object
+    """
     _table_ = "users"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -28,6 +31,10 @@ class User(DB.Entity):
 
 
 class OToken(DB.Entity):
+    """
+        Oauth tokens to handle authentication with other providers and restrict access
+        Currently unimplemented
+    """
     _table_ = "oauth_tokens"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -38,6 +45,9 @@ class OToken(DB.Entity):
     expiry = Optional(datetime)
 
 class Member(DB.Entity):
+    """
+        Members are part of projects or groups. Group members have the same role for all projects within the group
+    """
     _table_ = "members"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -45,10 +55,13 @@ class Member(DB.Entity):
     info = Required(Json, default={})
     user_id = Required("User", reverse="member_of")
     project_id = Optional("Project", reverse="members")
- #   group_id = Optional("ProjectGroup", reverse="members")
+    group_id = Optional("ProjectGroup", reverse="members")
     role = Required("Role")
 
 class Role(DB.Entity):
+    """
+        Roles to define actions that can be performed on models
+    """
     _table_ = "roles"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -71,6 +84,9 @@ class Role(DB.Entity):
     members = Set("Member")
 
 class ProjectGroup(DB.Entity):
+    """
+        Groups for collections of related projects
+    """
     _table_ = "projectgroups"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -78,10 +94,13 @@ class ProjectGroup(DB.Entity):
     info = Required(Json, default={})
     name = Required(str)
     owner = Required(str)
-    projects = Optional(str)
-    members = Optional(str)
+    projects = Set("Project")
+    members = Set("Member")
 
 class Project(DB.Entity):
+    """
+        A project to contain tasks
+    """
     _table_ = "projects"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -96,9 +115,12 @@ class Project(DB.Entity):
     members = Set("Member")
     media = Set("Media")
     tasks = Set("Task")
-    #group = Optional("ProjectGroup")
+    group = Optional("ProjectGroup")
 
 class Task(DB.Entity):
+    """
+        Tasks assigned to a project (and can contain media)
+    """
     _table_ = "tasks"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -114,6 +136,9 @@ class Task(DB.Entity):
     submissions = Set("Submission")
 
 class Submission(DB.Entity):
+    """
+        User submissions to a task
+    """
     _table_ = "submissions"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -126,6 +151,9 @@ class Submission(DB.Entity):
     media = Set("Media")
 
 class Comment(DB.Entity):
+    """
+        Comments can be linked to any other model
+    """
     _table_ = "comments"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)
@@ -138,6 +166,9 @@ class Comment(DB.Entity):
     user_id = Required(User)
 
 class Media(DB.Entity):
+    """
+        Media that can be part of: Project, Submission or Task
+    """
     _table_ = "media"
     id = PrimaryKey(uuid.UUID, default=uuid.uuid4)
     created_at = Required(datetime, default=datetime.now)

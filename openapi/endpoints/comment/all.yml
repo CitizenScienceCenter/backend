@@ -1,0 +1,48 @@
+paths:
+  all:
+    get:
+      operationId: get_comments
+      parameters:
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ../../schemas.yaml#/components/schemas/Comment
+                type: array
+          description: 'List of comments'
+      summary: 'Get a single comment'
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+    post:
+      operationId: create_comment
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/Comment
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas.yaml#/components/schemas/Comment
+          description: 'Comment created'
+        409:
+          description: 'Comment already exists'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Post a comment'
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model

@@ -1,0 +1,13 @@
+paths:
+  auth:
+    post:
+      operationId: generate
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/User
+      responses:
+        200:
+          description: 'Token created'
+      summary: 'Post auth for token response'
+      tags:
+        - Users
+      x-openapi-router-controller: api.otoken

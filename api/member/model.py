@@ -12,20 +12,12 @@ Model = Member
 def get_members(limit=20, offset=0, search_term=None):
     return model.get_all(Model, limit, offset, search_term).send()
 
-
-def get_activity_count(search_term=None):
-    ms, code = model.get_count(Model, search_term)
-    return ms, code
-
-
 def get_member(mid=None):
     return model.get_one(Model, mid).send()
-
 
 def create_member(body):
     res, a = model.post(Model, body)
     return res.send()
-
 
 @db_session
 @access_checks.ensure_owner(Model)

@@ -13,12 +13,6 @@ Model = Project
 def get_projects(limit=100, offset=0, search_term=None):
     return model.get_all(Model, limit, offset, search_term).send()
 
-
-def get_project_count(search_term=None):
-    ms, code = model.get_count(Model, search_term)
-    return ms, code
-
-
 def get_project(pid=None):
     return model.get_one(Model, pid).send()
 

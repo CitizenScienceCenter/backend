@@ -17,7 +17,8 @@ from pony.flask import db_session
 
 @db_session
 def validate(key):
-    return utils.get_user(request, db_session).to_dict(exclude="pwd")
+    user = utils.get_user(request, db_session).to_dict(exclude="pwd")
+    return ResponseHandler(200, "User validated", body = user).send()
 
 @db_session
 def check_user(email=None, username=None):
@@ -87,13 +88,13 @@ def reset(email):
         )
         msg = message.EmailMessage()
         msg.set_content(text)
-        smtp_user = conf["SMTP_USER"]
-        msg["Subject"] = "Password Reset for Citizen Science Project"
+        smtp_user = "no-reply@citizenscience.ch"
+        msg["Subject"] = "Password Reset for Your citizenscience.ch Account"
         msg["From"] = smtp_user
         msg["To"] = user.email
         try:
-            s = smtplib.SMTP(conf["SMTP_ADDR"], 587)
-            s.login(smtp_user, conf["SMTP_PASS"])
+            s = smtplib.SMTP("asmtp.mailstation.ch", 587)
+            s.login(smtp_user, conf['SMTP_PASS'])
             s.sendmail(smtp_user, [user.email], msg.as_string())
             s.quit()
         except Exception as e:

@@ -6,6 +6,14 @@ Flask based OpenAPI (3) supported backend with a Postgres backend.
 
 Current implementation holds a basic implementation with an API inspired by that of Pybossa. Basic auth is currently included.
 
+## Stack
+
+We use Connexion as the **API Server**, based on Flask and you can find the API files in the `openapi` folder.
+
+The **database** backend is PostgreSQL and the Docker Compose option allows you to choose an external DB or bring one up within the Compose file.
+
+**File storage** can also be on the API server, or you can use Minio (an S3 clone). Support for direct uploads is coming in the near future.
+
 ## Running
 
 * Ensure the correct `env` file has been symlinked to `.env`.

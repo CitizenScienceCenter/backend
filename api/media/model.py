@@ -24,7 +24,6 @@ def create_medium(body):
     res, _ = model.post(Model, body)
     return res.send()
 
-
 def update_medium(mid, body):
     res, _ = model.put(Model, mid, body)
     return res.send()

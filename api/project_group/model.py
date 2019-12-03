@@ -20,7 +20,7 @@ def get_project_group(pid=None):
 
 @db_session
 def create_project_group(body):
-    project = body
+    group = body
     user = utils.get_user(request, db_session)
     project["owned_by"] = user.id
     res, _ = model.post(Model, project)

@@ -1,0 +1,73 @@
+paths:
+  id:
+    delete:
+      operationId: delete_task
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: tid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        204:
+          description: 'Task was deleted'
+      security:
+        - apiKeyHeader: []
+      summary: 'Delete a single task. WARNING - This will also disassociate all submissions
+        for the task'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+    get:
+      operationId: get_task
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: tid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ../../schemas.yaml#/components/schemas/Task
+          description: 'Return task'
+        404:
+          description: 'Task does not exist'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Get a single task'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+    put:
+      operationId: update_task
+      parameters:
+        - description: 'The unique identifer for the Task'
+          in: path
+          name: tid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        201:
+          description: 'New task created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Modify/Create a task'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model

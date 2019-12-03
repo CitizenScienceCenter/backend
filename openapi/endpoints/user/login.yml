@@ -1,0 +1,18 @@
+paths:
+  login:
+    post:
+      operationId: login
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/User
+        required: true
+      responses:
+        200:
+          description: 'Login successful'
+        401:
+          description: 'Incorrect login details'
+        404:
+          description: 'User not found'
+      summary: 'Allow a user to login'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom

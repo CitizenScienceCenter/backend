@@ -1,0 +1,59 @@
+paths:
+  import_tasks_csv:
+    post:
+      operationId: import_tasks_csv
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        description: CSV file content
+        required: true
+        content:
+          application/json:
+            schema:
+                type: array
+      responses:
+        201:
+          description: 'Tasks imported'
+        404:
+          description: 'Project does not exist'
+        401:
+          description: 'Unauthorised'
+      summary: 'Import Tasks for a project using a CSV, this endpoint will NOT replace existing tasks'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.importers.csv
+  reimport_tasks_csv:
+    post:
+      operationId: reimport_tasks_csv
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        description: CSV file content
+        required: true
+        content:
+          application/json:
+            schema:
+                type: array
+      responses:
+        201:
+          description: 'Tasks imported'
+        404:
+          description: 'Project does not exist'
+        401:
+          description: 'Unauthorised'
+      summary: 'Import Tasks for a project using a CSV, this endpoint WILL replace ALL existing tasks'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.importers.csv

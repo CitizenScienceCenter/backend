@@ -1,0 +1,22 @@
+paths:
+  stats:
+    get:
+      operationId: get_stats
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+          description: 'Stats for task submissions'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get statistics for a specific task'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.custom

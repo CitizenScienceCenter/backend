@@ -1,0 +1,61 @@
+paths:
+  all:
+    get:
+      operationId: get_tasks
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: number
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ../../schemas.yaml#/components/schemas/Task
+                type: array
+          description: 'List of tasks'
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: 'Get a list of tasks'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+    post:
+      operationId: create_tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: ../../schemas.yaml#/components/schemas/Task
+              type: array
+        description: 'List of tasks'
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ../../schemas.yaml#/components/schemas/Task
+                type: array
+          description: 'Task created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Post an array of tasks'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model

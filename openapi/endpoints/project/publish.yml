@@ -1,0 +1,22 @@
+paths:
+  publish:
+    get:
+      operationId: publish
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Project Published'
+        404:
+          description: 'Project does not exist'
+      summary: 'Apply for a project to be published'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.custom
+
