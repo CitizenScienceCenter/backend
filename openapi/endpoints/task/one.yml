@@ -1,0 +1,21 @@
+paths:
+  one:
+    post:
+      operationId: create_task
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/Task
+      responses:
+        201:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ../../schemas.yaml#/components/schemas/Task
+                type: array
+          description: 'Task created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Post a single task'
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model

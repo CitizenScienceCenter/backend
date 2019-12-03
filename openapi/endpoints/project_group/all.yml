@@ -1,0 +1,33 @@
+paths:
+  # Get All
+  '/project_groups':
+    get:
+      operationId: get_project_groups
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: 'Return project groups'
+        404:
+          description: 'Project group does not exist'
+      summary: 'List Project Groups'
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
+

@@ -1,0 +1,15 @@
+paths:
+  register:
+    post:
+      operationId: create_user
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/User
+      responses:
+        201:
+          description: 'Created user'
+        409:
+          description: 'User exists'
+      summary: 'Registration end point for a user account'
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model

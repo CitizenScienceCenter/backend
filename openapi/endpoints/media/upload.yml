@@ -1,0 +1,24 @@
+paths:
+  upload:
+    get:
+      operationId: get_pre_signed_url
+      parameters:
+        - in: query
+          name: source_id
+          schema:
+            type: string
+        - in: query
+          name: filename
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Return presigned url'
+        401:
+          description: 'User does not have uploading access'
+      security:
+        - apiKeyHeader: []
+      summary: 'Return pre-authorised url to upload media to Minio'
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.custom

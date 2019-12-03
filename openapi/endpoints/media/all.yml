@@ -1,0 +1,36 @@
+paths:
+  all:
+    get:
+      description: 'Get a list of media'
+      operationId: get_media
+      parameters:
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        200:
+          description: 'List of media'
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+    post:
+      description: 'The media details (for files already on the server or remotely
+        hosted)'
+      operationId: create_medium
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/Medium
+      responses:
+        200:
+          description: 'Media attached'
+      security:
+        - apiKeyHeader: []
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model

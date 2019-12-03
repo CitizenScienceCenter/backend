@@ -1,0 +1,36 @@
+paths:
+  submissions:
+    get:
+      operationId: get_task_submissions
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: ../../schemas.yaml#/components/schemas/Submission
+                type: array
+          description: 'List of submissions'
+      security:
+        - apiKeyHeader: []
+      summary: 'Get submissions for a specific task'
+      tags:
+        - Tasks
+        - Submissions
+      x-openapi-router-controller: api.task.custom

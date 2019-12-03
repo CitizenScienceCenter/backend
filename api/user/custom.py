@@ -93,7 +93,7 @@ def reset(email):
         msg["To"] = user.email
         try:
             s = smtplib.SMTP("asmtp.mailstation.ch", 587)
-            s.login(smtp_user, conf['SMTP_PASS')
+            s.login(smtp_user, conf['SMTP_PASS'])
             s.sendmail(smtp_user, [user.email], msg.as_string())
             s.quit()
         except Exception as e:

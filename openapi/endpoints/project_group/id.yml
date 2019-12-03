@@ -1,0 +1,19 @@
+paths:
+  '/project_groups/{gid}':
+      get:
+        operationId: get_project_group
+        parameters:
+          - name: gid
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          200:
+            description: 'Return project group'
+          404:
+            description: 'Project group does not exist'
+        summary: 'Get Project Group by ID'
+        tags:
+          - ProjectGroups
+        x-openapi-router-controller: api.project_group.model

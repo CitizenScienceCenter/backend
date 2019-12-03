@@ -1,0 +1,51 @@
+paths:
+  all:
+    get:
+      operationId: get_project_submissions
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return project submissions'
+        404:
+          description: 'Project does not exist'
+      summary: 'Get the submissions for a project'
+      tags:
+        - Projects
+        - Submissions
+        - Users
+      x-openapi-router-controller: api.submission.custom
+  user:
+    get:
+      operationId: get_project_user_submissions
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - description: 'User ID for specific user submissions'
+          in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Return project submissions'
+        404:
+          description: 'Project does not exist'
+      summary: 'Get user submissions for a project'
+      tags:
+        - Projects
+        - Submissions
+        - Users
+      x-openapi-router-controller: api.submission.custom

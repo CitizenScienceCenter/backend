@@ -1,0 +1,71 @@
+paths:
+  project_id:
+    delete:
+      operationId: delete_project
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        204:
+          description: 'Project was deleted'
+        404:
+          description: 'Project does not exist'
+      security:
+        - apiKeyHeader: []
+      summary: 'Remove a project'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+    get:
+      operationId: get_project
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return project'
+        404:
+          description: 'Project does not exist'
+      summary: 'Get a single project'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+    put:
+      operationId: update_project
+      parameters:
+        - description: 'The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: 'Project modified'
+        201:
+          description: 'New project created'
+      security:
+        - apiKeyHeader: []
+      summary: 'Modify/Create a project'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model

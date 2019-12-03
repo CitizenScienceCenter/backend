@@ -1,0 +1,21 @@
+paths:
+  stats:
+    get:
+      operationId: get_stats
+      parameters:
+        - description: 'The Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Return project statistics'
+        404:
+          description: 'Project does not exist'
+      summary: 'Get the statistics for a Project'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.custom
