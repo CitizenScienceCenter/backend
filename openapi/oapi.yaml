@@ -35,7 +35,7 @@ paths:
   /projects:
     $ref: 'endpoints/project/all.yml#/paths/projects'
   /projects/{pid}:
-    $ref: 'endpoints/project/all.yml#/paths/project_id'
+    $ref: 'endpoints/project/id.yml#/paths/project_id'
   /projects/{pid}/submissions:
     $ref: 'endpoints/project/submissions.yml#/paths/all'
   /projects/{pid}/publish:
