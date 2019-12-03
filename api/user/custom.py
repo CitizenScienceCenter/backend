@@ -17,7 +17,8 @@ from pony.flask import db_session
 
 @db_session
 def validate(key):
-    return utils.get_user(request, db_session).to_dict(exclude="pwd")
+    user = utils.get_user(request, db_session).to_dict(exclude="pwd")
+    return ResponseHandler(200, "User validated", body = user).send()
 
 @db_session
 def check_user(email=None, username=None):
