@@ -2,44 +2,55 @@ import logging
 from datetime import datetime
 from connexion import NoContent
 from passlib.hash import pbkdf2_sha256
-from flask import session, request, current_app
-from db import orm_handler, User, utils, Submission
+from flask import session, request, current_app, abort
+from db import User, utils, Submission
 import smtplib
 from email import message
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer
-# from flask_sqlalchemy_session import current_session as db_session
-db_session = orm_handler.db_session
+from pony.orm import commit
+from middleware.response_handler import ResponseHandler
+
+
 ts = URLSafeTimedSerializer("SUPES_SECRET87").signer("SUPES_SECRET87")
+from pony.flask import db_session
 
 
+@db_session
 def validate(key):
-    q = db_session.query(User).filter(User.api_key == key).one_or_none()
-    if q:
-        return q.dump(), 201
+    return utils.get_user(request, db_session).to_dict(exclude="pwd")
+
+@db_session
+def check_user(email=None, username=None):
+    u = None
+    if email:
+        u = User.get(email=email)
+    elif username:
+        u = User.get(username=username)
+    if u:
+        abort(200)
     else:
-        return NoContent, 401
+        abort(404)
 
 
-def login(user):
+@db_session
+def login(body):
     logging.info(request)
     q = None
-    # user = body
-    # print(body)
-    if 'email' in user:
-        q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
+    user = body
+    if "email" in user:
+        q = User.get(email=user["email"])
         logging.info(q)
-    elif 'username' in user:
-        q = db_session.query(User).filter(User.username == user["username"]).one_or_none()
+    elif "username" in user:
+        q = User.get(username=user["username"])
     else:
-        return {'msg': 'Incorrect keys provided'}, 500
+        return {"msg": "Incorrect keys provided"}, 500
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
-            del q.pwd
-            return q.dump(), 200
+            return ResponseHandler(200, 'Welcome', body=q.to_dict(exclude="pwd")).send()
         else:
-            return NoContent, 401
+            abort(401)
     else:
-        return {'msg': 'User not found'}, 404
+        return {"msg": "User not found"}, 404
 
 
 def logout():
@@ -48,9 +59,11 @@ def logout():
     return 200
 
 
-def auth(user):
+@db_session
+def auth(body):
+    user = body
     # TODO create oauth token here and add to table. Just send api key for now
-    q = db_session.query(User).filter(User.email == user["email"]).one_or_none()
+    q = User.get(email=user["email"])
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
             session["user"] = q.dump()
@@ -61,16 +74,13 @@ def auth(user):
         return NoContent, 404
 
 
+@db_session
 def reset(email):
     conf = current_app.config
-    user = (
-        db_session.query(User)
-        .filter(User.email != None)
-        .filter(User.email == email)
-        .one_or_none()
-    )
+    user = User.get(email=email)
+    # TODO handle domain
     if user:
-        tk = ts.sign(user.id)
+        tk = ts.sign(str(user.id))
         reset = "{}/reset/{}".format("https://citizenscience.ch", tk.decode("utf-8"))
         text = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(
             reset
@@ -83,40 +93,50 @@ def reset(email):
         msg["To"] = user.email
         try:
             s = smtplib.SMTP("asmtp.mailstation.ch", 587)
-            s.login(smtp_user, "L6Ahfb3C")
+            s.login(smtp_user, conf['SMTP_PASS')
             s.sendmail(smtp_user, [user.email], msg.as_string())
             s.quit()
         except Exception as e:
-            print("ERROR RESETTING", e)
-            return e, 503
+            logging.error(e)
+            abort(501)
         return NoContent, 200
     else:
-        return NoContent, 401
+        abort(404)
 
 
-def get_subs(id=None):
-    user = db_session.query(User).filter(User.id == id).one_or_none()
-    if user:
-        submissions = (
-            db_session.query(Submission)
-            .distinct(Submission.id)
-            .filter(Submission.user_id == id)
-            .all()
-        )
-        # TODO paging
-        return [s.dump() for s in submissions]
+@db_session
+def get_user_submissions():
+    user = utils.get_user(request, db_session)
+    submissions = user.submissions
+    if submissions.count() > 0:
+        return ResponseHandler(200, '', body=[s.to_dict() for s in submissions]).send()
     else:
-        return NoContent, 401
+        return ResponseHandler(200, 'User has no submissions', body=[], ok=False).send()
+
+@db_session
+def get_user_projects():
+    user = utils.get_user(request, db_session)
+    projects = user.owned_projects
+    if projects.count() > 0:
+        return ResponseHandler(200, '', body=[p.to_dict() for p in projects]).send()
+    else:
+        return ResponseHandler(200, 'User has no projects', body=[], ok=False).send()
 
 
+@db_session
 def verify_reset(reset):
-    print(reset)
+    logging.debug(reset)
     try:
+        # TODO check token signature
         token = ts.unsign(reset["token"], 2000)
-        user = db_session.query(User).filter(User.id == reset["id"]).one_or_none()
-        user.pwd = pbkdf2_sha256.encrypt(reset["pwd"], rounds=200000, salt_size=16)
-        db_session.commit()
+        logging.info(token)
+        user = User.get(id=reset["id"])
+        if user:
+            user.pwd = pbkdf2_sha256.encrypt(reset["pwd"], rounds=200000, salt_size=16)
+            commit()
+        else:
+            abort(404)
         return True, 200
     except Exception as e:
-        print(e)
-        return False, 401
+        logging.error(e)
+        abort(401)

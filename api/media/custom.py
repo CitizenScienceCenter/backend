@@ -1,34 +1,27 @@
-import connexion
 import logging
-from connexion import NoContent
-from db import orm_handler, Media
-from werkzeug.utils import secure_filename
-import uuid
-from flask import send_file
-import fleep
-from pathlib import Path
-# from flask_sqlalchemy_session import current_session as db_session
-db_session = orm_handler.db_session
+from db import Media
+from minio.error import ResponseError
+from flask import current_app
+from datetime import datetime, timedelta
+from middleware.response_handler import ResponseHandler
 
 
-def get_for_source(id=None, limit=20):
-    m = db_session.query(Media).filter(Media.source_id == id)
-    return [p.dump() for p in m][:limit]
+def get_for_source(sid=None):
+    m = Media.get(source_id=sid)
+    if m is not None:
+        return m
 
-def upload(attachment, id=None):
-    logging.info("Creating Media ")
-    f = connexion.request.files["attachment"]
-    filename = secure_filename(f.filename)
-    uid = uuid.uuid4().hex
-    ext = Path(f.filename).suffix
-    path = "./static/uploads/{}{}".format(uid, ext)
-    f.save(path)
-    with open(path, "rb") as f:
-        info = fleep.get(f.read(128))
-    print(info.type)
-    m = Media(id, path, filename, info.type[0])
-    # name = os.path.basename(path)
-    db_session.add(m)
-    db_session.commit()
-    print(m.id)
-    return m.dump(), 201
+
+def get_pre_signed_url(source_id, filename):
+    client = current_app.uploader
+
+    try:
+        if not client.bucket_exists(source_id):
+            client.make_bucket(source_id)
+    except ResponseError as e:
+        logging.error(e)
+
+    url = current_app.uploader.presigned_put_object(
+        source_id, filename, expires=timedelta(days=3)
+    )
+    return ResponseHandler(200, {"url": url}, body=url).send()

@@ -1,112 +1,122 @@
-from flask import session, request, g, abort
-from connexion import NoContent
+import uuid
 from functools import wraps
-from db import *
 import prison
+from db import Comment, Project, Submission, Task, User
+from flask import abort, request
+from pony.flask import db_session
 
-# from flask_sqlalchemy_session import current_session as db_session
+db_tables = [
+    "members",
+    "users",
+    "projects",
+    "comments",
+    "submissions",
+    "media",
+    "tasks",
+]
 
-db_session = orm_handler.db_session
-db_tables = orm_handler.Base.metadata.tables.keys()
 
-
+@db_session
 def ensure_key(token, required_scopes=None):
-    key = token
-    user_key = db_session.query(User).filter(User.api_key==key).one_or_none()
-    print(dir(user_key))
-    if user_key is not None:
-        return dict(sub=user_key.username)
+    """
+    @todo Implement JWT authentication
+    @body Using the `jose` lib, handle creation of JWTs for users (and renewal upon expiry)
+    """
+    u = User.get(api_key=token)
+    print(u)
+    if u and (
+        (u.info is not None and "anonymous" not in u.info) or u.anonymous == False
+    ):
+        return {str(u.id): token, "role": "user"}
     else:
-        return None
+        abort(401)
 
+
+@db_session
 def ensure_anon_key(token, required_scopes=None):
-    return ensure_key(token, required_scopes)
-
-def ensure_model(func):
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        if "search_term" in request.args:
-            search = prison.loads(request.args["search_term"])
-            allowed_table = True
-            for t in search["select"]["tables"]:
-                if t.lower().split(" ")[0] not in db_tables:
-                    allowed_table = False
-                    break
-            print(allowed_table)
-            if not allowed_table:
-                abort(401)
-            return func(*args, **kwargs)
-        else:
-            return func(*args, **kwargs)
-
-    return decorated_function
+    u = User.get(api_key=token)
+    if u is not None and u.anonymous is True:
+        # TODO check on sub roles for Connexion
+        return {"anonymous": token, "role": "anonymous"}
+    else:
+        abort(401)
 
 
-class ensure_owner(object):
+@db_session
+class ensure_model(object):
     def __init__(self, model):
         self.model = model
 
     def __call__(self, func):
         @wraps(func)
         def decorated_function(*args, **kwargs):
-            print("owner access check")
+            if "search_term" in request.args:
+                search = prison.loads(request.args["search_term"])
+                allowed_table = True
+                for t in search["select"]["tables"]:
+                    if t.lower().split(" ")[0] not in db_tables:
+                        allowed_table = False
+                        break
+                if not allowed_table:
+                    abort(401)
+                return func(*args, **kwargs)
+            else:
+                return func(*args, **kwargs)
+
+        return decorated_function
+
+
+@db_session
+class ensure_owner(object):
+    def __init__(self, model):
+        self.model = model
+        self.model_id = None
+
+    def __call__(self, func):
+        @wraps(func)
+        def decorated_function(*args, **kwargs):
             if "X-API-KEY" in request.headers:
                 key = request.headers["X-API-KEY"]
-                model_id = request.view_args["id"]
-                model = self.model
-                query_field = None
-                owned_id = None
-                if model is Project:
-                    query_field = model.owned_by
-                    owner = (
-                        db_session.query(User)
-                        .filter(User.api_key == key)
-                        .filter(User.member_of.any(id=model_id))
-                        .one_or_none()
-                    )
-                    if owner is None:
-                        abort(401)
-                    owned_id = owner.id
-                elif model is Activity:
-                    return func(*args, **kwargs)
-                    # query_field = model.part_of
-                    # act = (
-                    #     db_session.query(model)
-                    #     .filter(model.id == model_id)
-                    #     .one_or_none()
-                    # )
-                    # if act is not None:
-                    #     print(project.owned_by)
-                    #     account = db_session.query(User).all()
-                    #     print(account)
-                    #     if account:
-                    #         owned_id = project.owned_by
-                    #     else:
-                    #         return NoContent, 401
-                    # else:
-                    #     return NoContent, 404
-                elif model is User:
-                    query_field = model.id
-                    owner = db_session.query(User).filter(User.api_key == key).one_or_none()
-                    if owner is None:
-                        abort(404)
-                    owned_id = owner.id
-                else:
-                    query_field = model.user_id
-                if owned_id is not None:
-                    obj = (
-                        db_session.query(model)
-                        .filter(query_field == owned_id)
-                        .filter(model.id == model_id)
-                        .one_or_none()
-                    )
-                    if obj is not None:
-                        return func(*args, **kwargs)
-                    else:
-                        abort(401)
-                else:
+                current = User.get(api_key=key)
+                if not current:
                     abort(401)
-            else:
-                abort(401)
+                for key in kwargs.keys():
+                    if "id" in key:
+                        self.model_id = kwargs[key]
+                requested = None
+                if self.model is Project:
+                    requested = Project.get(owner=current.id, id=self.model_id)
+                elif self.model is User:
+                    requested = current
+                    if self.model_id is not None:
+                        requested = User[self.model_id]
+                    if requested is None or current != requested:
+                        abort(401)
+                elif self.model is Submission:
+                    if self.model_id is not None:
+                        requested = Submission.get(user_id=current.id, id=self.model_id)
+                    else:
+                        abort(404)
+                elif self.model is Comment:
+                    if self.model_id is not None:
+                        requested = Comment.get(user_id=current.id, id=self.model_id)
+                    else:
+                        abort(404)
+                elif self.model is Task:
+                    if self.model_id is not None:
+                        t = Task[self.model_id]
+                        if (
+                            t is not None
+                            and t.activity_id.part_of.owned_by.id == current.id
+                        ):
+                            requested = t
+                        else:
+                            requested = None
+                    else:
+                        abort(404)
+                if requested is None:
+                    abort(401)
+                else:
+                    return func(*args, **kwargs)
 
         return decorated_function

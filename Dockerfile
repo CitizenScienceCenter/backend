@@ -1,15 +1,15 @@
-FROM python:3.6.6-stretch
+FROM python:3.7-alpine
+RUN apk add build-base
+RUN apk add postgresql-dev
+RUN apk add libffi-dev
 ENV PYTHONUNBUFFERED 1
-ARG CC_ENV
-ARG OUTPUT_SWAGGER
+ENV CC_PORT 9000
 RUN mkdir /code
 WORKDIR /code
-COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install virtualenv
+RUN virtualenv env; source env/bin/activate
+ADD requirements.txt .
 RUN pip3 install -r requirements.txt
 COPY . /code/
-RUN rm -rf /code/__pycache__
-RUN rm -rf /code/test/__pycache__
-# COPY --from=0 /swagger/swagger_complete.yaml /code/swagger/swagger_complete.yaml
-CMD python app.py
-
-EXPOSE 8080
+EXPOSE 9000:9000

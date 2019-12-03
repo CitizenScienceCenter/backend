@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.17.0 (a74acad)
+    kompose.cmd: kompose convert -o helm
+    kompose.version: 1.18.0 (06a2e56)
   creationTimestamp: null
   labels:
     io.kompose.service: graphql
@@ -21,7 +21,7 @@ spec:
       - args:
         - postgraphile
         - --connection
-        - postgresql://pybossa:tester@db/cs?sslmode=disable
+        - postgresql://stager:XiTNvo7qzqiivt@130.60.24.245/cs?sslmode=disable
         - --host
         - 0.0.0.0
         - --port

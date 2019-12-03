@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.17.0 (a74acad)
+    kompose.cmd: kompose convert -o helm
+    kompose.version: 1.18.0 (06a2e56)
   creationTimestamp: null
   labels:
     io.kompose.service: swagger-ui
@@ -20,7 +20,6 @@ spec:
       containers:
       - env:
         - name: URL
-          value: http://localhost:8080/api/v2/swagger.json
         image: swaggerapi/swagger-ui:latest
         name: swagger-ui
         ports:

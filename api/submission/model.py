@@ -1,38 +1,28 @@
-from db import orm_handler, Submission
-from decorators import access_checks
+from db import Submission
+from decorators import access_checks, user_checks
 from flask import request
 from api import model
-# from flask_sqlalchemy_session import current_session as db_session
-# db_session = orm_handler.db_session()
+
+from pony.flask import db_session
 
 Model = Submission
 
-def get_submissions(limit=100, search_term=None):
-    ms, code =  model.get_all(Model, limit, search_term)
-    if len(ms) > 0 and isinstance(ms[0], Submission):
-        return [m.dump() for m in ms][:limit], code
-    else:
-        return [dict(m) for m in ms][:limit], code
-
-def get_submission_count(search_term=None):
-    ms, code = model.get_count(Model, search_term)
-    return ms, code
+def get_submissions(limit, offset, search_term=None):
+    return model.get_all(Model, limit, offset, search_term).send()
 
 def get_submission(id=None):
-    m, code = model.get_one(Model, id)
-    return m.dump(), code
+    return model.get_one(Model, id).send()
+
+@user_checks.multiple_submissions
+def create_submission(body):
+    res, s = model.post(Model, body)
+    return res.send()
 
 
-def create_submission(submission):
-    m, code = model.post(Model, submission)
-    return m.dump(), code
-
-
-def update_submission(id, submission):
-    m, code = model.put(Model, id, submission)
-    return m.dump(), code
-
+def update_submission(id, body):
+    res, s = model.put(Model, id, body)
+    return res.send()
 
 @access_checks.ensure_owner(Model)
 def delete_submission(id):
-    return model.delete(Model, id)
+    return model.delete(Model, id).send()

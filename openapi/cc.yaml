@@ -1,0 +1,1797 @@
+components:
+  securitySchemes:
+    anonUser:
+      in: header
+      name: X-ANON
+      type: apiKey
+      x-apikeyInfoFunc: decorators.access_checks.ensure_anon_key
+    apiKeyHeader:
+      in: header
+      name: X-API-KEY
+      type: apiKey
+      x-apikeyInfoFunc: decorators.access_checks.ensure_key
+    oauth2:
+      flows:
+        implicit:
+          authorizationUrl: http://localhost:8081/oauth/authorize
+          scopes:
+            apiKey: Unique identifier of the user accessing the service.
+      type: oauth2
+      x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
+info:
+  title: C3S API
+  description: An API for creating, running and analysing citizen science projects
+  version: 3.1.1
+openapi: 3.0.0
+paths:
+  /project_groups:
+    get:
+      operationId: get_project_groups
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Return project groups
+        "404":
+          description: Project group does not exist
+      summary: List Project Groups
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
+  "/project_groups/{gid}":
+    get:
+      operationId: get_project_group
+      parameters:
+        - name: gid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return project group
+        "404":
+          description: Project group does not exist
+      summary: Get Project Group by ID
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
+  "/project_groups/{gid}/projects":
+    get:
+      operationId: get_project_group_projects
+      parameters:
+        - description: The Project Group ID
+          in: path
+          name: gid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Return projects that are part of a project group
+        "404":
+          description: Project group does not exist
+      summary: List Project Groups Projects
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.custom
+  /projects:
+    get:
+      operationId: get_projects
+      parameters:
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          maxLength: 100
+                          readOnly: true
+                        info:
+                          type: object
+                          description: A JSON field to extend a model with extra info
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                  required:
+                    - name
+                    - description
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    owned_by:
+                      type: string
+                      description: The ID of the user that this project is owned by
+                type: array
+          description: Return projects
+      summary: Get all projects
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+    post:
+      operationId: create_project
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              required:
+                - name
+                - description
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                owned_by:
+                  type: string
+                  description: The ID of the user that this project is owned by
+      responses:
+        "201":
+          description: New project created
+        "409":
+          description: Project already exists
+      security:
+        - apiKeyHeader: []
+      summary: Post a project
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+  "/projects/{pid}":
+    delete:
+      operationId: delete_project
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "204":
+          description: Project was deleted
+        "404":
+          description: Project does not exist
+      security:
+        - apiKeyHeader: []
+      summary: Remove a project
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+    get:
+      operationId: get_project
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          description: Return project
+        "404":
+          description: Project does not exist
+      summary: Get a single project
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+    put:
+      operationId: update_project
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Project modified
+        "201":
+          description: New project created
+      security:
+        - apiKeyHeader: []
+      summary: Modify/Create a project
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.model
+  "/projects/{pid}/submissions":
+    get:
+      operationId: get_project_submissions
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          description: Return project submissions
+        "404":
+          description: Project does not exist
+      summary: Get the submissions for a project
+      tags:
+        - Projects
+        - Submissions
+        - Users
+      x-openapi-router-controller: api.submission.custom
+  "/projects/{pid}/publish":
+    get:
+      operationId: publish
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          description: Project Published
+        "404":
+          description: Project does not exist
+      summary: Apply for a project to be published
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.custom
+  "/projects/{pid}/stats":
+    get:
+      operationId: get_stats
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          description: Return project statistics
+        "404":
+          description: Project does not exist
+      summary: Get the statistics for a Project
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.custom
+  "/projects/{pid}/import/tasks/csv":
+    post:
+      operationId: import_tasks_csv
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        description: CSV file content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+      responses:
+        "201":
+          description: Tasks imported
+        "401":
+          description: Unauthorised
+        "404":
+          description: Project does not exist
+      summary: Import Tasks for a project using a CSV, this endpoint will NOT replace
+        existing tasks
+      tags:
+        - Projects
+      x-openapi-router-controller: api.importers.csv
+  "/projects/{pid}/reimport/tasks/csv":
+    post:
+      operationId: reimport_tasks_csv
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        description: CSV file content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+      responses:
+        "201":
+          description: Tasks imported
+        "401":
+          description: Unauthorised
+        "404":
+          description: Project does not exist
+      summary: Import Tasks for a project using a CSV, this endpoint WILL replace ALL
+        existing tasks
+      tags:
+        - Projects
+      x-openapi-router-controller: api.importers.csv
+  "/projects/{pid}/submissions/{uid}":
+    get:
+      operationId: get_project_user_submissions
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - description: User ID for specific user submissions
+          in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return project submissions
+        "404":
+          description: Project does not exist
+      summary: Get user submissions for a project
+      tags:
+        - Projects
+        - Submissions
+        - Users
+      x-openapi-router-controller: api.submission.custom
+  "/projects/{pid}/tasks":
+    get:
+      operationId: get_project_tasks
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        "200":
+          description: Return project tasks
+        "404":
+          description: Project does not exist
+      summary: Get the tasks for a project
+      tags:
+        - Projects
+        - Tasks
+      x-openapi-router-controller: api.project.custom
+  "/projects/{pid}/media":
+    get:
+      operationId: get_project_media
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        "200":
+          description: Return project media
+        "404":
+          description: Project does not exist
+      summary: Get the media for a project
+      tags:
+        - Projects
+        - Media
+      x-openapi-router-controller: api.project.custom
+  "/projects/{pid}/task":
+    get:
+      operationId: get_project_task
+      parameters:
+        - description: The Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+        - description: Select a random task?
+          in: query
+          name: random
+          required: false
+          schema:
+            default: false
+            type: boolean
+        - description: index
+          in: query
+          name: index
+          required: false
+          schema:
+            default: -1
+            type: integer
+      responses:
+        "200":
+          description: Return random project task
+        "404":
+          description: Project does not exist
+      summary: Get a task for a project
+      tags:
+        - Projects
+        - Tasks
+      x-openapi-router-controller: api.project.custom
+  /comments:
+    get:
+      operationId: get_comments
+      parameters:
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                  required:
+                    - source_id
+                    - content
+                    - user_id
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          maxLength: 100
+                          readOnly: true
+                        info:
+                          type: object
+                          description: A JSON field to extend a model with extra info
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                  properties:
+                    source_id:
+                      type: string
+                      description: The task or project (or anything with an ID) it is
+                        related to
+                    content:
+                      type: object
+                    parent:
+                      type: string
+                    user_id:
+                      type: string
+                type: array
+          description: List of comments
+      summary: Get a single comment
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+    post:
+      operationId: create_comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - source_id
+                - content
+                - user_id
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              properties:
+                source_id:
+                  type: string
+                  description: The task or project (or anything with an ID) it is related to
+                content:
+                  type: object
+                parent:
+                  type: string
+                user_id:
+                  type: string
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1comments/get/responses/200/content/application~1js\
+                  on/schema/items"
+          description: Comment created
+        "409":
+          description: Comment already exists
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: Post a comment
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+  "/comments/{cid}":
+    delete:
+      operationId: delete_comment
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: cid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "204":
+          description: Comment was deleted
+        "404":
+          description: Comment does not exist
+      security:
+        - apiKeyHeader: []
+      summary: Remove a Comment
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+    get:
+      operationId: get_comment
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: cid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1comments/get/responses/200/content/application~1js\
+                  on/schema/items"
+          description: Return comment
+        "404":
+          description: Comment does not exist
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: Get a single comment
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+    put:
+      operationId: update_comment
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: cid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Comment modified
+        "201":
+          description: New Comment created
+      security:
+        - apiKeyHeader: []
+      summary: Modify/Create a Comment
+      tags:
+        - Comments
+      x-openapi-router-controller: api.comment.model
+  /media:
+    get:
+      description: Get a list of media
+      operationId: get_media
+      parameters:
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        "200":
+          description: List of media
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+    post:
+      description: The media details (for files already on the server or remotely hosted)
+      operationId: create_medium
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              required:
+                - source_id
+                - path
+                - name
+              properties:
+                source_id:
+                  type: string
+                  description: The task or project or user it is related to
+                path:
+                  type: string
+                  description: Local or remote path
+                name:
+                  type: string
+                  description: Name of file
+                filetype:
+                  type: string
+      responses:
+        "200":
+          description: Media attached
+      security:
+        - apiKeyHeader: []
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+  "/media/source/{sid}":
+    get:
+      operationId: get_for_source
+      parameters:
+        - description: Source ID
+          in: path
+          name: sid
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Media attached
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.custom
+  /media/upload:
+    get:
+      operationId: get_pre_signed_url
+      parameters:
+        - in: query
+          name: source_id
+          schema:
+            type: string
+        - in: query
+          name: filename
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return presigned url
+        "401":
+          description: User does not have uploading access
+      security:
+        - apiKeyHeader: []
+      summary: Return pre-authorised url to upload media
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.custom
+  "/media/{mid}":
+    delete:
+      operationId: delete_medium
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: mid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          description: Media deleted
+        "404":
+          description: Media does not exist
+      security:
+        - apiKeyHeader: []
+      summary: Delete all media files related to  source
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+    get:
+      operationId: get_medium
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: mid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          maxLength: 100
+                          readOnly: true
+                        info:
+                          type: object
+                          description: A JSON field to extend a model with extra info
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                  required:
+                    - source_id
+                    - path
+                    - name
+                  properties:
+                    source_id:
+                      type: string
+                      description: The task or project or user it is related to
+                    path:
+                      type: string
+                      description: Local or remote path
+                    name:
+                      type: string
+                      description: Name of file
+                    filetype:
+                      type: string
+                type: array
+          description: Return Media
+        "404":
+          description: Media does not exist
+      summary: Get single medium
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+    put:
+      operationId: update_medium
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: mid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1media~1%7Bmid%7D/get/responses/200/content/applica\
+                  tion~1json/schema/items"
+          description: Return Media
+        "404":
+          description: Media does not exist
+      security:
+        - apiKeyHeader: []
+      summary: Put a single file
+      tags:
+        - Media
+      x-openapi-router-controller: api.media.model
+  /submissions:
+    get:
+      operationId: get_submissions
+      parameters:
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                  required:
+                    - task_id
+                    - user_id
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          maxLength: 100
+                          readOnly: true
+                        info:
+                          type: object
+                          description: A JSON field to extend a model with extra info
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                  properties:
+                    task_id:
+                      type: string
+                    user_id:
+                      type: string
+                    content:
+                      type: object
+                type: array
+          description: List of submissions
+      summary: Get all submissions
+      tags:
+        - Submissions
+      x-openapi-router-controller: api.submission.model
+    post:
+      operationId: create_submission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - task_id
+                - user_id
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              properties:
+                task_id:
+                  type: string
+                user_id:
+                  type: string
+                content:
+                  type: object
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1submissions/get/responses/200/content/application~\
+                  1json/schema/items"
+          description: Submission created
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: Post a submission
+      tags:
+        - Submissions
+      x-openapi-router-controller: api.submission.model
+  "/submission/{sid}":
+    delete:
+      operationId: delete_submission
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: sid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "204":
+          description: Submission was deleted
+        "404":
+          description: Submission does not exist
+      security:
+        - apiKeyHeader: []
+      summary: Remove a submission
+      tags:
+        - Submissions
+      x-openapi-router-controller: api.submission.model
+    get:
+      operationId: get_submission
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: sid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1submissions/get/responses/200/content/application~\
+                  1json/schema/items"
+          description: Return submission
+        "404":
+          description: Submission does not exist
+      security:
+        - apiKeyHeader: []
+      summary: Get a single submission
+      tags:
+        - Submissions
+      x-openapi-router-controller: api.submission.model
+    put:
+      operationId: update_submission
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: sid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Submission modified
+        "201":
+          description: New submission created
+      security:
+        - apiKeyHeader: []
+      summary: Modify/Create a submission
+      tags:
+        - Submissions
+      x-openapi-router-controller: api.submission.model
+  /task:
+    post:
+      operationId: create_task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              required:
+                - project_id
+                - title
+                - content
+              properties:
+                project_id:
+                  type: string
+                sequence:
+                  type: integer
+                content:
+                  type: object
+                title:
+                  type: string
+                required:
+                  type: boolean
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: object
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          maxLength: 100
+                          readOnly: true
+                        info:
+                          type: object
+                          description: A JSON field to extend a model with extra info
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                        updated_at:
+                          type: string
+                          format: date-time
+                          description: Creation time
+                          example: 2015-07-07T15:49:51.230+02:00
+                          readOnly: true
+                  required:
+                    - project_id
+                    - title
+                    - content
+                  properties:
+                    project_id:
+                      type: string
+                    sequence:
+                      type: integer
+                    content:
+                      type: object
+                    title:
+                      type: string
+                    required:
+                      type: boolean
+                type: array
+          description: Task created
+      security:
+        - apiKeyHeader: []
+      summary: Post a single task
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+  /tasks:
+    get:
+      operationId: get_tasks
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: number
+        - in: query
+          name: search_term
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1task/post/responses/201/content/application~1jso\
+                    n/schema/items"
+                type: array
+          description: List of tasks
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: Get a list of tasks
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+    post:
+      operationId: create_tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: "#/paths/~1task/post/responses/201/content/application~1json/\
+                  schema/items"
+              type: array
+        description: List of tasks
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1task/post/responses/201/content/application~1jso\
+                    n/schema/items"
+                type: array
+          description: Task created
+      security:
+        - apiKeyHeader: []
+      summary: Post an array of tasks
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+  "/tasks/{tid}":
+    delete:
+      operationId: delete_task
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: tid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "204":
+          description: Task was deleted
+      security:
+        - apiKeyHeader: []
+      summary: Delete a single task. WARNING - This will also disassociate all
+        submissions for the task
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+    get:
+      operationId: get_task
+      parameters:
+        - description: The unique identifer for an Object (i.e. User, Task, Project,
+            Submission etc)
+          in: path
+          name: tid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1task/post/responses/201/content/application~1json/\
+                  schema/items"
+          description: Return task
+        "404":
+          description: Task does not exist
+      security:
+        - apiKeyHeader: []
+        - anonUser: []
+      summary: Get a single task
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+    put:
+      operationId: update_task
+      parameters:
+        - description: The unique identifer for the Task
+          in: path
+          name: tid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "201":
+          description: New task created
+      security:
+        - apiKeyHeader: []
+      summary: Modify/Create a task
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.model
+  "/tasks/{tid}/media":
+    get:
+      operationId: get_task_media
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1media~1%7Bmid%7D/get/responses/200/content/appli\
+                    cation~1json/schema/items"
+                type: array
+          description: List of media
+      security:
+        - apiKeyHeader: []
+      summary: Get media for a specific task
+      tags:
+        - Tasks
+        - Media
+      x-openapi-router-controller: api.task.custom
+  "/tasks/{tid}/submissions":
+    get:
+      operationId: get_task_submissions
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            default: 20
+            minimum: 0
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1submissions/get/responses/200/content/applicatio\
+                    n~1json/schema/items"
+                type: array
+          description: List of submissions
+      security:
+        - apiKeyHeader: []
+      summary: Get submissions for a specific task
+      tags:
+        - Tasks
+        - Submissions
+      x-openapi-router-controller: api.task.custom
+  "/tasks/{tid}/stats":
+    get:
+      operationId: get_stats
+      parameters:
+        - in: path
+          name: tid
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: Stats for task submissions
+      security:
+        - apiKeyHeader: []
+      summary: Get statistics for a specific task
+      tags:
+        - Tasks
+      x-openapi-router-controller: api.task.custom
+  /users/authorize:
+    post:
+      operationId: generate
+      requestBody:
+        x-nullable: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pwd
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                pwd:
+                  type: string
+                api_key:
+                  type: string
+                anonymous:
+                  type: boolean
+                  default: false
+      responses:
+        "200":
+          description: Token created
+      summary: Post auth for token response
+      tags:
+        - Users
+      x-openapi-router-controller: api.otoken
+  /users/check:
+    get:
+      operationId: check_user
+      parameters:
+        - in: query
+          name: email
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: username
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User exists
+        "404":
+          description: User not found
+      summary: Check existence of user
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+  /users/login:
+    post:
+      operationId: login
+      requestBody:
+        $ref: "#/paths/~1users~1authorize/post/requestBody"
+      responses:
+        "200":
+          description: Login successful
+        "401":
+          description: Incorrect login details
+        "404":
+          description: User not found
+      summary: Allow a user to login
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+  /users/me:
+    delete:
+      operationId: delete_user
+      responses:
+        "200":
+          description: User deleted
+        "401":
+          description: Not authorised
+        "404":
+          description: User not found
+      security:
+        - apiKeyHeader: []
+      summary: Delete user (only allowed by the user themselves)
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model
+    get:
+      operationId: get_user
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - pwd
+                allOf:
+                  - type: object
+                    properties:
+                      id:
+                        type: string
+                        maxLength: 100
+                        readOnly: true
+                      info:
+                        type: object
+                        description: A JSON field to extend a model with extra info
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: Creation time
+                        example: 2015-07-07T15:49:51.230+02:00
+                        readOnly: true
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: Creation time
+                        example: 2015-07-07T15:49:51.230+02:00
+                        readOnly: true
+                properties:
+                  username:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  pwd:
+                    type: string
+                  api_key:
+                    type: string
+                  anonymous:
+                    type: boolean
+                    default: false
+          description: Return user
+        "404":
+          description: User not found
+      security:
+        - apiKeyHeader: []
+      summary: Get logged in user
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model
+    put:
+      operationId: update_user
+      parameters:
+        - description: The unique identifer for a User
+          in: path
+          name: id
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/paths/~1users~1me/get/responses/200/content/application~1j\
+                  son/schema"
+          description: User updated
+        "404":
+          description: User not found
+      security:
+        - apiKeyHeader: []
+      summary: Update user details (change password, add details etc)
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model
+  /users/register:
+    post:
+      operationId: create_user
+      requestBody:
+        $ref: "#/paths/~1users~1authorize/post/requestBody"
+      responses:
+        "201":
+          description: Created user
+        "409":
+          description: User exists
+      summary: Registration end point for a user account
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.model
+  /users/reset:
+    get:
+      operationId: reset
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Password reset
+      summary: Reset user password
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+    post:
+      operationId: verify_reset
+      requestBody:
+        $ref: "#/paths/~1users~1authorize/post/requestBody"
+      responses:
+        "200":
+          description: Verified and reset
+        "401":
+          description: Unauthorised user
+      summary: Verify password reset token
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+  /users/validate:
+    get:
+      operationId: validate
+      parameters:
+        - in: query
+          name: key
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: Token info object
+      summary: OAuth2 token info
+      tags:
+        - Users
+      x-openapi-router-controller: api.user.custom
+  /users/me/submissions:
+    get:
+      operationId: get_user_submissions
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1submissions/get/responses/200/content/applicatio\
+                    n~1json/schema/items"
+                type: array
+          description: Return submissions
+        "404":
+          description: User not found
+      security:
+        - apiKeyHeader: []
+      summary: Get all submissions for a user
+      tags:
+        - Users
+        - Submissions
+      x-openapi-router-controller: api.user.custom
+  /users/me/projects:
+    get:
+      operationId: get_user_projects
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/paths/~1projects/get/responses/200/content/application~1\
+                    json/schema/items"
+                type: array
+          description: Return Projects
+        "404":
+          description: User not found
+      security:
+        - apiKeyHeader: []
+      summary: Get all projects for a user
+      tags:
+        - Users
+        - Projects
+      x-openapi-router-controller: api.user.custom
+servers:
+  - description: Staging Server
+    url: https://staging.citizenscience.ch/v3
+  - description: Production API Server
+    url: https://api.citizenscience.ch/v3

@@ -2,8 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.17.0 (a74acad)
+    kompose.cmd: kompose convert -o helm
+    kompose.version: 1.18.0 (06a2e56)
   creationTimestamp: null
   labels:
     io.kompose.service: db
@@ -23,9 +23,9 @@ spec:
         - name: POSTGRES_DB
           value: cs
         - name: POSTGRES_PASSWORD
-          value: tester
+          value: XiTNvo7qzqiivt
         - name: POSTGRES_USER
-          value: pybossa
+          value: stager
         image: db
         name: db
         ports:

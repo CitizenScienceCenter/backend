@@ -9,11 +9,11 @@ from connexion.resolver import RestyResolver
 from flask import session, request, g, render_template, Response
 from flask_cors import CORS
 
-from db import orm_handler
+from db import models
 
 from app import Server
 
-from test import t_con, utils
+from test import t_con, utils, config
 
 import prison
 
@@ -24,12 +24,19 @@ def client():
     with s.connexion_app.app.test_client() as c:
         yield c
 
+
 @pytest.fixture(scope="module")
 def register(client):
     lg = client.post(
-        "/api/v2/users/register", json={"email": t_con.TEST_USER, "pwd": t_con.TEST_PWD}
+        f"{config.ROOT_URL}/users/register",
+        json={
+            "username": t_con.TEST_USER,
+            "email": t_con.TEST_USER,
+            "pwd": t_con.TEST_PWD,
+        },
     )
     assert lg.status_code == 201 or lg.status_code == 409
+
 
 @pytest.fixture(scope="module")
 def user(client, register):
@@ -45,23 +52,24 @@ def project(client, user):
 @pytest.fixture(scope="module")
 def activity(client, user, project):
     act_dict = {
-            "name": "Test Activity",
-            "description": "Test Activity",
-            "platform": "Both",
-            "part_of": project["id"],
-        }
-    print(act_dict)
+        "name": "Test Activity",
+        "description": "Test Activity",
+        "platform": "Both",
+        "part_of": project["data"]["id"],
+    }
     return client.post(
-        "/api/v2/activities",
+        f"{config.ROOT_URL}/activities",
         json=act_dict,
-        headers=[("X-API-KEY", user["api_key"])]
+        headers=[("X-API-KEY", user["api_key"])],
     )
 
 
 class TestActivities:
     @pytest.mark.run(order=12)
     def test_get_activities(self, client, user):
-        lg = client.get("/api/v2/activities", headers=[("X-API-KEY", user["api_key"])])
+        lg = client.get(
+            f"{config.ROOT_URL}/activities", headers=[("X-API-KEY", user["api_key"])]
+        )
         assert lg.status_code == 200
 
     @pytest.mark.run(order=13)
@@ -72,12 +80,12 @@ class TestActivities:
     def test_query_activities(self, client, user):
         q_statement = "(select:(fields:!(id,name,description),orderBy:(id:desc),tables:!(activities)))"
         lg = client.get(
-            "/api/v2/activities?search_term={}".format(q_statement),
+            f"{config.ROOT_URL}/activities?search_term={q_statement}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         act = json.loads(lg.data)
         assert lg.status_code == 200
-        assert 'description' in act[0]
+        assert "description" in act["data"][0]
         assert lg.status_code == 200
 
     @pytest.mark.run(order=15)
@@ -93,21 +101,21 @@ class TestActivities:
 
     @pytest.mark.run(order=18)
     def test_delete_activity(self, client, user, project, activity):
-        pd = client.delete(
-            "/api/v2/activities/{}".format(json.loads(activity.data)["id"])
-        )
+        act = json.loads(activity.data)
+        print(act)
+        pd = client.delete(f"{config.ROOT_URL}/activities/{act['data']['id']}")
         assert pd.status_code == 401
 
     @pytest.mark.run(order=17)
     def test_delete_activity_and_project(self, client, user, project, activity):
+        act = json.loads(activity.data)
         pd = client.delete(
-            "/api/v2/activities/{}".format(json.loads(activity.data)["id"]),
+            f"{config.ROOT_URL}/activities/{act['data']['id']}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert pd.status_code == 200
         gd = client.delete(
-            "/api/v2/projects/{}".format(project["id"]),
+            f"{config.ROOT_URL}/projects/{project['data']['id']}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert gd.status_code == 200
-

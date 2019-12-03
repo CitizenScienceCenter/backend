@@ -2,16 +2,15 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.17.0 (a74acad)
+    kompose.cmd: kompose convert -o helm
+    kompose.version: 1.18.0 (06a2e56)
   creationTimestamp: null
   labels:
     io.kompose.service: cccs-connexion
   name: cccs-connexion
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -22,7 +21,7 @@ spec:
       - args:
         - uwsgi
         - --http
-        - :8080
+        - :9000
         - --wsgi-file
         - uwsgi.py
         - --master
@@ -35,14 +34,7 @@ spec:
         image: cccs-connexion
         name: cccs-connexion
         ports:
-        - containerPort: 8080
+        - containerPort: 9000
         resources: {}
-        volumeMounts:
-        - mountPath: /code/static/upload
-          name: cccs-connexion-claim0
       restartPolicy: Always
-      volumes:
-      - name: cccs-connexion-claim0
-        persistentVolumeClaim:
-          claimName: cccs-connexion-claim0
 status: {}

@@ -1,51 +1,43 @@
-from connexion import NoContent
-from db import orm_handler, Task, Submission, Media
-from decorators import access_checks
-from sqlalchemy.sql.expression import func
-from sqlalchemy.orm import joinedload
-from flask import request, jsonify
-import sqlalchemy
 import logging
-from sqlalchemy.dialects import postgresql
+
+import sqlalchemy
 from api import model
-# db_session = orm_handler.db_session()
+from connexion import NoContent
+from db import Media, Submission, Task
+from decorators import access_checks
+from flask import request
+from pony.flask import db_session
+from db import Task
 
 Model = Task
 
-def get_tasks(limit=100, search_term=None):
-    ms, code =  model.get_all(Model, limit, search_term)
-    if len(ms) > 0 and isinstance(ms[0], Task):
-        return [m.dump() for m in ms][:limit], code
-    else:
-        return [dict(m) for m in ms][:limit], code
 
-def get_task_count(search_term=None):
-    ms, code = model.get_count(Model, search_term)
-    return ms, code
+def get_tasks(limit, offset, search_term=None):
+    return model.get_all(Model, limit, offset, search_term).send()
+
+def get_task(tid):
+    return model.get_one(Model, tid).send()
 
 
-def get_task(id=None):
-    m, code = model.get_one(Model, id)
-    return m.dump() if m is not None else m, code
+def create_task(body):
+    res, task = model.post(Model, body)
+    return res.send()
 
 
-def create_tasks(tasks):
+def create_tasks(body):
+    tasks = body
     res = []
     for task in tasks:
-        t, code = model.post(Model, task)
-        res.append(t.dump())
-    return res, 201
-
-def update_task(id, task):
-    m, code = model.put(Model, id, task)
-    return m.dump(), code
+        res, t = model.post(Model, task)
+        res.append(t.to_dict())
+    return res.send()
 
 
-def delete_task(id):
-    return model.delete(Model, id)
+def update_task(tid, body):
+    res, t = model.put(Model, tid, body)
+    return res.send()
 
 
-def delete_tasks(tasks):
-    for task in tasks:
-        model.delete(Model, task)
-    return NoContent, 200
+@access_checks.ensure_owner(Model)
+def delete_task(tid):
+    return model.delete(Model, tid).send()
