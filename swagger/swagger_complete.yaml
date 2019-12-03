@@ -2280,61 +2280,7 @@
           "201": {
             "description": "Task created",
             "schema": {
-              "type": "object",
-              "required": [
-                "activity_id",
-                "sequence",
-                "title",
-                "content",
-                "required"
-              ],
-              "allOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "created_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    },
-                    "id": {
-                      "type": "string",
-                      "maxLength": 100,
-                      "readOnly": true
-                    },
-                    "info": {
-                      "description": "A JSON field to extend a model with extra info",
-                      "type": "object"
-                    },
-                    "updated_at": {
-                      "description": "Creation time",
-                      "type": "string",
-                      "format": "date-time",
-                      "readOnly": true,
-                      "example": "2015-07-07T15:49:51.230+02:00"
-                    }
-                  }
-                }
-              ],
-              "properties": {
-                "activity_id": {
-                  "type": "string"
-                },
-                "content": {
-                  "type": "object"
-                },
-                "required": {
-                  "type": "boolean"
-                },
-                "sequence": {
-                  "type": "integer"
-                },
-                "title": {
-                  "type": "string"
-                }
-              }
+              "type":"array"
             }
           }
         },

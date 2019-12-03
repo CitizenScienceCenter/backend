@@ -71,19 +71,19 @@ def reset(email):
     )
     if user:
         tk = ts.sign(user.id)
-        reset = "{}/reset/{}".format("https://snakes.citizenscience.ch", tk.decode("utf-8"))
+        reset = "{}/reset/{}".format("https://citizenscience.ch", tk.decode("utf-8"))
         text = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(
             reset
         )
         msg = message.EmailMessage()
         msg.set_content(text)
-        smtp_user = "info@citizenscience.ch"
-        msg["Subject"] = "Password Reset for Citizen Science Project"
+        smtp_user = "no-reply@citizenscience.ch"
+        msg["Subject"] = "Password Reset for Your citizenscience.ch Account"
         msg["From"] = smtp_user
         msg["To"] = user.email
         try:
             s = smtplib.SMTP("asmtp.mailstation.ch", 587)
-            s.login(smtp_user, "UniZuETH2018")
+            s.login(smtp_user, "L6Ahfb3C")
             s.sendmail(smtp_user, [user.email], msg.as_string())
             s.quit()
         except Exception as e:

@@ -20,11 +20,11 @@ def get_medium(id=None):
     return model.get_file(Model, id)
 
 
-def create_medium(medium):
+def create_medium(media):
     m, code = model.post(Model, media)
     return m.dump(), code
 
-def update_medium(id, medium):
+def update_medium(id, media):
     m, code = model.put(Model, mid, media)
     return m.dump(), code
 

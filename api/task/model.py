@@ -3,7 +3,7 @@ from db import orm_handler, Task, Submission, Media
 from decorators import access_checks
 from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import joinedload
-from flask import request
+from flask import request, jsonify
 import sqlalchemy
 import logging
 from sqlalchemy.dialects import postgresql
