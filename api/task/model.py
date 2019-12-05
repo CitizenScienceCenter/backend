@@ -9,6 +9,8 @@ from flask import request
 from pony.flask import db_session
 from db import Task
 
+from middleware.response_handler import ResponseHandler
+
 Model = Task
 
 
@@ -26,11 +28,11 @@ def create_task(body):
 
 def create_tasks(body):
     tasks = body
-    res = []
+    created = []
     for task in tasks:
-        res, t = model.post(Model, task)
-        res.append(t.to_dict())
-    return res.send()
+        response, t = model.post(Model, task)
+        created.append(t.to_dict())
+    return ResponseHandler(201, "Tasks Created Successfully", body=created).send()
 
 
 def update_task(tid, body):
