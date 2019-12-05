@@ -139,11 +139,11 @@ components:
       allOf:
         - $ref: '#/components/schemas/Base'
       required:
-        - project_id
+        - part_of
         - title
         - content
       properties:
-        project_id:
+        part_of:
           type: string
         sequence:
           type: integer
