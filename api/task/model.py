@@ -29,7 +29,7 @@ def create_tasks(body):
     res = []
     for task in tasks:
         res, t = model.post(Model, task)
-        res.append(t.to_dict())
+        res.body.append(t.to_dict())
     return res.send()
 
 

@@ -35,10 +35,8 @@ def handle_import(pid, body, reimport):
                     if path != '':
                         # TODO check source and annotate with type
                         # TODO allow upload to storage
-                        res, media  = model.post(Media, {'source_id': t.id, 'path': path, 'name': path})
+                        res, media  = model.post(Media, {'source_id': t.id, 'path': path, 'name': path, 'task': t})
                         path = ''
-                        if media:
-                            t.media.add(media)
                     tasks.append(t.to_dict())
             except Exception as e:
                 abort(500, e)
