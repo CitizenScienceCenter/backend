@@ -13,6 +13,11 @@ paths:
             default: 20
             minimum: 0
             type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
+            type: integer
       responses:
         200:
           content:
