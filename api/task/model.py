@@ -34,7 +34,6 @@ def create_tasks(body):
         created.append(t.to_dict())
     return ResponseHandler(201, "Tasks Created Successfully", body=created).send()
 
-
 def update_task(tid, body):
     res, t = model.put(Model, tid, body)
     return res.send()
