@@ -54,6 +54,23 @@ paths:
       tags:
         - ProjectGroups
       x-openapi-router-controller: api.project_group.model
+    post:
+      operationId: create_project_group
+      parameters:
+        - name: project_group
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        "201":
+          description: Return created project group
+        "401":
+          description: Unauthorised
+      summary: Create a Project Group
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
   "/project_groups/{gid}":
     get:
       operationId: get_project_group
