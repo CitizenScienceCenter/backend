@@ -89,6 +89,51 @@ paths:
       tags:
         - ProjectGroups
       x-openapi-router-controller: api.project_group.model
+    put:
+      operationId: update_project_group
+      parameters:
+        - name: gid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: project_group
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        "200":
+          description: Updated Project Group
+        "401":
+          description: Unauthorised
+      summary: Updated Project Group
+      security:
+        - apiKeyHeader: []
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
+    delete:
+      operationId: delete_project_group
+      parameters:
+        - name: gid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted Project Group
+        "401":
+          description: Unauthorised
+        "404":
+          description: Project not found
+      summary: Deleted Project Group
+      security:
+        - apiKeyHeader: []
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
   "/project_groups/{gid}/projects":
     get:
       operationId: get_project_group_projects
