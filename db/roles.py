@@ -81,8 +81,13 @@ class RoleHandler:
     @db_session
     def init_roles(self):
         for r in default_roles:
-            a = Role(**r)
-            try:
-                commit()
-            except Exception as e:
-                print(e)
+            existing = Role.get(name=r['name'])
+            if existing:
+                for k in r.keys():
+                    setattr(existing, k, r[k])
+            else:
+                a = Role(**r)
+                try:
+                    commit()
+                except Exception as e:
+                    print(e)

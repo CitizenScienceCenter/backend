@@ -66,7 +66,7 @@ class Role(DB.Entity):
     created_at = Required(datetime, default=datetime.now)
     updated_at = Optional(datetime, default=datetime.now)
     info = Required(Json, default={})
-    name = Required(str)
+    name = Required(str, unique=True)
     su = Required(bool, default=False)
     view_project = Required(bool, default=False)
     edit_project = Required(bool, default=False)
