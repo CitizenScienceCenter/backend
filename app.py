@@ -61,6 +61,7 @@ class Server:
                     database=self.config["PG_DB"],
                     sslmode="disable",
                 )
+                DB.generate_mapping(create_tables=True)
             except BindingError as e:
                 logging.error(e)
                 pass

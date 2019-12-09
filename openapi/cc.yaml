@@ -54,6 +54,23 @@ paths:
       tags:
         - ProjectGroups
       x-openapi-router-controller: api.project_group.model
+    post:
+      operationId: create_project_group
+      parameters:
+        - name: project_group
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        "201":
+          description: Return created project group
+        "401":
+          description: Unauthorised
+      summary: Create a Project Group
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
   "/project_groups/{gid}":
     get:
       operationId: get_project_group
@@ -69,6 +86,51 @@ paths:
         "404":
           description: Project group does not exist
       summary: Get Project Group by ID
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
+    put:
+      operationId: update_project_group
+      parameters:
+        - name: gid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: project_group
+          in: body
+          required: true
+          schema:
+            type: object
+      responses:
+        "200":
+          description: Updated Project Group
+        "401":
+          description: Unauthorised
+      summary: Updated Project Group
+      security:
+        - apiKeyHeader: []
+      tags:
+        - ProjectGroups
+      x-openapi-router-controller: api.project_group.model
+    delete:
+      operationId: delete_project_group
+      parameters:
+        - name: gid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted Project Group
+        "401":
+          description: Unauthorised
+        "404":
+          description: Project not found
+      summary: Deleted Project Group
+      security:
+        - apiKeyHeader: []
       tags:
         - ProjectGroups
       x-openapi-router-controller: api.project_group.model

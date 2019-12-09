@@ -2,7 +2,6 @@ import uuid
 from datetime import datetime
 from pony.orm import Set, PrimaryKey, Optional, Required, Json, Database
 
-
 DB = Database()
 
 def gen_api_key():
@@ -68,6 +67,7 @@ class Role(DB.Entity):
     updated_at = Optional(datetime, default=datetime.now)
     info = Required(Json, default={})
     name = Required(str)
+    su = Required(bool, default=False)
     view_project = Required(bool, default=False)
     edit_project = Required(bool, default=False)
     delete_project = Required(bool, default=False)
@@ -112,9 +112,9 @@ class Project(DB.Entity):
     platform = Required(str, default="Desktop")
     active = Required(bool, default=False)
     owner = Required("User", reverse="owned_projects")
-    members = Set("Member")
-    media = Set("Media")
-    tasks = Set("Task")
+    members = Set("Member", cascade_delete=True)
+    media = Set("Media", cascade_delete=True)
+    tasks = Set("Task", cascade_delete=True)
     group = Optional("ProjectGroup")
 
 class Task(DB.Entity):
@@ -132,8 +132,8 @@ class Task(DB.Entity):
     required = Required(bool, default=True)
     allow_multiple = Required(bool, default=True)
     content = Optional(Json)
-    media = Set("Media")
-    submissions = Set("Submission")
+    media = Set("Media", cascade_delete=True)
+    submissions = Set("Submission", cascade_delete=True)
 
 class Submission(DB.Entity):
     """
