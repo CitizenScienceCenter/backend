@@ -148,7 +148,9 @@ components:
         sequence:
           type: integer
         content:
-          type: object
+          oneOf:
+            - type: object
+            - type: array
         title:
           type: string
         required:
