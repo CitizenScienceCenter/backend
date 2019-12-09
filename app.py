@@ -11,6 +11,7 @@ from pony.flask import Pony
 from pony.orm import BindingError
 from flask_cors import CORS
 from db.models import DB
+from db.roles import RoleHandler
 from minio import Minio
 from middleware.response_handler import ResponseHandler
 
@@ -71,6 +72,7 @@ class Server:
                 except Exception as e:
                     logging.error(e)
                     pass
+        RoleHandler(DB).init_roles()
         Pony(self.connexion_app.app)
         print(self.config["ENV"])
         if self.config["ENV"] != "test" and self.config["ENV"] != "travis" and self.config["ENV"] != "local":
