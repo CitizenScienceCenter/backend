@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Python37\\python.exe",
+    "python.pythonPath": "/home/encima/dev/uzh/backend/env/bin/python3.8",
     "python.linting.pylintEnabled": true,
     "python.formatting.provider": "black",
     "python.linting.flake8Enabled": false,

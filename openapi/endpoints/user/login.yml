@@ -4,7 +4,6 @@ paths:
       operationId: login
       requestBody:
         $ref: ../../bodies.yaml#/components/requestBodies/User
-        required: true
       responses:
         200:
           description: 'Login successful'

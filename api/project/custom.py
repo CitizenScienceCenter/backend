@@ -18,16 +18,18 @@ RANDOM_USER_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(10000) WHERE tas
 
 RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(10000) WHERE tasks.part_of='{}' LIMIT 1;"
 
+
 @db_session
 @access_checks.ensure_owner(Project)
 def publish(pid=None):
     p = Project[pid]
     if p is not None and p.active is False:
-        p.info['applied'] = True
+        p.info["applied"] = True
         commit()
         return ResponseHandler(200, "Application to publish submitted").send()
     else:
         return ResponseHandler(500, "Project is already published").send()
+
 
 @db_session
 @access_checks.ensure_owner(Project)
@@ -54,18 +56,30 @@ def get_stats(pid=None):
         for t in p.tasks:
             if t.submissions.count() > 0:
                 complete += 1
-        data['complete'] = complete
+        data["complete"] = complete
     else:
         abort(404)
     return ResponseHandler(200, "", body=data).send()
 
+
 @db_session
-def get_project_media(pid=None, limit = 20, offset = 0):
+def get_members(pid):
+    p = Project.get(id=pid)
+    if p:
+        m = [m.to_dict() for m in p.members]
+        return ResponseHandler(200, "Project members", body=m).send()
+    else:
+        abort(404)
+
+
+@db_session
+def get_project_media(pid=None, limit=20, offset=0):
     p = Project.get(id="{}".format(pid))
     if p:
         return [m.to_dict() for m in p.media.limit(limit, offset=offset)]
     else:
         abort(404)
+
 
 @db_session
 def get_project_tasks(pid=None, limit=20, offset=0):

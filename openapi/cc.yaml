@@ -56,14 +56,51 @@ paths:
       x-openapi-router-controller: api.project_group.model
     post:
       operationId: create_project_group
-      parameters:
-        - name: project_group
-          in: body
-          required: true
-          schema:
-            type: object
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - type: object
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 100
+                      readOnly: true
+                    info:
+                      type: object
+                      description: A JSON field to extend a model with extra info
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: Creation time
+                      example: 2015-07-07T15:49:51.230+02:00
+                      readOnly: true
+              required:
+                - name
+                - owner
+              properties:
+                name:
+                  type: string
+                owner:
+                  type: string
+                projects:
+                  type: array
+                members:
+                  type: array
       responses:
         "201":
+          content:
+            application/json:
+              schema:
+                type: object
           description: Return created project group
         "401":
           description: Unauthorised
@@ -97,11 +134,8 @@ paths:
           required: true
           schema:
             type: string
-        - name: project_group
-          in: body
-          required: true
-          schema:
-            type: object
+      requestBody:
+        $ref: "#/paths/~1project_groups/post/requestBody"
       responses:
         "200":
           description: Updated Project Group
@@ -160,8 +194,16 @@ paths:
       responses:
         "200":
           description: Return projects that are part of a project group
+          content:
+            application/json:
+              schema:
+                type: array
         "404":
           description: Project group does not exist
+          content:
+            application/json:
+              schema:
+                type: string
       summary: List Project Groups Projects
       tags:
         - ProjectGroups
@@ -320,6 +362,59 @@ paths:
       tags:
         - Projects
       x-openapi-router-controller: api.project.model
+  "/projects/{pid}/invite":
+    post:
+      operationId: invite_member
+      parameters:
+        - description: Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                role:
+                  type: string
+      responses:
+        "200":
+          description: Project member was added
+        "404":
+          description: Project does not exist
+      security:
+        - apiKeyHeader: []
+      summary: Invite a member
+      tags:
+        - Projects
+      x-openapi-router-controller: api.member.custom
+      x-c3s-role:
+        - admin
+        - owner
+  "/projects/{pid}/members":
+    get:
+      operationId: get_members
+      parameters:
+        - description: Project ID
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        "200":
+          description: Project members
+      summary: Get members of a project
+      tags:
+        - Projects
+      x-openapi-router-controller: api.project.custom
   "/projects/{pid}/submissions":
     get:
       operationId: get_project_submissions
@@ -579,6 +674,12 @@ paths:
           name: limit
           schema:
             default: 20
+            minimum: 0
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            default: 0
             minimum: 0
             type: integer
       responses:
@@ -1288,12 +1389,10 @@ paths:
     post:
       operationId: generate
       requestBody:
-        x-nullable: true
         content:
           application/json:
             schema:
-              $ref: "#/paths/~1users~1me/get/responses/200/content/application~1jso\
-                n/schema"
+              type: object
       responses:
         "200":
           description: Token created
@@ -1328,7 +1427,11 @@ paths:
     post:
       operationId: login
       requestBody:
-        $ref: "#/paths/~1users~1authorize/post/requestBody"
+        content:
+          application/json:
+            schema:
+              $ref: "#/paths/~1users~1me/get/responses/200/content/application~1jso\
+                n/schema"
       responses:
         "200":
           description: Login successful
@@ -1445,7 +1548,7 @@ paths:
     post:
       operationId: create_user
       requestBody:
-        $ref: "#/paths/~1users~1authorize/post/requestBody"
+        $ref: "#/paths/~1users~1login/post/requestBody"
       responses:
         "201":
           description: Created user
@@ -1474,7 +1577,7 @@ paths:
     post:
       operationId: verify_reset
       requestBody:
-        $ref: "#/paths/~1users~1authorize/post/requestBody"
+        $ref: "#/paths/~1users~1login/post/requestBody"
       responses:
         "200":
           description: Verified and reset

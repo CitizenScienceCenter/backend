@@ -36,6 +36,10 @@ paths:
     $ref: 'endpoints/project/all.yml#/paths/projects'
   /projects/{pid}:
     $ref: 'endpoints/project/id.yml#/paths/project_id'
+  /projects/{pid}/invite:
+    $ref: 'endpoints/project/members.yml#/paths/invite'
+  /projects/{pid}/members:
+    $ref: 'endpoints/project/members.yml#/paths/get'
   /projects/{pid}/submissions:
     $ref: 'endpoints/project/submissions.yml#/paths/all'
   /projects/{pid}/publish:

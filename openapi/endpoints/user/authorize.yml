@@ -3,7 +3,10 @@ paths:
     post:
       operationId: generate
       requestBody:
-        $ref: ../../bodies.yaml#/components/requestBodies/User
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         200:
           description: 'Token created'

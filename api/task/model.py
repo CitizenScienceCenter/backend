@@ -30,6 +30,7 @@ def create_tasks(body):
     tasks = body
     created = []
     for task in tasks:
+        print(task)
         response, t = model.post(Model, task)
         created.append(t.to_dict())
     return ResponseHandler(201, "Tasks Created Successfully", body=created).send()

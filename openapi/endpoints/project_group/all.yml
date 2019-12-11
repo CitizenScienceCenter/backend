@@ -32,14 +32,14 @@ paths:
       x-openapi-router-controller: api.project_group.model
     post:
       operationId: create_project_group
-      parameters:
-        - name: project_group
-          in: body
-          required: true
-          schema:
-            type: object
+      requestBody:
+        $ref: ../../bodies.yaml#/components/requestBodies/ProjectGroup
       responses:
         201:
+          content:
+            application/json:
+              schema:
+                type: object
           description: 'Return created project group'
         401:
           description: 'Unauthorised'

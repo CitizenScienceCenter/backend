@@ -1,0 +1,53 @@
+paths:
+  invite:
+    post:
+      operationId: invite_member
+      parameters:
+        - description: 'Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                role:
+                  type: string
+      responses:
+        200:
+          description: 'Project member was added'
+        404:
+          description: 'Project does not exist'
+      security:
+        - apiKeyHeader: []
+      summary: 'Invite a member'
+      tags:
+        - Projects
+      x-openapi-router-controller: api.member.custom
+      x-c3s-role:
+        - admin
+        - owner
+  get:
+    get:
+      operationId: get_members
+      parameters:
+        - description: 'Project ID'
+          in: path
+          name: pid
+          required: true
+          schema:
+            pattern: ^[a-zA-Z0-9-]+$
+            type: string
+      responses:
+        200:
+          description: 'Project members'
+      summary: 'Get members of a project'
+      tags: Projects
+      x-openapi-router-controller: api.project.custom

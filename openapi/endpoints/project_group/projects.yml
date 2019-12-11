@@ -25,8 +25,16 @@ paths:
       responses:
         200:
           description: 'Return projects that are part of a project group'
+          content:
+            application/json:
+              schema:
+                type: array
         404:
           description: 'Project group does not exist'
+          content:
+            application/json:
+              schema:
+                type: string
       summary: 'List Project Groups Projects'
       tags:
         - ProjectGroups

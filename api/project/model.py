@@ -1,5 +1,5 @@
 from connexion import NoContent
-from db import Comment, utils, User, Project
+from db import Comment, utils, User, Project, Member, Role
 from decorators import access_checks
 from flask import request
 import logging
@@ -23,7 +23,10 @@ def create_project(body):
     user = utils.get_user(request, db_session)
     print(user, project)
     project["owner"] = user.id
-    res, _ = model.post(Model, project)
+    role = Role.get(name='owner')
+    res, p = model.post(Model, project)
+    m = Member(user_id=user, project_id=p, role=role)
+    p.members.add(m)
     return res.send()
 
 

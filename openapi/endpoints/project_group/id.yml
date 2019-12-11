@@ -25,11 +25,8 @@ paths:
             required: true
             schema:
               type: string
-          - name: project_group
-            in: body
-            required: true
-            schema:
-              type: object
+        requestBody:
+          $ref: ../../bodies.yaml#/components/requestBodies/ProjectGroup
         responses:
           200:
             description: 'Updated Project Group'

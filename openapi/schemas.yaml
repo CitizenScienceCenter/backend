@@ -109,31 +109,22 @@ components:
         owned_by:
           type: string
           description: The ID of the user that this project is owned by
-    Activity:
+    ProjectGroup:
       type: object
       allOf:
         - $ref: '#/components/schemas/Base'
       required:
         - name
-        - description
-        - part_of
+        - owner
       properties:
         name:
           type: string
-        description:
+        owner:
           type: string
-        platform:
-          type: string
-          enum:
-            - Desktop
-            - Mobile
-            - Both
-        anonymous_allowed:
-          type: boolean
-          default: true
-        part_of:
-          type: string
-          description: The ID of the project group that this prject is part of
+        projects:
+          type: array
+        members:
+          type: array
     Task:
       type: object
       allOf:
