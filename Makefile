@@ -44,7 +44,7 @@ run:
 .PHONY: test
 test:
 		ln -sf config/test.env .env
-		docker-compose -f test/docker-compose.yml up --build --force-recreate
+		env/bin/python -m pytest test/*.py -s
 
 .PHONY: start
 docker:

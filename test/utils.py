@@ -32,7 +32,7 @@ def create_project(client, proj_dict, api_key):
 
 def delete_group(client, gid, api_key):
     lg = client.delete(
-        f"{config.ROOT_URL}/groups/{0}".format(gid),
+        f"{config.ROOT_URL}/project_groups/{0}".format(gid),
         headers=[("X-API-KEY", api_key)],
     )
     assert lg.status_code == 200

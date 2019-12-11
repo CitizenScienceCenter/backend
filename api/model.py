@@ -70,7 +70,6 @@ def post(model, obj):
     """
     obj['id'] = uuid.uuid4()
     p = model(**obj)
-    print(p.to_dict())
     try:
         commit()
         obj = model.__name__.lower()
@@ -112,8 +111,12 @@ def delete(model, id):
         Individual instances handle access checks
     """
     try:
-        model[id].delete()
-        commit()
+        m = model.get(id=id)
+        if m:
+            m.delete()
+            commit()
+        else:
+            abort(404)
     except Exception as e:
         logging.error(e)
         abort(500)

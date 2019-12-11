@@ -89,10 +89,10 @@ def update_user(body):
 @db_session
 def delete_user():
     current = utils.get_user(request, db_session)
-    fields = ['username', 'email', 'api_key']
-    for f in fields:
-        current[f] = str(uuid.uuid4())
-    current['info']['account_deleted'] = True
+    current.username = str(uuid.uuid4())
+    current.email = "{}@deleted.c3s".format(current.username)
+    current.api_key = str(uuid.uuid4())
+    current.info['account_deleted'] = True
     commit()
     return ResponseHandler(200, "Your account has now been anonymised and you will logout. You can request a copy of this account from the Citizen Science Center Zurich").send()
 

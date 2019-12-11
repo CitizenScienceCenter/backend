@@ -15,18 +15,6 @@ from test import t_con, utils, config
 
 import prison
 
-# def setup_module(module):
-#     try:
-#         db.bind('sqlite', ':memory:')
-#     except TypeError:
-#         pass
-#     else:
-#         db.generate_mapping(check_tables=False)
-
-#     db.drop_all_tables(with_all_data=True)
-#     db.create_tables()
-
-
 @pytest.fixture(scope="module")
 def client():
     s = Server()
@@ -54,47 +42,37 @@ def user(client, register):
 
 @pytest.fixture(scope="module")
 def project(client, user):
-    project_dict = {"name": "activity project", "description": "activity project"}
+    project_dict = {"name": "project", "description": "project"}
     return utils.create_project(client, project_dict, user["api_key"])
 
 
 @pytest.fixture(scope="module")
-def activity(client, user, project):
-    act_dict = {
-        "name": "Test Activity",
-        "description": "Test Activity",
-        "platform": "Both",
-        "part_of": project["data"]["id"],
-    }
-    return client.post(
-        f"{config.ROOT_URL}/activities",
-        json=act_dict,
-        headers=[("X-API-KEY", user["api_key"])],
-    )
-
-
-@pytest.fixture(scope="module")
-def tasks(client, user, project, activity):
+def tasks(client, user, project):
     pass
 
 
-class TestActivities:
+class TestProjects:
     @pytest.mark.run(order=12)
-    def test_get_activities(self, client, user):
+    def test_get_projects(self, client, user):
         lg = client.get(
-            f"{config.ROOT_URL}/activities", headers=[("X-API-KEY", user["api_key"])]
+            f"{config.ROOT_URL}/projects", headers=[("X-API-KEY", user["api_key"])]
         )
         assert lg.status_code == 200
-
+        assert isinstance(json.loads(lg.data)['data'], list)
+    
     @pytest.mark.run(order=13)
-    def test_create_activity(self, client, user, project, activity):
-        assert activity.status_code == 201
+    def test_get_project(self, client, project, user):
+        act = project
+        lg = client.get(
+            f"{config.ROOT_URL}/projects/{act['data']['id']}", headers=[("X-API-KEY", user["api_key"])]
+        )        
+        assert lg.status_code == 200
+        assert json.loads(lg.data)['data']['id'] == act['data']['id']
 
     @pytest.mark.run(order=14)
-    def test_delete_activity(self, client, user, project, activity):
-        act = json.loads(activity.data)
+    def test_delete_project(self, client, user, project):
         lg = client.delete(
-            f"{config.ROOT_URL}/activities/{act['data']['id']}",
+            f"{config.ROOT_URL}/projects/{dict(project['data'])['id']}",
             headers=[("X-API-KEY", user["api_key"])],
         )
         assert lg.status_code == 200

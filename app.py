@@ -86,25 +86,23 @@ class Server:
         @self.connexion_app.app.errorhandler(401)
         def unauthorised_error(error):
             return ResponseHandler(
-                401, "You do not have access to this object", ok=False
+                401, "You do not have access to this object", body=str(error), ok=False
             ).send()
 
         @self.connexion_app.app.errorhandler(404)
         def not_found_error(error):
-            return ResponseHandler(404, "Requested object not found", ok=False).send()
+            return ResponseHandler(404, "Requested object not found", body=str(error), ok=False).send()
 
         @self.connexion_app.app.errorhandler(409)
         def conflict_error(error):
-            print(error)
             return ResponseHandler(
-                409, "Conflict occured, object already exists", ok=False
+                409, "Conflict occured, object already exists", body=error, ok=False
             ).send()
 
         @self.connexion_app.app.errorhandler(500)
         def internal_error(error):
-            print(error)
             return ResponseHandler(
-                500, "Internal server error", str(error), ok=False
+                500, "Internal server error", body=str(error), ok=False
             ).send()
 
     def run(self):

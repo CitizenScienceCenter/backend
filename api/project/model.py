@@ -21,7 +21,6 @@ def get_project(pid=None):
 def create_project(body):
     project = body
     user = utils.get_user(request, db_session)
-    print(user, project)
     project["owner"] = user.id
     role = Role.get(name='owner')
     res, p = model.post(Model, project)

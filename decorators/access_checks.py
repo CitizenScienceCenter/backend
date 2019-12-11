@@ -23,7 +23,6 @@ def ensure_key(token, required_scopes=None):
     @body Using the `jose` lib, handle creation of JWTs for users (and renewal upon expiry)
     """
     u = User.get(api_key=token)
-    print(u)
     if u and (
         (u.info is not None and "anonymous" not in u.info) or u.anonymous == False
     ):
