@@ -56,7 +56,7 @@ daemon:
 		git secret reveal -f
 		docker-compose -f ${COMPOSE_FILE} up --build --force-recreate -d
 
-.PHONYL: stop
+.PHONY: stop
 stop:
 		docker-compose -f ${COMPOSE_FILE} down
 		-rm .env

@@ -25,11 +25,11 @@ info:
 openapi: 3.0.0
 paths:
   # Project Group Endpoints
-  /project_groups:
+  /project-groups:
     $ref: 'endpoints/project_group/all.yml#/paths/~1project_groups'
-  /project_groups/{gid}:
+  /project-groups/{gid}:
     $ref: 'endpoints/project_group/id.yml#/paths/~1project_groups~1{gid}'
-  /project_groups/{gid}/projects:
+  /project-groups/{gid}/projects:
     $ref: 'endpoints/project_group/projects.yml#/paths/~1project_groups~1{gid}~1projects'
   # Project Endpoints
   /projects:

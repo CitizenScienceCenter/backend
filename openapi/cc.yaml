@@ -24,7 +24,7 @@ info:
   version: 3.1.1
 openapi: 3.0.0
 paths:
-  /project_groups:
+  /project-groups:
     get:
       operationId: get_project_groups
       parameters:
@@ -108,7 +108,7 @@ paths:
       tags:
         - ProjectGroups
       x-openapi-router-controller: api.project_group.model
-  "/project_groups/{gid}":
+  "/project-groups/{gid}":
     get:
       operationId: get_project_group
       parameters:
@@ -135,7 +135,7 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: "#/paths/~1project_groups/post/requestBody"
+        $ref: "#/paths/~1project-groups/post/requestBody"
       responses:
         "200":
           description: Updated Project Group
@@ -168,7 +168,7 @@ paths:
       tags:
         - ProjectGroups
       x-openapi-router-controller: api.project_group.model
-  "/project_groups/{gid}/projects":
+  "/project-groups/{gid}/projects":
     get:
       operationId: get_project_group_projects
       parameters:
