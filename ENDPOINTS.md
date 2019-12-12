@@ -1,7 +1,7 @@
 # Endpoints
-
+- root: `<URL>/v3`
 ## User
-
+- root: `/users`
 * `/register`
   * methods:
     * POST
@@ -23,7 +23,7 @@
 
 
 ## Project Groups
-
+- root: `/project-groups`
 * `/`
   * methods:
     * GET
@@ -50,7 +50,7 @@
       * GET 
 
 ## Projects
-
+- root: `/projects`
 * `/`
   * methods:
     * GET
@@ -86,7 +86,7 @@
       * GET 
 
 ## Tasks
-
+- root: `/tasks`
 * `/id`
   * methods:
     * GET
@@ -109,7 +109,7 @@
 
 
 ## Media
-
+- root: `/media`
 * `/id`
   * methods:
     * GET
@@ -123,7 +123,15 @@
     * POST 
 
 ## Comments
+- root: `/comments`
+* `/id`
+  * methods:
+    * GET
+    * PUT
+    * DELETE
 
+## Submissions
+- root: `/submissions`
 * `/id`
   * methods:
     * GET
