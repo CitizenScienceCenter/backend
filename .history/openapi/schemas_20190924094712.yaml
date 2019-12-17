@@ -1,0 +1,191 @@
+openapi: 3.0.1
+info:
+  title: An include file to define schemas
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Base:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 100
+          readOnly: true
+        info:
+          type: object
+          description: A JSON field to extend a model with extra info
+        created_at:
+          type: string
+          format: date-time
+          description: Creation time
+          example: "2015-07-07T15:49:51.230+02:00"
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          description: Creation time
+          example: "2015-07-07T15:49:51.230+02:00"
+          readOnly: true
+    User:
+      type: object
+      required:
+        - pwd
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      properties:
+        username:
+          type: string
+          required: true
+        email:
+          type: string
+          format: email
+        pwd:
+          type: string
+        api_key:
+          type: string
+        anonymous:
+          type: boolean
+          default: false
+    UserUpdate:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        pwd:
+          type: string
+        api_key:
+          type: string
+        anonymous:
+          type: boolean
+    Media:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      required:
+        - source_id
+        - path
+        - name
+      properties:
+        source_id:
+          type: string
+          description: The task or project or user it is related to
+        path:
+          type: string
+          description: Local or remote path
+        name:
+          type: string
+          description: Name of file
+        filetype:
+          type: string
+    Otoken:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      required:
+        - user_id
+        - project_id
+      properties:
+        user_id:
+          type: string
+        project_id:
+          type: string
+    Project:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        owned_by:
+          type: string
+          description: The ID of the user that this project is owned by
+    Activity:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      required:
+        - name
+        - description
+        - platform
+        - part_of
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        platform:
+          type: string
+          enum:
+            - Desktop
+            - Mobile
+            - Both
+        anonymous_allowed:
+          type: boolean
+          default: true
+        part_of:
+          type: string
+          description: The ID of the project that this activity is part of
+    Task:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      required:
+        - activity_id
+        - sequence
+        - title
+        - content
+        - required
+      properties:
+        activity_id:
+          type: string
+        sequence:
+          type: integer
+        content:
+          type: object
+        title:
+          type: string
+        required:
+          type: boolean
+    Submission:
+      type: object
+      required:
+        - task_id
+        - user_id
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      properties:
+        task_id:
+          type: string
+        user_id:
+          type: string
+        content:
+          type: object
+    Comment:
+      type: object
+      required:
+        - source_id
+        - content
+        - user_id
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      properties:
+        source_id:
+          type: string
+          description: The task or project (or anything with an ID) it is related to
+        content:
+          type: object
+        parent:
+          type: string
+        user_id:
+          type: string
