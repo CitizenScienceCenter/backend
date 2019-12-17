@@ -42,6 +42,7 @@ def login_anonymous(client, anonymous_user):
         json={"username": "gavin", "email": "abc@abc.com", "pwd": "dklfjfkf373"},
         headers=[("X-Api-Key", user["data"]["api_key"])],
     )
+    print(lg.data)
     assert lg.status_code == 201 or lg.status_code == 409
     return user
 
