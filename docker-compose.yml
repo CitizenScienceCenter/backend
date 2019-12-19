@@ -8,8 +8,6 @@ services:
     restart: always
     ports:
     - "5432:5432"
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=${PG_PASSWORD}
       - POSTGRES_USER=${PG_USER}
@@ -23,18 +21,12 @@ services:
       URL: ${SWAGGER_JSON}
     depends_on:
       - api
-  graphql:
-    restart: always
-    image: graphile/postgraphile
-    ports:
-      - "7000:5000"
-    command: postgraphile --connection 'postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}/${PG_DB}?sslmode=disable' --host 0.0.0.0 --port 5000 --schema public -a -j
-    depends_on:
-      - db
   api:
     network_mode: host
     build:
       context: .
     command:  uwsgi --http :${CC_PORT} --wsgi-file uwsgi.py --master --processes 4 --threads 2 --stats :9191
+    depends_on:
+      - db
     ports:
       - "${CC_PORT}:${CC_PORT}"
