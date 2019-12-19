@@ -21,7 +21,7 @@ components:
 info:
   title: C3S API
   description: An API for creating, running and analysing citizen science projects
-  version: 3.1.1
+  version: 3.1.2
 openapi: 3.0.0
 paths:
   /project-groups:
@@ -208,6 +208,8 @@ paths:
       tags:
         - ProjectGroups
       x-openapi-router-controller: api.project_group.custom
+  "/project-groups/{gid}/invite": {}
+  "/project-groups/{gid}/members": {}
   /projects:
     get:
       operationId: get_projects

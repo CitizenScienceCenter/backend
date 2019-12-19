@@ -21,7 +21,7 @@ components:
 info:
   title: C3S API
   description: An API for creating, running and analysing citizen science projects
-  version: 3.1.1
+  version: 3.1.2
 openapi: 3.0.0
 paths:
   # Project Group Endpoints
@@ -31,6 +31,10 @@ paths:
     $ref: 'endpoints/project_group/id.yml#/paths/~1project_groups~1{gid}'
   /project-groups/{gid}/projects:
     $ref: 'endpoints/project_group/projects.yml#/paths/~1project_groups~1{gid}~1projects'
+  /project-groups/{gid}/invite:
+    $ref: 'endpoints/project_group/id.yml#/paths/~1invite'
+  /project-groups/{gid}/members:
+    $ref: 'endpoints/project_group/id.yml#/paths/~1members'
   # Project Endpoints
   /projects:
     $ref: 'endpoints/project/all.yml#/paths/projects'
