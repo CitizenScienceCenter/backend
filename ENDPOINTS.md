@@ -33,7 +33,7 @@
     * GET
     * PUT
     * DELETE
-  * `invite` (NOT IMPLEMENTED)
+  * `invite`
     * methods:
       * POST
   * `projects`

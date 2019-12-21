@@ -1,7 +1,7 @@
 import uuid
 from functools import wraps
 import prison
-from db import Comment, Project, Submission, Task, User
+from db import Comment, Project, Submission, Task, User, ProjectGroup
 from flask import abort, request
 from pony.flask import db_session
 
@@ -64,6 +64,51 @@ class ensure_model(object):
 
         return decorated_function
 
+@db_session
+def ensure_group_access(*args, **kwargs):
+    def inner(func):
+        if 'X-API-KEY' in request.headers:
+            current = User.get(api_key=request.headers['X-API-KEY'])
+            if not current:
+                abort(404, "User not found")
+            else:
+                member_of = current.member_of
+                model = kwargs['model']
+                action = kwargs['action']
+                sid = kwargs['id']
+                source = ProjectGroup.get(id=sid)
+                if source is None:
+                    source = Project.get(id=sid)
+                    if source is None:
+                        abort(404)
+                m = source.members.filter(lambda m : m.user_id == current.id)
+                if m.role[action]:
+                    return func(*args, **kwargs)
+                else:
+                    abort(401)
+    return inner
+
+class ensure_access(object):
+    def __init__(self, model):
+        self.model = model
+
+    def __call__(self, func):
+        @wraps(func)
+        def decorated_function(*args, **kwargs):
+            if "search_term" in request.args:
+                search = prison.loads(request.args["search_term"])
+                allowed_table = True
+                for t in search["select"]["tables"]:
+                    if t.lower().split(" ")[0] not in db_tables:
+                        allowed_table = False
+                        break
+                if not allowed_table:
+                    abort(401)
+                return func(*args, **kwargs)
+            else:
+                return func(*args, **kwargs)
+
+        return decorated_function
 
 @db_session
 class ensure_owner(object):

@@ -15,6 +15,7 @@ config/*
 !config/*.secret
 !config/test.env
 !config/travis.env
+!config/local.cfg
 
 #### joe made this: http://goel.io/joe
 
