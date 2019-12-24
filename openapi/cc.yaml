@@ -1637,6 +1637,8 @@ paths:
         - Projects
       x-openapi-router-controller: api.user.custom
 servers:
+  - description: Dev Server
+    url: http://localhost:9000/v3
   - description: Staging Server
     url: https://staging.citizenscience.ch/v3
   - description: Production API Server

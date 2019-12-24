@@ -107,12 +107,9 @@ def get_project_task(pid=None, index=-1, random=False):
             body = [t.to_dict() for t in tasks]
         else:
             u = utils.get_user(request, db_session)
-            t = DB.select(RANDOM_TASK.format(pid))
-            print(t)
-            ret = None
-            if len(t) != 0:
-                # TODO check return object
-                ret = t[0]
+            task = Task.select_by_sql(RANDOM_TASK.format(pid))
+            if len(task) != 0:
+                body = [t.to_dict() for t in task]
             else:
                 abort(404, "No Tasks Found")
         return ResponseHandler(200, "Task", body=body).send()
