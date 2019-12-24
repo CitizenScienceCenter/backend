@@ -107,7 +107,7 @@ def get_project_task(pid=None, index=-1, random=False):
             body = [t.to_dict() for t in tasks]
         else:
             u = utils.get_user(request, db_session)
-            task = Task.select_by_sql(RANDOM_TASK.format(pid))
+            task = Task.select_by_sql(RANDOM_USER_TASK.format(u.id, pid))
             if len(task) != 0:
                 body = [t.to_dict() for t in task]
             else:
