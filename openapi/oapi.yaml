@@ -114,6 +114,8 @@ paths:
   /users/me/projects:
     $ref: 'endpoints/user/projects.yml#/paths/projects'
 servers:
+  - description: Local Testing/Dev Server
+    url: http://localhost:9000/v3
   - description: 'Staging Server'
     url: https://staging.citizenscience.ch/v3
   - description: 'Production API Server'

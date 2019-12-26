@@ -33,8 +33,8 @@ class Server:
         self.connexion_app.add_api(
             self.connexion_app.app.config["SWAGGER_FILE"],
             strict_validation=False,
-            validate_responses=False,
-            options={"swagger_ui": False},
+            validate_responses=False
+            #options={"swagger_ui": False},
         )
         self.config = self.app.config
         self.port = int(self.config["CC_PORT"]) or 9000
