@@ -43,7 +43,7 @@ def get_task_media(tid=None, limit=20, offset=0):
             200, "", body=[s.to_dict() for s in t.media.limit(limit, offset=offset)]
         ).send()
     elif t and t.media.count() == 0:
-        return ResponseHandler(200, "Task has no submissions", body=[], ok=False).send()
+        return ResponseHandler(200, "Task has no media", body=[], ok=False).send()
     else:
         abort(404)
 
