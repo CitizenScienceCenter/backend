@@ -42,13 +42,12 @@ Here we use the [Speccy](https://github.com/wework/speccy) tool which requires n
 
 ```env
 CC_PORT=8080
-ENV=local
+ENV=dev
 
 HOST=https://api.citizenscience.ch
-SWAGGER_URL=${HOST}/api/v3/openapi.json
+OAPI_URL=${HOST}/v3/openapi.json
 
-SWAGGER_DIR=openapi/
-SWAGGER_FILE=cc.yaml
+OAPI_FILE=cc.yaml
 
 SECRET_KEY=SUPES_SECRET987
 

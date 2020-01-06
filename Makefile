@@ -1,10 +1,14 @@
-include .env
+-include .env
 export
 
 .PHONY: spec swaggerui run
 all:
 		clean
 		start
+
+init:
+	virtualenv env
+	touch .env
 
 reveal:
 	git secret reveal -f
@@ -27,24 +31,25 @@ localdb:
 	 -docker rm backend-db
 	 docker run --name backend-db -e POSTGRES_PASSWORD=testing -e POSTGRES_USER=testing -e POSTGRES_DB=testcs -d -p "5432:5432" postgres
 
-.PHONY: swaggerui
-swaggerui:
-	-docker kill swag
-	-docker rm swag
-	docker run --name=swag -d -e URL="http://localhost:9000/v3/openapi.json" -p "5000:8080" swaggerapi/swagger-ui
+services: spec localdb
 
-services: spec swaggerui
+local: services run
 
-local: spec swaggerui run
+cfg = dev
 
 .PHONY: run
 run:
+	ln -sf config/$(cfg).cfg .env
 	python app.py
 
 .PHONY: test
 test:
-		ln -sf config/test.env .env
+		ln -sf config/test.cfg .env
 		env/bin/python -m pytest test/*.py -s
+
+.PHONY: env
+env:
+	ln -sf config/$(cfg).cfg .env
 
 .PHONY: start
 docker:

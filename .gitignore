@@ -13,9 +13,9 @@ alembic.ini
 
 config/*
 !config/*.secret
-!config/test.env
-!config/travis.env
-!config/local.cfg
+!config/test.cfg
+!config/travis.cfg
+!config/dev.cfg
 
 #### joe made this: http://goel.io/joe
 

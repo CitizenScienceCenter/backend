@@ -31,16 +31,15 @@ class Server:
             os.environ["CC_ENV"] = ".env"
         self.app.config.from_envvar("CC_ENV")
         self.connexion_app.add_api(
-            self.connexion_app.app.config["SWAGGER_FILE"],
+            self.connexion_app.app.config["OAPI_FILE"],
             strict_validation=False,
             validate_responses=False
-            #options={"swagger_ui": False},
         )
         self.config = self.app.config
         self.port = int(self.config["CC_PORT"]) or 9000
         self.debug = bool(self.config["DEBUG"]) or False
         self.app.secret_key = self.config["SECRET_KEY"] or uuid.uuid4()
-        if self.config["ENV"] == "test":
+        if self.config["ENV"] == "test" or self.config["ENV"] == "dev":
             try:
                 DB.bind("sqlite", ":memory:")
             except BindingError as b:
@@ -75,7 +74,7 @@ class Server:
         RoleHandler(DB).init_roles()
         Pony(self.connexion_app.app)
         print(self.config["ENV"])
-        if self.config["ENV"] != "test" and self.config["ENV"] != "travis" and self.config["ENV"] != "local":
+        if self.config["ENV"] != "test" and self.config["ENV"] != "travis" and self.config["ENV"] != "dev":
             self.app.uploader = Minio(
                 self.config["MIN_URL"],
                 self.config["MIN_ACCESS"],

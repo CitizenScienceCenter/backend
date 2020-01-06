@@ -15,7 +15,7 @@ notifications:
 python:
   - 3.6
 script:
-  - 'ln -sf config/travis.env .env'
+  - 'ln -sf config/travis.cfg .env'
   - 'export CC_ENV=.env'
   - 'pytest test/'
 services:
