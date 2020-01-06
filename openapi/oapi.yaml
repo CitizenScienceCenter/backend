@@ -19,7 +19,7 @@ components:
       type: oauth2
       x-tokenInfoUrl: http://localhost:8081/api/v1/users/validate
 info:
-  title: C3S API
+  title: C3S API]
   description: An API for creating, running and analysing citizen science projects
   version: 3.1.2
 openapi: 3.0.0
@@ -119,4 +119,4 @@ servers:
   - description: 'Staging Server'
     url: https://staging.citizenscience.ch/api/v3
   - description: 'Production API Server'
-    url: https://citizenscience.ch/api/v3
+    url: https://api.citizenscience.ch/v3
