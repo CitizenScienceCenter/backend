@@ -6,8 +6,8 @@ services:
       context: .
       dockerfile: scripts/pg/Dockerfile
     restart: always
-    #    ports:
-    # - "5432:5432"
+    ports:
+     - "5432:5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     environment:
@@ -39,5 +39,3 @@ services:
       - ~/dev/upload:/code/static/upload
     ports:
       - "${CC_PORT}:${CC_PORT}"
-    depends_on:
-      - db
