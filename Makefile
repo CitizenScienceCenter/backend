@@ -51,6 +51,10 @@ test:
 env:
 	ln -sf config/$(cfg).cfg .env
 
+.PHONY: api
+api:
+	docker-compose up --build --force-recreate --no-deps -d api
+
 .PHONY: start
 docker:
 		git secret reveal -f
