@@ -11,6 +11,7 @@ import logging
 from sqlalchemy.dialects import postgresql
 from pony.flask import db_session
 
+RANDOM_TASK = "select * from tasks TABLESAMPLE SYSTEM_ROWS(10000) WHERE tasks.part_of='{}' LIMIT 1;"
 
 @db_session
 def delete_tasks(tasks):
@@ -60,8 +61,3 @@ def get_stats(tid=None):
     else:
         abort(404)
 
-
-@db_session
-def get_random(pid, search):
-    # TODO implement using pg extension
-    return NoContent, 200

@@ -63,7 +63,7 @@ def logout():
 @db_session
 def auth(body):
     user = body
-    # TODO create oauth token here and add to table. Just send api key for now
+    # TODO create oauth token here and add to table. Currently sending API key
     q = User.get(email=user["email"])
     if q:
         if pbkdf2_sha256.verify(user["pwd"], q.pwd):
@@ -79,10 +79,9 @@ def auth(body):
 def reset(email):
     conf = current_app.config
     user = User.get(email=email)
-    # TODO handle domain
     if user:
         tk = ts.sign(str(user.id))
-        reset = "{}/reset/{}".format("https://citizenscience.ch", tk.decode("utf-8"))
+        reset = "{}/reset/{}".format('https://citizenscience.ch', tk.decode("utf-8"))
         text = "Hello! \n Someone requested a password for your account. Please click the link {} to change it. \n Thanks, The Citizen Science Team".format(
             reset
         )

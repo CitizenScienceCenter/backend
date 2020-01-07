@@ -27,4 +27,4 @@ def delete_member(mid):
 
 
 def update_member(mid, body):
-    return model.put(Model, mid, body).send()
+    return model.put(Model, mid, body)[0].send()

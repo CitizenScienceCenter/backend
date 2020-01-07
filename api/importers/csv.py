@@ -54,7 +54,7 @@ def import_media_csv(tid, body):
                 row['source_id'] = tid
                 if not 'name' in row:
                     row['name'] = row['path']
-                res, m = model.post(Media, row)
+                _, m = model.post(Media, row)
                 media.append(m.to_dict)
             except Exception as e:
                 abort(500, e)
